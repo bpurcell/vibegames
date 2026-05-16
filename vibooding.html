@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibooding</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6e48aa, #9d50bb, #6e48aa);
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+            text-align: center;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #game-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        #game-canvas {
+            border: 4px solid white;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        #start-screen, #instructions-screen, #game-over-screen {
+            width: 500px;
+            padding: 2rem;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #instructions-screen, #game-over-screen {
+            display: none;
+        }
+
+        .button {
+            background-color: #ff7b25;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:hover {
+            background-color: #ff9955;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        #score-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: none;
+        }
+
+        .instructions-text {
+            text-align: left;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        #bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation-name: float-up;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="bubbles"></div>
+    
+    <div id="game-container">
+        <h1 id="game-title">Vibooding</h1>
+        <h2 id="game-subtitle">The Face-Matching Puzzle Game</h2>
+        
+        <div id="start-screen">
+            <button id="start-button" class="button">Start Game</button>
+            <button id="instructions-button" class="button">Instructions</button>
+        </div>
+        
+        <div id="instructions-screen">
+            <h2>How to Play</h2>
+            
+            <div class="instructions-text">
+                <p><strong>Objective:</strong> Clear the board by matching 3 or more of the same faces!</p>
+                
+                <p><strong>Controls:</strong></p>
+                <ul>
+                    <li>Use the mouse to aim the launcher</li>
+                    <li>Click to shoot a face</li>
+                    <li>Press SPACE to swap between the current and next face</li>
+                </ul>
+                
+                <p><strong>Game Rules:</strong></p>
+                <ul>
+                    <li>Faces stick to other faces or the ceiling</li>
+                    <li>When 3 or more of the same faces connect, they pop</li>
+                    <li>Any faces that become detached will fall</li>
+                    <li>If faces reach the bottom line, the game ends</li>
+                </ul>
+                
+                <p><strong>Scoring:</strong></p>
+                <ul>
+                    <li>10 points for each face removed</li>
+                    <li>Bonus points for chain reactions</li>
+                    <li>Clear the board for a massive bonus!</li>
+                </ul>
+            </div>
+            
+            <button id="back-button" class="button">Back to Menu</button>
+        </div>
+        
+        <canvas id="game-canvas" width="500" height="600"></canvas>
+        
+        <div id="game-over-screen">
+            <h2>Game Over</h2>
+            <p id="final-score">Your score: 0</p>
+            <button id="play-again-button" class="button">Play Again</button>
+            <button id="menu-button" class="button">Main Menu</button>
+        </div>
+        
+        <div id="score-display">Score: 0</div>
+    </div>
+
+    <script>
+        // =====================
+        // GAME INITIALIZATION
+        // =====================
+        
+        // Constants
+        const GAME_STATE = {
+            MENU: 'menu',
+            INSTRUCTIONS: 'instructions',
+            PLAYING: 'playing',
+            GAME_OVER: 'gameOver'
+        };
+        
+        const FACE_TYPES = {
+            HAPPY: 0,
+            SAD: 1,
+            SURPRISED: 2,
+            ANGRY: 3,
+            NEUTRAL: 4,
+            SILLY: 5
+        };
+        
+        // Game configuration
+        const CONFIG = {
+            gridRows: 10,
+            gridCols: 10,
+            faceSize: 40,
+            launcherSpeed: 2,
+            shootSpeed: 8,
+            faceTypes: 6,
+            initialRows: 5,
+            fallSpeed: 5,
+            fallThreshold: 550,
+            bubbleCount: 20
+        };
+        
+        // Initialize variables
+        let currentState = GAME_STATE.MENU;
+        let score = 0;
+        let grid = [];
+        let launcher = {
+            x: 250,
+            y: 580,
+            angle: -Math.PI / 2,
+            width: 50,
+            height: 50,
+            currentFace: null,
+            nextFace: null
+        };
+        let activeFace = null;
+        let fallingFaces = [];
+        let connectedFaces = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        
+        // Elements
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('start-screen');
+        const instructionsScreen = document.getElementById('instructions-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const scoreDisplay = document.getElementById('score-display');
+        const finalScore = document.getElementById('final-score');
+        const bubblesContainer = document.getElementById('bubbles');
+        
+        // Buttons
+        const startButton = document.getElementById('start-button');
+        const instructionsButton = document.getElementById('instructions-button');
+        const backButton = document.getElementById('back-button');
+        const playAgainButton = document.getElementById('play-again-button');
+        const menuButton = document.getElementById('menu-button');
+        
+        // =====================
+        // BACKGROUND BUBBLES
+        // =====================
+        function createBubbles() {
+            for (let i = 0; i < CONFIG.bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random size between 20px and 100px
+                const size = Math.floor(Math.random() * 80 + 20);
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Random position along width
+                const position = Math.floor(Math.random() * 100);
+                bubble.style.left = `${position}%`;
+                
+                // Random animation duration between 4s and 12s
+                const duration = Math.floor(Math.random() * 8 + 4);
+                bubble.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                const delay = Math.floor(Math.random() * 10);
+                bubble.style.animationDelay = `${delay}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+        
+        // =====================
+        // GAME FACE CLASS
+        // =====================
+        class Face {
+            constructor(type, row = -1, col = -1, x = null, y = null) {
+                this.type = type;
+                this.row = row;
+                this.col = col;
+                this.x = x !== null ? x : col * CONFIG.faceSize + CONFIG.faceSize / 2;
+                this.y = y !== null ? y : row * CONFIG.faceSize + CONFIG.faceSize / 2;
+                this.size = CONFIG.faceSize;
+                this.isActive = false;
+                this.isFalling = false;
+                this.velocityX = 0;
+                this.velocityY = 0;
+                this.visited = false;
+            }
+            
+            draw() {
+                ctx.save();
+                
+                // Draw face background
+                ctx.fillStyle = this.getFaceColor();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size / 2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw face features based on type
+                this.drawFaceFeatures();
+                
+                ctx.restore();
+            }
+            
+            getFaceColor() {
+                const colors = [
+                    '#FFD700', // Happy - Gold
+                    '#6495ED', // Sad - Cornflower Blue
+                    '#FF7F50', // Surprised - Coral
+                    '#DC143C', // Angry - Crimson
+                    '#9ACD32', // Neutral - Yellow Green
+                    '#DA70D6'  // Silly - Orchid
+                ];
+                
+                return colors[this.type];
+            }
+            
+            drawFaceFeatures() {
+                ctx.fillStyle = 'black';
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 2;
+                
+                const eyeOffsetX = this.size / 6;
+                const eyeOffsetY = -this.size / 8;
+                const eyeRadius = this.size / 10;
+                
+                // Draw eyes for all faces
+                this.drawEye(this.x - eyeOffsetX, this.y + eyeOffsetY, eyeRadius);
+                this.drawEye(this.x + eyeOffsetX, this.y + eyeOffsetY, eyeRadius);
+                
+                // Draw mouth based on face type
+                switch(this.type) {
+                    case FACE_TYPES.HAPPY:
+                        this.drawSmile();
+                        break;
+                    case FACE_TYPES.SAD:
+                        this.drawFrown();
+                        break;
+                    case FACE_TYPES.SURPRISED:
+                        this.drawSurprisedMouth();
+                        break;
+                    case FACE_TYPES.ANGRY:
+                        this.drawAngryMouth();
+                        this.drawAngryEyebrows();
+                        break;
+                    case FACE_TYPES.NEUTRAL:
+                        this.drawNeutralMouth();
+                        break;
+                    case FACE_TYPES.SILLY:
+                        this.drawSillyMouth();
+                        this.drawSillyTongue();
+                        break;
+                }
+            }
+            
+            drawEye(x, y, radius) {
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawSmile() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + this.size / 8, this.size / 5, 0, Math.PI);
+                ctx.stroke();
+            }
+            
+            drawFrown() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + this.size / 4, this.size / 5, Math.PI, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            drawSurprisedMouth() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + this.size / 6, this.size / 10, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawAngryMouth() {
+                ctx.beginPath();
+                ctx.moveTo(this.x - this.size / 5, this.y + this.size / 6);
+                ctx.lineTo(this.x + this.size / 5, this.y + this.size / 6);
+                ctx.stroke();
+            }
+            
+            drawAngryEyebrows() {
+                ctx.beginPath();
+                ctx.moveTo(this.x - this.size / 4, this.y - this.size / 5);
+                ctx.lineTo(this.x - this.size / 10, this.y - this.size / 3);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(this.x + this.size / 4, this.y - this.size / 5);
+                ctx.lineTo(this.x + this.size / 10, this.y - this.size / 3);
+                ctx.stroke();
+            }
+            
+            drawNeutralMouth() {
+                ctx.beginPath();
+                ctx.moveTo(this.x - this.size / 5, this.y + this.size / 5);
+                ctx.lineTo(this.x + this.size / 5, this.y + this.size / 5);
+                ctx.stroke();
+            }
+            
+            drawSillyMouth() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + this.size / 5, this.size / 7, 0, Math.PI);
+                ctx.stroke();
+            }
+            
+            drawSillyTongue() {
+                ctx.fillStyle = '#FF6B6B';
+                ctx.beginPath();
+                ctx.ellipse(this.x, this.y + this.size / 3, this.size / 10, this.size / 7, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            update() {
+                if (this.isActive) {
+                    this.x += this.velocityX;
+                    this.y += this.velocityY;
+                    
+                    // Bounce off walls
+                    if (this.x < this.size / 2 || this.x > canvas.width - this.size / 2) {
+                        this.velocityX = -this.velocityX;
+                    }
+                    
+                    // Check collision with ceiling
+                    if (this.y < this.size / 2) {
+                        this.attachToGrid(0, Math.floor(this.x / CONFIG.faceSize));
+                        return;
+                    }
+                    
+                    // Check collision with other faces
+                    this.checkFaceCollision();
+                } else if (this.isFalling) {
+                    this.y += CONFIG.fallSpeed;
+                    
+                    // Remove if off-screen
+                    if (this.y > canvas.height + this.size) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            
+            checkFaceCollision() {
+                for (let row = 0; row < grid.length; row++) {
+                    for (let col = 0; col < grid[row].length; col++) {
+                        if (grid[row][col]) {
+                            const gridFace = grid[row][col];
+                            const distance = Math.sqrt(
+                                Math.pow(this.x - gridFace.x, 2) + 
+                                Math.pow(this.y - gridFace.y, 2)
+                            );
+                            
+                            if (distance < this.size) {
+                                // Calculate grid position
+                                let newRow, newCol;
+                                
+                                // Determine the direction from which the face is approaching
+                                const dx = this.x - gridFace.x;
+                                const dy = this.y - gridFace.y;
+                                const angle = Math.atan2(dy, dx);
+                                
+                                // Calculate new grid position based on approach angle
+                                if (angle > -Math.PI / 4 && angle <= Math.PI / 4) { 
+                                    // From right
+                                    newRow = row;
+                                    newCol = col + 1;
+                                } else if (angle > Math.PI / 4 && angle <= 3 * Math.PI / 4) { 
+                                    // From below
+                                    newRow = row + 1;
+                                    newCol = col;
+                                } else if (angle > 3 * Math.PI / 4 || angle <= -3 * Math.PI / 4) { 
+                                    // From left
+                                    newRow = row;
+                                    newCol = col - 1;
+                                } else { 
+                                    // From above
+                                    newRow = row - 1;
+                                    newCol = col;
+                                }
+                                
+                                // Check if new position is valid
+                                if (this.isValidGridPosition(newRow, newCol)) {
+                                    this.attachToGrid(newRow, newCol);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            isValidGridPosition(row, col) {
+                return row >= 0 && row < CONFIG.gridRows && 
+                       col >= 0 && col < CONFIG.gridCols && 
+                       !grid[row][col];
+            }
+            
+            attachToGrid(row, col) {
+                if (this.isValidGridPosition(row, col)) {
+                    this.isActive = false;
+                    this.row = row;
+                    this.col = col;
+                    this.x = col * CONFIG.faceSize + CONFIG.faceSize / 2;
+                    this.y = row * CONFIG.faceSize + CONFIG.faceSize / 2;
+                    grid[row][col] = this;
+                    
+                    // Check for matches
+                    const matches = findMatches(this);
+                    if (matches.length >= 3) {
+                        removeMatches(matches);
+                    }
+                    
+                    checkForGameOver();
+                }
+                
+                activeFace = null;
+            }
+        }
+        
+        // =====================
+        // GAME MECHANICS
+        // =====================
+        function initializeGame() {
+            // Create empty grid
+            grid = new Array(CONFIG.gridRows);
+            for (let i = 0; i < CONFIG.gridRows; i++) {
+                grid[i] = new Array(CONFIG.gridCols).fill(null);
+            }
+            
+            // Populate initial rows
+            for (let row = 0; row < CONFIG.initialRows; row++) {
+                for (let col = 0; col < CONFIG.gridCols; col++) {
+                    // Skip some positions randomly to create gaps
+                    if (Math.random() > 0.8) continue;
+                    
+                    const type = Math.floor(Math.random() * CONFIG.faceTypes);
+                    grid[row][col] = new Face(type, row, col);
+                }
+            }
+            
+            // Initialize launcher faces
+            launcher.currentFace = getRandomFaceType();
+            launcher.nextFace = getRandomFaceType();
+            
+            // Reset game state
+            score = 0;
+            activeFace = null;
+            fallingFaces = [];
+            updateScoreDisplay();
+        }
+        
+        function getRandomFaceType() {
+            return Math.floor(Math.random() * CONFIG.faceTypes);
+        }
+        
+        function findMatches(face) {
+            // Reset visited flags
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid[row].length; col++) {
+                    if (grid[row][col]) {
+                        grid[row][col].visited = false;
+                    }
+                }
+            }
+            
+            const matches = [];
+            const targetType = face.type;
+            
+            function dfs(r, c) {
+                // Base case: out of bounds or no face
+                if (r < 0 || r >= CONFIG.gridRows || c < 0 || c >= CONFIG.gridCols || !grid[r][c]) {
+                    return;
+                }
+                
+                // Base case: already visited or different type
+                if (grid[r][c].visited || grid[r][c].type !== targetType) {
+                    return;
+                }
+                
+                // Mark as visited and add to matches
+                grid[r][c].visited = true;
+                matches.push(grid[r][c]);
+                
+                // Visit neighbors
+                dfs(r + 1, c); // down
+                dfs(r - 1, c); // up
+                dfs(r, c + 1); // right
+                dfs(r, c - 1); // left
+            }
+            
+            dfs(face.row, face.col);
+            return matches;
+        }
+        
+        function removeMatches(matches) {
+            // Remove matched faces from grid
+            for (const face of matches) {
+                grid[face.row][face.col] = null;
+            }
+            
+            // Update score
+            score += matches.length * 10;
+            
+            // Add bonus for large matches
+            if (matches.length > 3) {
+                score += (matches.length - 3) * 5;
+            }
+            
+            updateScoreDisplay();
+            
+            // Check for floating faces
+            checkFloatingFaces();
+        }
+        
+        function checkFloatingFaces() {
+            // Reset visited flags
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid[row].length; col++) {
+                    if (grid[row][col]) {
+                        grid[row][col].visited = false;
+                    }
+                }
+            }
+            
+            // Mark all faces connected to ceiling as visited
+            for (let col = 0; col < CONFIG.gridCols; col++) {
+                if (grid[0][col]) {
+                    markConnected(0, col);
+                }
+            }
+            
+            // Collect unvisited faces (floating)
+            const floating = [];
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid[row].length; col++) {
+                    if (grid[row][col] && !grid[row][col].visited) {
+                        const face = grid[row][col];
+                        face.isFalling = true;
+                        floating.push(face);
+                        grid[row][col] = null;
+                    }
+                }
+            }
+            
+            // Add points for floating faces
+            if (floating.length > 0) {
+                score += floating.length * 15;
+                updateScoreDisplay();
+            }
+            
+            // Add floating faces to falling list
+            fallingFaces = fallingFaces.concat(floating);
+        }
+        
+        function markConnected(row, col) {
+            // Base case: out of bounds or no face
+            if (row < 0 || row >= CONFIG.gridRows || col < 0 || col >= CONFIG.gridCols || !grid[row][col]) {
+                return;
+            }
+            
+            // Base case: already visited
+            if (grid[row][col].visited) {
+                return;
+            }
+            
+            // Mark as visited
+            grid[row][col].visited = true;
+            
+            // Visit neighbors
+            markConnected(row + 1, col); // down
+            markConnected(row - 1, col); // up
+            markConnected(row, col + 1); // right
+            markConnected(row, col - 1); // left
+        }
+        
+        function checkForGameOver() {
+            // Check if any face has reached the bottom line
+            for (let col = 0; col < CONFIG.gridCols; col++) {
+                if (grid[CONFIG.gridRows - 1][col]) {
+                    gameOver();
+                    return;
+                }
+            }
+            
+            // Check if grid is empty (win condition)
+            let isEmpty = true;
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid[row].length; col++) {
+                    if (grid[row][col]) {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (!isEmpty) break;
+            }
+            
+            if (isEmpty) {
+                // Add clear bonus
+                score += 1000;
+                updateScoreDisplay();
+                
+                // Reset game with higher difficulty
+                initializeGame();
+            }
+        }
+        
+        function shootFace() {
+            if (activeFace) return;
+            
+            const angle = launcher.angle;
+            activeFace = new Face(
+                launcher.currentFace,
+                -1,
+                -1,
+                launcher.x,
+                launcher.y
+            );
+            
+            activeFace.isActive = true;
+            activeFace.velocityX = Math.cos(angle) * CONFIG.shootSpeed;
+            activeFace.velocityY = Math.sin(angle) * CONFIG.shootSpeed;
+            
+            // Move to next face
+            launcher.currentFace = launcher.nextFace;
+            launcher.nextFace = getRandomFaceType();
+        }
+        
+        function swapFaces() {
+            [launcher.currentFace, launcher.nextFace] = [launcher.nextFace, launcher.currentFace];
+        }
+        
+        function gameOver() {
+            currentState = GAME_STATE.GAME_OVER;
+            finalScore.textContent = `Your score: ${score}`;
+            
+            canvas.style.display = 'none';
+            scoreDisplay.style.display = 'none';
+            gameOverScreen.style.display = 'block';
+        }
+        
+        function updateScoreDisplay() {
+            document.getElementById('score-display').textContent = `Score: ${score}`;
+        }
+        
+        // =====================
+        // RENDERING
+        // =====================
+        function drawGrid() {
+            // Draw grid background (optional)
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, CONFIG.gridRows * CONFIG.faceSize);
+            
+            // Draw bottom line
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, CONFIG.fallThreshold);
+            ctx.lineTo(canvas.width, CONFIG.fallThreshold);
+            ctx.stroke();
+            
+            // Draw faces
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid[row].length; col++) {
+                    if (grid[row][col]) {
+                        grid[row][col].draw();
+                    }
+                }
+            }
+        }
+        
+        function drawLauncher() {
+            ctx.save();
+            
+            // Draw launcher base
+            ctx.fillStyle = '#4A4A4A';
+            ctx.beginPath();
+            ctx.arc(launcher.x, launcher.y, launcher.width / 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw launcher barrel
+            ctx.translate(launcher.x, launcher.y);
+            ctx.rotate(launcher.angle);
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(0, -5, launcher.width, 10);
+            
+            // Draw current face preview
+            const currentFace = new Face(launcher.currentFace, -1, -1, 0, -launcher.height / 1.2);
+            currentFace.draw();
+            
+            // Draw next face preview (smaller)
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.beginPath();
+            ctx.arc(launcher.width / 1.5, launcher.height / 3, CONFIG.faceSize / 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.save();
+            ctx.translate(launcher.width / 1.5, launcher.height / 3);
+            ctx.scale(0.6, 0.6);
+            const nextFace = new Face(launcher.nextFace, -1, -1, 0, 0);
+            nextFace.draw();
+            ctx.restore();
+            
+            ctx.restore();
+        }
+        
+        function drawActiveFace() {
+            if (activeFace) {
+                activeFace.draw();
+            }
+        }
+        
+        function drawFallingFaces() {
+            for (const face of fallingFaces) {
+                face.draw();
+            }
+        }
+        
+        function render() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw game elements
+            drawGrid();
+            drawLauncher();
+            drawActiveFace();
+            drawFallingFaces();
+        }
+        
+        // =====================
+        // GAME LOOP
+        // =====================
+        function update() {
+            // Update launcher angle based on mouse position
+            if (currentState === GAME_STATE.PLAYING) {
+                const dx = mouseX - launcher.x;
+                const dy = mouseY - launcher.y;
+                launcher.angle = Math.atan2(dy, dx);
+                
+                // Limit the angle to upward directions only (between -PI and 0)
+                if (launcher.angle > 0) {
+                    launcher.angle = Math.min(launcher.angle, Math.PI / 2);
+                } else if (launcher.angle < -Math.PI / 2) {
+                    launcher.angle = Math.max(launcher.angle, -Math.PI);
+                }
+                
+                // Update active face
+                if (activeFace) {
+                    const removed = activeFace.update();
+                    if (removed) {
+                        activeFace = null;
+                    }
+                }
+                
+                // Update falling faces
+                for (let i = fallingFaces.length - 1; i >= 0; i--) {
+                    const removed = fallingFaces[i].update();
+                    if (removed) {
+                        fallingFaces.splice(i, 1);
+                    }
+                }
+            }
+        }
+        
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // =====================
+        // INPUT HANDLERS
+        // =====================
+        function handleMouseMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        }
+        
+        function handleMouseClick() {
+            if (currentState === GAME_STATE.PLAYING) {
+                shootFace();
+            }
+        }
+        
+        function handleKeyDown(e) {
+            if (currentState === GAME_STATE.PLAYING && e.code === 'Space') {
+                swapFaces();
+            }
+        }
+        
+        // =====================
+        // SCREEN TRANSITIONS
+        // =====================
+        function showStartScreen() {
+            currentState = GAME_STATE.MENU;
+            startScreen.style.display = 'block';
+            instructionsScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            canvas.style.display = 'none';
+            scoreDisplay.style.display = 'none';
+        }
+        
+        function showInstructionsScreen() {
+            currentState = GAME_STATE.INSTRUCTIONS;
+            startScreen.style.display = 'none';
+            instructionsScreen.style.display = 'block';
+            gameOverScreen.style.display = 'none';
+            canvas.style.display = 'none';
+            scoreDisplay.style.display = 'none';
+        }
+        
+        function startGame() {
+            currentState = GAME_STATE.PLAYING;
+            startScreen.style.display = 'none';
+            instructionsScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            canvas.style.display = 'block';
+            scoreDisplay.style.display = 'block';
+            
+            initializeGame();
+        }
+        
+        // =====================
+        // EVENT LISTENERS
+        // =====================
+        startButton.addEventListener('click', startGame);
+        instructionsButton.addEventListener('click', showInstructionsScreen);
+        backButton.addEventListener('click', showStartScreen);
+        playAgainButton.addEventListener('click', startGame);
+        menuButton.addEventListener('click', showStartScreen);
+        
+        canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('click', handleMouseClick);
+        document.addEventListener('keydown', handleKeyDown);
+        
+        // =====================
+        // INITIALIZATION
+        // =====================
+        function init() {
+            createBubbles();
+            showStartScreen();
+            gameLoop();
+        }
+        
+        // Start the game
+        window.onload = init;

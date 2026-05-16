@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>US Weekly Weather Records Digest</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 14.5px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    color: #1a1a1a;
+    background: #fafaf7;
+  }
+  header {
+    padding: 18px 22px 10px;
+    border-bottom: 1px solid #e5e3dc;
+    background: #fff;
+  }
+  h1 { font-size: 18px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .meta { color: #6a6a66; font-size: 12.5px; }
+  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 12px; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .pill.broken { background: #fde7e3; color: #8a2a17; }
+  .pill.near    { background: #fff3c4; color: #6b5300; }
+  .pill.context { background: #e3eef9; color: #1f4a78; }
+  .pill.storm   { background: #efe0f5; color: #5a2473; }
+  .pill.drought { background: #f4e6d0; color: #7a4a10; }
+  main { padding: 14px 22px 40px; }
+  section.region, section.panel {
+    background: #fff;
+    border: 1px solid #ece9df;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  section.panel.storms  { border-left: 3px solid #8a3aa8; }
+  section.panel.drought { border-left: 3px solid #b07a2a; }
+  section.region h2 {
+    font-size: 14px;
+    margin: 0 0 6px;
+    color: #2a2a28;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  section.region h2 .states { font-size: 11.5px; color: #8a8a82; font-weight: 500; }
+  ul.records { list-style: none; padding: 0; margin: 6px 0 0; }
+  ul.records li {
+    padding: 7px 0;
+    border-top: 1px dashed #eeece4;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  ul.records li:first-child { border-top: none; }
+  ul.records .text { flex: 1; }
+  ul.records a { color: #1f4a78; text-decoration: none; border-bottom: 1px dotted #9ab; }
+  ul.records a:hover { border-bottom-style: solid; }
+  .empty { color: #8a8a82; font-style: italic; font-size: 13px; }
+  footer {
+    color: #8a8a82;
+    font-size: 11.5px;
+    padding: 14px 22px 24px;
+    border-top: 1px solid #ece9df;
+  }
+  footer a { color: #1f4a78; }
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 10px;
+    border: 1px solid #d6d3c8;
+    border-radius: 14px;
+    background: #fff;
+    color: #2a2a28;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .toggle:hover { border-color: #b2ad9e; }
+  .toggle[aria-pressed="true"] { background: #e3eef9; border-color: #b7cce4; color: #1f4a78; }
+  .toggle .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #c0bcae;
+  }
+  .toggle[aria-pressed="true"] .dot { background: #1f4a78; }
+  body:not(.show-context) ul.records li:has(.pill.context) { display: none; }
+  .prev {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 7px;
+    border-radius: 9px;
+    background: #f0ede4;
+    color: #6a6a66;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .prev strong { color: #2a2a28; font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <h1>US Weather Records — Weekly Digest</h1>
+  <div class="meta" id="meta">Week of May 11–15, 2026 · 9 NOAA climate regions</div>
+  <div class="legend">
+    <span><span class="pill broken">Broken</span> record set/tied this week</span>
+    <span><span class="pill near">Near</span> within striking distance</span>
+    <span><span class="pill context">Context</span> ongoing trend/anomaly</span>
+    <span><span class="pill storm">Storm</span> severe wx event</span>
+    <span><span class="pill drought">Drought</span> snowpack/water</span>
+  </div>
+  <button id="ctxToggle" class="toggle" type="button" aria-pressed="false" onclick="(function(b){var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed', on?'false':'true');document.body.classList.toggle('show-context', !on);b.querySelector('.lbl').textContent=on?'Show context items':'Hide context items';try{localStorage.setItem('show-context', !on);}catch(e){}})(this)"><span class="dot"></span><span class="lbl">Show context items</span></button>
+</header>
+<script>
+  (function(){
+    try {
+      if (localStorage.getItem('show-context') === 'true') {
+        document.body.classList.add('show-context');
+        var b = document.getElementById('ctxToggle');
+        b.setAttribute('aria-pressed', 'true');
+        b.querySelector('.lbl').textContent = 'Hide context items';
+      }
+    } catch(e){}
+  })();
+</script>
+
+<main id="regions">
+
+<section class="panel storms">
+  <h2>Storms &amp; Severe Weather <span class="states">SPC reports · tornadoes · hail · wind</span></h2>
+  <ul class="records">
+    <li><span class="pill storm">Storm</span><div class="text">SPC has Iowa and the surrounding Upper Midwest in an elevated severe risk for the evening of May 15 — damaging winds and large-to-very-large hail likely; threat extends from the southern High Plains north through the Upper Midwest. <a href="https://www.spc.noaa.gov/products/outlook/day1otlk.html" target="_blank" rel="noopener">SPC Day 1</a></div></li>
+    <li><span class="pill storm">Storm</span><div class="text">Active severe-weather corridor mid-week from TX through AR into the Mid-South — heavy rainfall and isolated tornado threat alongside the hail/wind risk. <a href="https://www.spc.noaa.gov/products/outlook/day2otlk.html" target="_blank" rel="noopener">SPC Day 2</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">Running tornado, hail, and wind report tallies for the year are tracked on SPC's storm-report archive — useful for "Xth most active May on record" callouts as the month closes. <a href="https://www.spc.noaa.gov/climo/online/" target="_blank" rel="noopener">SPC Reports Archive</a></div></li>
+  </ul>
+</section>
+
+<section class="panel drought">
+  <h2>Drought &amp; Snowpack <span class="states">US Drought Monitor · SNOTEL · water supply</span></h2>
+  <ul class="records">
+    <li><span class="pill broken">Broken</span><div class="text">AZ, CO, ID, NV, NM, OR, UT, and WY all set new record-low April 1 snow-water-equivalent values in the ~45-year SNOTEL record; CA logged its 2nd-lowest. <span class="prev">prev record: <strong>since 1981</strong></span> <a href="https://www.drought.gov/drought-status-updates/snow-drought-current-conditions-and-impacts-west-2026-05-14" target="_blank" rel="noopener">Drought.gov Snow Update (May 14)</a></div></li>
+    <li><span class="pill broken">Broken</span><div class="text">Colorado peak SWE 8.55 in (March 9), 50% below the prior record-low year. Utah 3.2 in and Wyoming 8.8 in are also new statewide lows. <span class="prev">prev: <strong>previous SNOTEL low</strong></span> <a href="https://www.drought.gov/drought-status-updates/snow-drought-current-conditions-and-impacts-west-2026-05-14" target="_blank" rel="noopener">Drought.gov</a></div></li>
+    <li><span class="pill drought">Drought</span><div class="text">Earliest-on-record meltout dates at many SNOTEL sites; 62 of 73 Oregon water-supply forecast points are at or approaching historic lows. <a href="https://www.drought.gov/drought-status-updates/snow-drought-current-conditions-and-impacts-west-2026-05-14" target="_blank" rel="noopener">Drought.gov</a></div></li>
+    <li><span class="pill drought">Drought</span><div class="text">As of May 13, 2026, ~51% of the US (and 61% of the Lower 48) is in some level of drought. <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener">US Drought Monitor</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>Northeast <span class="states">ME · NH · VT · MA · RI · CT · NY · NJ · PA · DE · MD</span></h2>
+  <ul class="records">
+    <li><span class="pill near">Near</span><div class="text">Interior Mid-Atlantic (PA, MD) running toward daily record highs early in the week as an early-season heat wave pushes highs into the lower-to-mid 90s. <a href="https://www.wpc.ncep.noaa.gov/" target="_blank" rel="noopener">WPC</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">Northeast Regional Climate Center monthly tables track May running anomalies for ME, VT, and NH — useful for "wettest May in X years" callouts as the month closes. <a href="https://www.nrcc.cornell.edu/regional/tables/tables.html" target="_blank" rel="noopener">NRCC</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>Upper Midwest <span class="states">MI · WI · MN · IA</span></h2>
+  <ul class="records">
+    <li><span class="pill broken">Broken</span><div class="text">Michigan: Alpena (2.24 in) and Houghton Lake (2.97 in) both notched their wettest April day on record, setting the stage for an unusually saturated May. <span class="prev">prev: <strong>POR record</strong></span> <a href="https://www.usda.gov/sites/default/files/documents/wwcb.pdf" target="_blank" rel="noopener">USDA WWCB</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">Active severe weather pattern continued into early May with thunderstorm clusters across WI/MN; watch MRCC for May daily-record tally. <a href="https://mrcc.purdue.edu/" target="_blank" rel="noopener">MRCC</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>Ohio Valley <span class="states">OH · IN · IL · KY · TN · MO · WV</span></h2>
+  <ul class="records">
+    <li><span class="pill broken">Broken</span><div class="text">Daily rainfall records across MO/IL/KS in late April (Springfield IL 3.62 in; Kansas City 3.21 in; Topeka 2.78 in; Lincoln IL 2.70 in). <span class="prev">prev: <strong>date-specific records</strong></span> <a href="https://www.usda.gov/sites/default/files/documents/wwcb.pdf" target="_blank" rel="noopener">USDA WWCB</a></div></li>
+    <li><span class="pill near">Near</span><div class="text">Mid-Ohio Valley running 30s for low temps early May — within range of cold-side daily records. <a href="https://www.weather.gov/rlx/current-weather-briefing" target="_blank" rel="noopener">NWS RLX</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>Southeast <span class="states">VA · NC · SC · GA · FL · AL</span></h2>
+  <ul class="records">
+    <li><span class="pill broken">Broken</span><div class="text">Florida daily-record highs early May: West Palm Beach 96°F, Ft. Lauderdale 95°F (May 2); Vero Beach 91°F/94°F (Apr 30 &amp; May 2). <span class="prev">prev: <strong>date-specific records</strong></span> <a href="https://www.usda.gov/sites/default/files/documents/wwcb.pdf" target="_blank" rel="noopener">USDA WWCB</a></div></li>
+    <li><span class="pill broken">Broken</span><div class="text">Daily rainfall records for May 2: Alma, GA 2.32 in; Tallahassee, FL 1.83 in. <span class="prev">prev: <strong>date-specific records</strong></span> <a href="https://www.usda.gov/sites/default/files/documents/wwcb.pdf" target="_blank" rel="noopener">USDA WWCB</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">GA, NC, SC just recorded their driest Sept 2025–Mar 2026 in the 131-year NCEI record. <a href="https://www.drought.gov/drought-status-updates/drought-status-update-southeast-2026-04-16" target="_blank" rel="noopener">Drought.gov</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>South <span class="states">MS · LA · AR · TX · OK · KS</span></h2>
+  <ul class="records">
+    <li><span class="pill near">Near</span><div class="text">Heavy-rain corridor across TX into AR and Mid-South mid-week — flood-causing totals likely to threaten daily records at multiple sites. <a href="https://www.wpc.ncep.noaa.gov/" target="_blank" rel="noopener">WPC</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">Cooler-than-average May trending across MS/LA/southern AR with frequent thunderstorm activity. <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">CPC</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>Northern Rockies &amp; Plains <span class="states">MT · ND · SD · NE · WY</span></h2>
+  <ul class="records">
+    <li><span class="pill broken">Broken</span><div class="text">Cold-side records to start May: Mobridge, SD bottomed at 22°F on May 1 (record low for date). Havre, MT 15°F and Cut Bank, MT 28°F high were also daily records in late April. <span class="prev">prev: <strong>date-specific records</strong></span> <a href="https://www.usda.gov/sites/default/files/documents/wwcb.pdf" target="_blank" rel="noopener">USDA WWCB</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">Exceptional drought (D4) expanded in SW Nebraska; ~88% of NE under some drought level. <a href="https://www.drought.gov/national" target="_blank" rel="noopener">Drought.gov</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>Southern Rockies / Southwest <span class="states">CO · UT · AZ · NM</span></h2>
+  <ul class="records">
+    <li><span class="pill context">Context</span><div class="text">March 2026 already smashed monthly heat records in 180+ Southwest cities, with potential statewide March records in 17 states (Phoenix 105°F, Denver 87°F). May running cooler, but baseline for the season is anomalous. <a href="https://yaleclimateconnections.org/2026/04/the-2026-southwest-u-s-heat-wave-was-one-of-the-six-most-astonishing-weather-events-of-the-century/" target="_blank" rel="noopener">Yale Climate Connections</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>Northwest <span class="states">WA · OR · ID</span></h2>
+  <ul class="records">
+    <li><span class="pill near">Near</span><div class="text">Late-May heat surge forecast to push highs into the mid-90s — 20–25°F above normal, with daily record highs likely across the Willamette Valley and inland WA. <a href="https://www.foxweather.com/weather-news/record-breaking-heat-scorch-pacific-northwest-heat-advisories" target="_blank" rel="noopener">Fox Weather</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">Oregon April 1 snowpack ran among the lowest in the 45-year SNOTEL record. <a href="https://www.drought.gov/" target="_blank" rel="noopener">Drought.gov</a></div></li>
+  </ul>
+</section>
+
+<section class="region">
+  <h2>West <span class="states">CA · NV</span></h2>
+  <ul class="records">
+    <li><span class="pill broken">Broken</span><div class="text">Late-April daily-record rainfall: Redding, CA 1.39 in; Tonopah, NV 0.50 in. <span class="prev">prev: <strong>date-specific records</strong></span> <a href="https://www.usda.gov/sites/default/files/documents/wwcb.pdf" target="_blank" rel="noopener">USDA WWCB</a></div></li>
+    <li><span class="pill near">Near</span><div class="text">Building western ridge supporting another round of high-temperature records likely tied/broken mid-month. <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">CPC</a></div></li>
+    <li><span class="pill context">Context</span><div class="text">98–100% of CA/NV SNOTEL stations in snow drought as of early April; April–July runoff forecast much below normal. <a href="https://www.drought.gov/drought-status-updates/drought-status-update-california-nevada-2026-04-27" target="_blank" rel="noopener">Drought.gov</a></div></li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  Data sources rotate each run: <a href="https://www.ncei.noaa.gov/access/monitoring/records/" target="_blank" rel="noopener">NOAA NCEI Daily Records</a> · <a href="https://www.usda.gov/oce/weather-drought-monitor" target="_blank" rel="noopener">USDA Weekly Weather &amp; Crop Bulletin</a> · <a href="https://www.wpc.ncep.noaa.gov/" target="_blank" rel="noopener">NWS WPC</a> · <a href="https://www.cpc.ncep.noaa.gov/" target="_blank" rel="noopener">CPC</a> · <a href="https://www.spc.noaa.gov/climo/online/" target="_blank" rel="noopener">SPC Storm Reports</a> · <a href="https://droughtmonitor.unl.edu/" target="_blank" rel="noopener">US Drought Monitor</a> · <a href="https://www.drought.gov/topics/snow-drought" target="_blank" rel="noopener">SNOTEL via Drought.gov</a> · Regional Climate Centers (NRCC, MRCC, SRCC, HPRCC, WRCC).<br>
+  Auto-refreshes weekly via a scheduled task. Use the header Reload button for an on-demand pull.
+</footer>
+
+</body>
+</html>

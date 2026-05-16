@@ -5,139 +5,273 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Vibe Code Games</title>
     <style>
+        :root {
+            --bg: #0d0f12;
+            --bg-card: #16191f;
+            --bg-card-hover: #1c2028;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(0, 255, 157, 0.25);
+            --text: #eef0f3;
+            --text-dim: #9aa1ad;
+            --text-faint: #5b6270;
+            --accent: #00ff9d;
+            --accent-dim: rgba(0, 255, 157, 0.12);
+            --accent-glow: rgba(0, 255, 157, 0.18);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { margin: 0; padding: 0; }
+
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            line-height: 1.6;
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                         Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+            background:
+              radial-gradient(1200px 600px at 80% -10%, rgba(0, 255, 157, 0.06), transparent 60%),
+              radial-gradient(900px 500px at -10% 110%, rgba(0, 200, 255, 0.05), transparent 60%),
+              var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1040px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 3.5rem 1.5rem 4rem;
         }
 
         header {
-            text-align: center;
             margin-bottom: 3rem;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 0.3rem 0.7rem;
+            border-radius: 999px;
+            margin-bottom: 1rem;
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: #00ff9d;
-            margin-bottom: 1rem;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.08;
+            margin: 0 0 0.8rem;
+            letter-spacing: -0.02em;
+            font-weight: 700;
         }
 
-        .description {
-            background-color: #2a2a2a;
-            padding: 2rem;
+        h1 .accent { color: var(--accent); }
+
+        .tagline {
+            font-size: 1.05rem;
+            color: var(--text-dim);
+            max-width: 60ch;
+            margin: 0;
+        }
+
+        .about {
+            margin: 2.5rem 0 3rem;
+            padding: 1.5rem 1.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
             border-radius: 10px;
-            margin-bottom: 3rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: var(--text-dim);
         }
 
-        .description p {
-            margin-bottom: 1rem;
+        .about p { margin: 0 0 0.6rem; }
+        .about p:last-child { margin-bottom: 0; }
+
+        .section-label {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
         }
 
-        .games-grid {
+        .section-label h2 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-faint);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .section-label .count {
+            font-size: 0.8rem;
+            color: var(--text-faint);
+        }
+
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
         }
 
-        .game-card {
-            background-color: #2a2a2a;
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.4rem 1.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.18s ease, border-color 0.18s ease,
+                        background 0.18s ease, box-shadow 0.18s ease;
         }
 
-        .game-card:hover {
-            transform: translateY(-5px);
+        .card:hover {
+            transform: translateY(-3px);
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
         }
 
-        .game-card h2 {
-            color: #00ff9d;
-            margin-bottom: 1rem;
+        .card h3 {
+            font-size: 1.15rem;
+            margin: 0 0 0.4rem;
+            color: var(--text);
+            letter-spacing: -0.005em;
         }
 
-        .game-card p {
-            margin-bottom: 1.5rem;
-            color: #cccccc;
+        .card .meta {
+            font-size: 0.72rem;
+            color: var(--text-faint);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.7rem;
         }
 
-        .game-link {
-            display: inline-block;
-            background-color: #00ff9d;
-            color: #1a1a1a;
+        .card p {
+            margin: 0 0 1.25rem;
+            color: var(--text-dim);
+            font-size: 0.92rem;
+            flex: 1;
+        }
+
+        .card a.play {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1rem;
+            background: var(--accent);
+            color: var(--bg);
+            font-weight: 600;
+            font-size: 0.88rem;
             text-decoration: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
+            border-radius: 6px;
+            transition: filter 0.18s ease, transform 0.18s ease;
         }
 
-        .game-link:hover {
-            background-color: #00cc7d;
+        .card a.play:hover { filter: brightness(1.1); }
+        .card a.play:active { transform: translateY(1px); }
+        .card a.play .arrow { transition: transform 0.18s ease; }
+        .card:hover a.play .arrow { transform: translateX(2px); }
+
+        .card.tool a.play {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(0, 255, 157, 0.35);
+        }
+        .card.tool a.play:hover {
+            background: var(--accent-dim);
         }
 
         footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
             text-align: center;
-            margin-top: 3rem;
-            padding: 2rem;
-            color: #666666;
+            color: var(--text-faint);
+            font-size: 0.85rem;
         }
+
+        footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px dotted var(--text-faint); }
+        footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Random Vibe Code Games</h1>
-            <p>A collection of random games I vibe coded to test different AIs  will publish comparison versions as well</p>
+            <span class="eyebrow">Vibe Coding · No Hands</span>
+            <h1>Random Vibe <span class="accent">Code Games</span></h1>
+            <p class="tagline">A small collection of games and tools, all generated by prompting AIs and rerunning them. Zero hand-written code. Mostly hilarious.</p>
         </header>
 
-        <div class="description">
-            <h2>About Vibe Coding</h2>
-            <p>No coding was done.  I only let the AI run and rerun based on prompts and problems...  It is hilarious.</p>
-            <p>These were simple games to test the limits of the AI's ability to code. </p>
+        <div class="about">
+            <p>The premise: I never touch the keyboard for code. I prompt, watch the AI work, and iterate based on what breaks. The whole point is to probe where current models thrive and where they fall apart.</p>
+            <p>Comparison versions across different AIs will land here as I run them.</p>
         </div>
 
-        <div class="games-grid">
-            <div class="game-card">
-                <h2>JezzBall Classic</h2>
-                <p>A strategic puzzle game where you create walls to trap bouncing balls. Use your reflexes and planning skills to clear the area while avoiding the balls!</p>
-                <a href="jezzball.html" class="game-link">Play JezzBall</a>
+        <div class="section-label">
+            <h2>Games</h2>
+            <span class="count">5 entries</span>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="meta">Puzzle · Reflex</div>
+                <h3>JezzBall Classic</h3>
+                <p>Build walls to trap bouncing balls. Strategy, reflexes, and a little luck — clear the area without getting hit.</p>
+                <a href="jezzball.html" class="play">Play <span class="arrow">→</span></a>
             </div>
 
-            <div class="game-card">
-                <h2>Flappy Birds</h2>
-                <p>The classic endless runner game with a modern twist. Guide your bird through the pipes and try to achieve the highest score!</p>
-                <a href="flappybirds.html" class="game-link">Play Flappy Birds</a>
+            <div class="card">
+                <div class="meta">Endless Runner</div>
+                <h3>Flappy Birds</h3>
+                <p>The classic side-scroller. Tap to flap, dodge pipes, chase a high score.</p>
+                <a href="flappybirds.html" class="play">Play <span class="arrow">→</span></a>
             </div>
 
-            <div class="game-card">
-                <h2>ASCII Minesweeper</h2>
-                <p>A classic puzzle game with an ASCII art style. Click to reveal cells, right-click to flag mines, and try to clear the board without hitting any mines!</p>
-                <a href="minesweeper.html" class="game-link">Play Minesweeper</a>
+            <div class="card">
+                <div class="meta">Puzzle · ASCII</div>
+                <h3>ASCII Minesweeper</h3>
+                <p>Classic Minesweeper with a terminal-art aesthetic. Click to reveal, right-click to flag, don't die.</p>
+                <a href="minesweeper.html" class="play">Play <span class="arrow">→</span></a>
             </div>
 
-    <div class="game-card">
-        <h2>Collab NYT Spelling</h2>
-        <p>A collaborative version of the NYT Spelling Bee game. Work together to find all the words and achieve the highest score!</p>
-        <a href="https://spelling.bennpurcell.com" class="game-link" target="_blank">Play Collab NYT Spelling</a>
-    </div>
+            <div class="card">
+                <div class="meta">Experiment</div>
+                <h3>Vibooding</h3>
+                <p>A late-night vibe-coded experiment. Open it and see — the docs are sparse on purpose.</p>
+                <a href="vibooding.html" class="play">Play <span class="arrow">→</span></a>
+            </div>
+
+            <div class="card">
+                <div class="meta">Word Game · Collab</div>
+                <h3>Collab NYT Spelling</h3>
+                <p>A collaborative spin on the NYT Spelling Bee. Pool brains, find more words, chase the pangram.</p>
+                <a href="https://spelling.bennpurcell.com" class="play" target="_blank" rel="noopener">Play <span class="arrow">↗</span></a>
+            </div>
+        </div>
+
+        <div class="section-label">
+            <h2>Tools</h2>
+            <span class="count">1 entry</span>
+        </div>
+
+        <div class="grid">
+            <div class="card tool">
+                <div class="meta">Live Report · Weekly</div>
+                <h3>US Weather Records Digest</h3>
+                <p>Regional weather records broken and near-broken, refreshed weekly from NOAA, USDA, SPC, and Drought Monitor sources.</p>
+                <a href="weather-records.html" class="play">View <span class="arrow">→</span></a>
+            </div>
         </div>
 
         <footer>
-            <p>Created with ❤️ for the vibe coding community</p>
+            <p>Built with curiosity — and a lot of regenerated code. <a href="https://github.com/benningtonpurcell/vibegames" target="_blank" rel="noopener">Source</a></p>
         </footer>
     </div>
 </body>
-</html> 
+</html>
