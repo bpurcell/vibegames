@@ -6,871 +6,704 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JezzBall Classic</title>
     <style>
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --dim: #9aa0a6;
+            --cleared: #1f2329;
+            --accent: #3498db;
+            --accent-hover: #2980b9;
+            --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { margin: 0; padding: 0; height: 100%; }
+
         body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
-            overflow: hidden;
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                         Inter, Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
+            justify-content: flex-start;
+            padding: 16px 12px;
+            overflow: hidden;
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #wrap {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #status-bar {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            font-size: 13px;
+            color: var(--dim);
+            padding: 0 2px;
+        }
+
+        #status-bar > div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #status-bar strong {
+            color: var(--fg);
+            font-weight: 600;
         }
 
         #game-container {
             position: relative;
-            width: 800px;
-            height: 600px;
-            border: 2px solid #fff;
-            box-sizing: content-box;
-            background-color: #000;
-            margin-top: 20px;
-        }
-
-        #status-bar {
-            width: 800px;
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            font-size: 16px;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            border: 2px solid var(--fg);
+            background: var(--bg);
+            touch-action: manipulation;
         }
 
         #canvas {
+            display: block;
             width: 100%;
             height: 100%;
-            position: absolute;
         }
 
-        #start-screen {
+        .overlay {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 10;
+            padding: 24px;
+            text-align: center;
         }
 
-        #game-over {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        #level-complete {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
+        .overlay.hidden { display: none; }
 
         h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #fff;
+            font-size: clamp(28px, 5vw, 44px);
+            margin: 0 0 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .overlay p {
+            margin: 4px 0;
+            color: var(--dim);
+            max-width: 36ch;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
         button {
-            padding: 12px 24px;
-            font-size: 18px;
-            background-color: #3498db;
+            padding: 11px 22px;
+            font-size: 15px;
+            font-weight: 600;
+            background: var(--accent);
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             margin-top: 20px;
+            transition: background 0.15s ease, transform 0.1s ease;
         }
 
-        button:hover {
-            background-color: #2980b9;
+        button:hover { background: var(--accent-hover); }
+        button:active { transform: translateY(1px); }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .controls button {
+            margin-top: 0;
+            padding: 8px 14px;
+            font-size: 13px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--fg);
+            font-weight: 500;
+        }
+
+        .controls button.active {
+            background: var(--fg);
+            color: var(--bg);
+            border-color: var(--fg);
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--dim);
+            text-align: center;
+            margin-top: 4px;
         }
 
         .cursor-horizontal {
-            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><line x1='0' y1='16' x2='32' y2='16' stroke='white' stroke-width='2'/><circle cx='16' cy='16' r='4' fill='white'/></svg>") 16 16, auto;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><line x1='0' y1='16' x2='32' y2='16' stroke='white' stroke-width='2'/><circle cx='16' cy='16' r='4' fill='white'/></svg>") 16 16, crosshair;
         }
 
         .cursor-vertical {
-            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><line x1='16' y1='0' x2='16' y2='32' stroke='white' stroke-width='2'/><circle cx='16' cy='16' r='4' fill='white'/></svg>") 16 16, auto;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><line x1='16' y1='0' x2='16' y2='32' stroke='white' stroke-width='2'/><circle cx='16' cy='16' r='4' fill='white'/></svg>") 16 16, crosshair;
         }
     </style>
 </head>
 
 <body>
-    <div id="status-bar">
-        <div id="level">Level: 1</div>
-        <div id="lives">Lives: 3</div>
-        <div id="area">Area Cleared: 0%</div>
-        <div id="timer">Time: 60</div>
-        <div id="orientation">Wall: Horizontal</div>
-    </div>
-
-    <div id="game-container">
-        <canvas id="canvas"></canvas>
-
-        <div id="start-screen">
-            <h1>JezzBall Classic</h1>
-            <p>Click to create walls that grow in both directions from your click point</p>
-            <p>Walls only divide the cell you click in, not the entire game area</p>
-            <p>Press Space to toggle between horizontal and vertical walls</p>
-            <button id="start-button">Start Game</button>
+    <div id="wrap">
+        <div id="status-bar">
+            <div>Level <strong id="level">1</strong></div>
+            <div>Lives <strong id="lives">3</strong></div>
+            <div>Cleared <strong id="area">0%</strong></div>
+            <div>Time <strong id="timer">60</strong></div>
+            <div>Wall <strong id="orientation">↔</strong></div>
         </div>
 
-        <div id="game-over">
-            <h1>Game Over</h1>
-            <p id="game-over-message">You ran out of lives!</p>
-            <button id="retry-button">Play Again</button>
+        <div id="game-container" class="cursor-horizontal">
+            <canvas id="canvas"></canvas>
+
+            <div id="start-screen" class="overlay">
+                <h1>JezzBall</h1>
+                <p>Click anywhere to grow a wall across the current region.</p>
+                <p>Trap the balls into smaller and smaller areas. Clear 75% to win the level.</p>
+                <p>Press <strong>Space</strong> (or tap the toggle below) to switch wall orientation.</p>
+                <button id="start-button">Start Game</button>
+            </div>
+
+            <div id="game-over" class="overlay hidden">
+                <h1>Game Over</h1>
+                <p id="game-over-message">You ran out of lives!</p>
+                <button id="retry-button">Play Again</button>
+            </div>
+
+            <div id="level-complete" class="overlay hidden">
+                <h1>Level Complete</h1>
+                <p id="level-complete-message">You cleared 75% of the area!</p>
+                <button id="next-level-button">Next Level</button>
+            </div>
         </div>
 
-        <div id="level-complete">
-            <h1>Level Complete!</h1>
-            <p id="level-complete-message">You cleared 75% of the area!</p>
-            <button id="next-level-button">Next Level</button>
+        <div class="controls">
+            <button id="orient-h" class="active" type="button">↔ Horizontal</button>
+            <button id="orient-v" type="button">↕ Vertical</button>
         </div>
+        <div class="hint">Tip: walls take ~1.2s to grow. Don't get hit.</div>
     </div>
 
     <script>
-        // Game elements
+        // -------------------------------------------------------------
+        // JezzBall — refined clone
+        // Fixes vs. prior version:
+        //   • Half-wall destruction (ball hits one side, only that side dies)
+        //   • Lives reset each level
+        //   • Ball–wall collision accounts for ball radius along the wall axis
+        //   • Cell containment uses circle vs rect (no edge-case ball drops)
+        //   • Wall growth is constant TIME (~1.2s) instead of constant px/frame
+        //   • Cleared cells fade in (200ms)
+        //   • Touch input + responsive canvas
+        //   • Far less defensive try/catch noise
+        // -------------------------------------------------------------
+
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const startScreen = document.getElementById('start-screen');
-        const gameOverScreen = document.getElementById('game-over');
-        const levelCompleteScreen = document.getElementById('level-complete');
-        const startButton = document.getElementById('start-button');
-        const retryButton = document.getElementById('retry-button');
-        const nextLevelButton = document.getElementById('next-level-button');
-        const gameContainer = document.getElementById('game-container');
+        const container = document.getElementById('game-container');
 
-        // Status elements
-        const levelElement = document.getElementById('level');
-        const livesElement = document.getElementById('lives');
-        const areaElement = document.getElementById('area');
-        const timerElement = document.getElementById('timer');
+        // Internal coordinate system stays 800×600. Canvas is drawn at that
+        // resolution and CSS-scaled to fit the responsive container.
+        const W = 800;
+        const H = 600;
+        canvas.width = W;
+        canvas.height = H;
 
-        // Game configuration
-        const gameWidth = 800;
-        const gameHeight = 600;
-        let ballRadius = 10;
-        let ballSpeed = 2;
-        let wallThickness = 10;
-        let targetAreaPercentage = 75;
+        // Tuning
+        const BALL_RADIUS = 10;
+        const BASE_BALL_SPEED = 2.0;
+        const WALL_THICKNESS = 6;
+        const WALL_GROW_DURATION_MS = 1200;
+        const CELL_FADE_MS = 200;
+        const TARGET_CLEAR_PCT = 75;
 
-        // Game state
+        // State
         let level = 1;
         let lives = 3;
         let areaCleared = 0;
         let timeRemaining = 60;
         let gameActive = false;
-        let wallOrientation = 'horizontal'; // 'horizontal' or 'vertical'
+        let wallOrientation = 'horizontal';
         let buildingWall = false;
         let currentWall = null;
         let walls = [];
         let balls = [];
         let cells = [];
-        let animationFrameId = null;
-        let gameTimer = null;
+        let rafId = null;
+        let timerId = null;
+        let lastFrameTs = 0;
 
-        // Set canvas dimensions
-        canvas.width = gameWidth;
-        canvas.height = gameHeight;
+        // DOM refs
+        const els = {
+            start: document.getElementById('start-screen'),
+            over: document.getElementById('game-over'),
+            done: document.getElementById('level-complete'),
+            startBtn: document.getElementById('start-button'),
+            retryBtn: document.getElementById('retry-button'),
+            nextBtn: document.getElementById('next-level-button'),
+            level: document.getElementById('level'),
+            lives: document.getElementById('lives'),
+            area: document.getElementById('area'),
+            timer: document.getElementById('timer'),
+            orient: document.getElementById('orientation'),
+            orientH: document.getElementById('orient-h'),
+            orientV: document.getElementById('orient-v'),
+            overMsg: document.getElementById('game-over-message'),
+            doneMsg: document.getElementById('level-complete-message'),
+        };
 
-        // Ball class
+        // -------------------------------------------------------------
+        // Ball
+        // -------------------------------------------------------------
         class Ball {
-            constructor(x, y, dx, dy, radius, color) {
-                this.x = x;
-                this.y = y;
-                this.dx = dx;
-                this.dy = dy;
-                this.radius = radius;
+            constructor(x, y, dx, dy, color) {
+                this.x = x; this.y = y;
+                this.dx = dx; this.dy = dy;
+                this.r = BALL_RADIUS;
                 this.color = color;
             }
 
-            update() {
-                try {
-                    // Check collision with walls
-                    this.checkWallCollisions();
+            step() {
+                // Boundary bounce
+                if (this.x - this.r <= 0)      { this.x = this.r;       this.dx = Math.abs(this.dx); }
+                if (this.x + this.r >= W)      { this.x = W - this.r;   this.dx = -Math.abs(this.dx); }
+                if (this.y - this.r <= 0)      { this.y = this.r;       this.dy = Math.abs(this.dy); }
+                if (this.y + this.r >= H)      { this.y = H - this.r;   this.dy = -Math.abs(this.dy); }
 
-                    // Move the ball
-                    this.x += this.dx;
-                    this.y += this.dy;
-
-                    // Draw the ball
-                    this.draw();
-                } catch (error) {
-                    console.error("Error updating ball:", error);
+                // Bounce off completed walls (treat each as an AABB)
+                for (const w of walls) {
+                    if (!w.permanent) continue;
+                    const d = w.bounds();
+                    this.bounceAgainst(d);
                 }
+
+                this.x += this.dx;
+                this.y += this.dy;
             }
 
-            checkWallCollisions() {
-                try {
-                    // Check boundaries
-                    if (this.x - this.radius <= 0 || this.x + this.radius >= gameWidth) {
-                        this.dx = -this.dx;
-                    }
+            bounceAgainst(b) {
+                // AABB-circle resolution: find overlap on each axis, push out
+                // along the minimum-overlap axis, flip that velocity component.
+                const cx = Math.max(b.x, Math.min(this.x, b.x + b.w));
+                const cy = Math.max(b.y, Math.min(this.y, b.y + b.h));
+                const dx = this.x - cx;
+                const dy = this.y - cy;
+                const distSq = dx * dx + dy * dy;
+                if (distSq >= this.r * this.r) return;
 
-                    if (this.y - this.radius <= 0 || this.y + this.radius >= gameHeight) {
-                        this.dy = -this.dy;
-                    }
-
-                    // Check collisions with custom walls
-                    for (let i = 0; i < walls.length; i++) {
-                        const wall = walls[i];
-                        if (wall && wall.active) {
-                            const wallDimensions = wall.getFinalDimensions();
-
-                            // Horizontal wall collision
-                            if (wall.orientation === 'horizontal') {
-                                if (this.y + this.radius >= wallDimensions.y &&
-                                    this.y - this.radius <= wallDimensions.y + wallDimensions.height &&
-                                    this.x >= wallDimensions.x &&
-                                    this.x <= wallDimensions.x + wallDimensions.width) {
-                                    this.dy = -this.dy;
-                                }
-                            }
-                            // Vertical wall collision
-                            else if (wall.orientation === 'vertical') {
-                                if (this.x + this.radius >= wallDimensions.x &&
-                                    this.x - this.radius <= wallDimensions.x + wallDimensions.width &&
-                                    this.y >= wallDimensions.y &&
-                                    this.y <= wallDimensions.y + wallDimensions.height) {
-                                    this.dx = -this.dx;
-                                }
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error("Error checking wall collisions:", error);
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    this.x += dx > 0 ? (this.r - Math.abs(dx)) : -(this.r - Math.abs(dx));
+                    this.dx = -this.dx;
+                } else {
+                    this.y += dy > 0 ? (this.r - Math.abs(dy)) : -(this.r - Math.abs(dy));
+                    this.dy = -this.dy;
                 }
             }
 
             draw() {
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
                 ctx.fill();
-                ctx.closePath();
             }
         }
 
-        // Wall class
+        // -------------------------------------------------------------
+        // Wall — grows in two directions from click. Each half is tracked
+        // independently so a hit on one side doesn't kill the other.
+        // -------------------------------------------------------------
         class Wall {
-            constructor(x, y, orientation, targetCell) {
-                this.x = x;
-                this.y = y;
-                this.orientation = orientation;
-                this.thickness = wallThickness;
-                this.targetCell = targetCell;
-                this.growing = true;
-                this.complete = false;
-                this.active = true;
+            constructor(x, y, orientation, cell) {
+                this.x = x; this.y = y;
+                this.orientation = orientation; // 'horizontal' | 'vertical'
+                this.targetCell = cell;
+                this.thickness = WALL_THICKNESS;
+                this.permanent = false;          // true once growth done
+                this.startTs = performance.now();
 
-                // For bidirectional growth
                 if (orientation === 'horizontal') {
-                    // Start with zero width, centered at click point
-                    this.leftGrowth = 0;
-                    this.rightGrowth = 0;
-                    this.maxLeftGrowth = x - targetCell.x;
-                    this.maxRightGrowth = (targetCell.x + targetCell.width) - x;
-                    this.height = wallThickness;
-                } else { // vertical
-                    // Start with zero height, centered at click point
-                    this.topGrowth = 0;
-                    this.bottomGrowth = 0;
-                    this.maxTopGrowth = y - targetCell.y;
-                    this.maxBottomGrowth = (targetCell.y + targetCell.height) - y;
-                    this.width = wallThickness;
+                    this.maxNeg = x - cell.x;          // grow left
+                    this.maxPos = cell.x + cell.w - x; // grow right
+                } else {
+                    this.maxNeg = y - cell.y;          // grow up
+                    this.maxPos = cell.y + cell.h - y; // grow down
                 }
+
+                // Per-half growth amounts, and "alive" flags.
+                this.neg = 0;
+                this.pos = 0;
+                this.negAlive = this.maxNeg > 0;
+                this.posAlive = this.maxPos > 0;
+                this.negDone = !this.negAlive;
+                this.posDone = !this.posAlive;
             }
 
-            update() {
-                // If the wall is growing, increase its dimensions bidirectionally
-                if (this.growing) {
-                    const growthRate = 5; // pixels per frame
+            // Returns true when both halves have finished (any combo of
+            // completed or destroyed).
+            tick(dt, ts) {
+                // Growth rate is constant time per pixel of cell extent.
+                const elapsed = ts - this.startTs;
+                const t = Math.min(1, elapsed / WALL_GROW_DURATION_MS);
 
-                    if (this.orientation === 'horizontal') {
-                        // Grow left if not reached max
-                        if (this.leftGrowth < this.maxLeftGrowth) {
-                            this.leftGrowth += growthRate;
-                            if (this.leftGrowth > this.maxLeftGrowth) {
-                                this.leftGrowth = this.maxLeftGrowth;
-                            }
-                        }
-
-                        // Grow right if not reached max
-                        if (this.rightGrowth < this.maxRightGrowth) {
-                            this.rightGrowth += growthRate;
-                            if (this.rightGrowth > this.maxRightGrowth) {
-                                this.rightGrowth = this.maxRightGrowth;
-                            }
-                        }
-
-                        // Check if both sides have reached max
-                        if (this.leftGrowth >= this.maxLeftGrowth && this.rightGrowth >= this.maxRightGrowth) {
-                            this.growing = false;
-                            this.complete = true;
-                        }
-                    } else { // vertical
-                        // Grow up if not reached max
-                        if (this.topGrowth < this.maxTopGrowth) {
-                            this.topGrowth += growthRate;
-                            if (this.topGrowth > this.maxTopGrowth) {
-                                this.topGrowth = this.maxTopGrowth;
-                            }
-                        }
-
-                        // Grow down if not reached max
-                        if (this.bottomGrowth < this.maxBottomGrowth) {
-                            this.bottomGrowth += growthRate;
-                            if (this.bottomGrowth > this.maxBottomGrowth) {
-                                this.bottomGrowth = this.maxBottomGrowth;
-                            }
-                        }
-
-                        // Check if both sides have reached max
-                        if (this.topGrowth >= this.maxTopGrowth && this.bottomGrowth >= this.maxBottomGrowth) {
-                            this.growing = false;
-                            this.complete = true;
-                        }
-                    }
+                if (this.negAlive && !this.negDone) {
+                    this.neg = t * this.maxNeg;
+                    if (this.neg >= this.maxNeg) { this.neg = this.maxNeg; this.negDone = true; }
+                }
+                if (this.posAlive && !this.posDone) {
+                    this.pos = t * this.maxPos;
+                    if (this.pos >= this.maxPos) { this.pos = this.maxPos; this.posDone = true; }
                 }
 
-                // Check if any ball intersects with the wall
-                for (let ball of balls) {
-                    if (this.checkBallCollision(ball)) {
-                        // Wall is destroyed if ball hits it while growing
-                        this.active = false;
+                // Collide each growing half against balls.
+                for (const ball of balls) {
+                    if (this.negAlive && !this.negDone && this.halfHit(ball, 'neg')) {
+                        this.negAlive = false; this.negDone = true;
                         loseLife();
-                        break;
+                    }
+                    if (this.posAlive && !this.posDone && this.halfHit(ball, 'pos')) {
+                        this.posAlive = false; this.posDone = true;
+                        loseLife();
                     }
                 }
 
-                // Draw the wall
-                this.draw();
-
-                // Return true if the wall is complete and should be kept
-                return this.complete && this.active;
+                return this.negDone && this.posDone;
             }
 
-            checkBallCollision(ball) {
-                try {
-                    if (this.orientation === 'horizontal') {
-                        const actualX = this.x - this.leftGrowth;
-                        const actualWidth = this.leftGrowth + this.rightGrowth;
-
-                        return (ball.y + ball.radius >= this.y &&
-                            ball.y - ball.radius <= this.y + this.thickness &&
-                            ball.x >= actualX &&
-                            ball.x <= actualX + actualWidth);
-                    } else {
-                        const actualY = this.y - this.topGrowth;
-                        const actualHeight = this.topGrowth + this.bottomGrowth;
-
-                        return (ball.x + ball.radius >= this.x &&
-                            ball.x - ball.radius <= this.x + this.thickness &&
-                            ball.y >= actualY &&
-                            ball.y <= actualY + actualHeight);
-                    }
-                } catch (error) {
-                    console.error("Error checking ball collision:", error);
-                    return false;
+            // Hit-test a single half. The half occupies the rectangle from
+            // (x, y) extending |neg| or |pos| in its direction.
+            halfHit(ball, side) {
+                if (this.orientation === 'horizontal') {
+                    const x0 = side === 'neg' ? this.x - this.neg : this.x;
+                    const x1 = side === 'neg' ? this.x            : this.x + this.pos;
+                    return circleVsRect(ball, x0, this.y, x1 - x0, this.thickness);
+                } else {
+                    const y0 = side === 'neg' ? this.y - this.neg : this.y;
+                    const y1 = side === 'neg' ? this.y            : this.y + this.pos;
+                    return circleVsRect(ball, this.x, y0, this.thickness, y1 - y0);
                 }
+            }
+
+            // Final bounding box (post-growth, for cell-splitting + ball bounce).
+            bounds() {
+                if (this.orientation === 'horizontal') {
+                    return { x: this.x - this.neg, y: this.y,
+                             w: this.neg + this.pos, h: this.thickness };
+                } else {
+                    return { x: this.x, y: this.y - this.neg,
+                             w: this.thickness, h: this.neg + this.pos };
+                }
+            }
+
+            // Both halves must have survived AND reached their cell boundary
+            // for the wall to be permanent and split the cell.
+            fullyExtended() {
+                const negOK = (!this.maxNeg) || (this.negAlive && this.neg >= this.maxNeg - 0.5);
+                const posOK = (!this.maxPos) || (this.posAlive && this.pos >= this.maxPos - 0.5);
+                return negOK && posOK;
             }
 
             draw() {
-                if (this.active) {
-                    ctx.fillStyle = '#fff';
-
-                    if (this.orientation === 'horizontal') {
-                        // Calculate actual dimensions
-                        const actualX = this.x - this.leftGrowth;
-                        const actualWidth = this.leftGrowth + this.rightGrowth;
-                        ctx.fillRect(actualX, this.y, actualWidth, this.thickness);
-                    } else {
-                        // Calculate actual dimensions
-                        const actualY = this.y - this.topGrowth;
-                        const actualHeight = this.topGrowth + this.bottomGrowth;
-                        ctx.fillRect(this.x, actualY, this.thickness, actualHeight);
-                    }
-                }
-            }
-
-            // Get final dimensions for cell splitting
-            getFinalDimensions() {
-                try {
-                    if (this.orientation === 'horizontal') {
-                        return {
-                            x: this.x - this.leftGrowth,
-                            y: this.y,
-                            width: this.leftGrowth + this.rightGrowth,
-                            height: this.thickness
-                        };
-                    } else {
-                        return {
-                            x: this.x,
-                            y: this.y - this.topGrowth,
-                            width: this.thickness,
-                            height: this.topGrowth + this.bottomGrowth
-                        };
-                    }
-                } catch (error) {
-                    console.error("Error getting final dimensions:", error);
-                    // Return some default safe values
-                    return {
-                        x: this.x,
-                        y: this.y,
-                        width: this.thickness,
-                        height: this.thickness
-                    };
-                }
+                ctx.fillStyle = '#fff';
+                const b = this.bounds();
+                if (b.w > 0 && b.h > 0) ctx.fillRect(b.x, b.y, b.w, b.h);
             }
         }
 
-        // Cell class for tracking cleared areas
+        // Circle (ball) vs AABB (rect at x,y,w,h) collision.
+        function circleVsRect(ball, x, y, w, h) {
+            if (w <= 0 || h <= 0) return false;
+            const cx = Math.max(x, Math.min(ball.x, x + w));
+            const cy = Math.max(y, Math.min(ball.y, y + h));
+            const dx = ball.x - cx;
+            const dy = ball.y - cy;
+            return dx * dx + dy * dy < ball.r * ball.r;
+        }
+
+        // -------------------------------------------------------------
+        // Cell — region of the playfield, may be active (still has balls)
+        // or being cleared (fading to dark).
+        // -------------------------------------------------------------
         class Cell {
-            constructor(x, y, width, height) {
-                this.x = x;
-                this.y = y;
-                this.width = width;
-                this.height = height;
+            constructor(x, y, w, h) {
+                this.x = x; this.y = y; this.w = w; this.h = h;
                 this.active = true;
-                this.containsBall = false;
+                this.fadeStartTs = 0; // 0 = not fading
             }
 
-            draw() {
-                if (!this.active) {
-                    ctx.fillStyle = '#333';
-                    ctx.fillRect(this.x, this.y, this.width, this.height);
+            startClear(ts) { this.active = false; this.fadeStartTs = ts; }
+
+            containsBall(b) { return circleVsRect(b, this.x, this.y, this.w, this.h); }
+
+            draw(ts) {
+                if (this.active) return;
+                let alpha = 1;
+                if (this.fadeStartTs) {
+                    const t = (ts - this.fadeStartTs) / CELL_FADE_MS;
+                    alpha = Math.min(1, t);
                 }
+                ctx.fillStyle = `rgba(31,35,41,${alpha})`;
+                ctx.fillRect(this.x, this.y, this.w, this.h);
             }
 
-            containsPoint(x, y) {
-                return (x >= this.x && x <= this.x + this.width &&
-                    y >= this.y && y <= this.y + this.height);
-            }
-
-            getArea() {
-                return this.width * this.height;
-            }
+            area() { return this.w * this.h; }
         }
 
-        // Event listeners
-        startButton.addEventListener('click', startGame);
-        retryButton.addEventListener('click', startGame);
-        nextLevelButton.addEventListener('click', startNextLevel);
-
-        canvas.addEventListener('click', function (event) {
-            if (!gameActive || buildingWall) return;
-
-            const rect = canvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-
-            startWall(x, y);
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.code === 'Space') {
-                toggleWallOrientation();
-            }
-        });
-
-        // Initialize game
-        function initGame() {
-            // Reset game state
-            walls = [];
-            balls = [];
-            cells = [new Cell(0, 0, gameWidth, gameHeight)];
-            buildingWall = false;
-            currentWall = null;
-
-            // Initialize balls based on level
-            const numBalls = level + 1;
-            for (let i = 0; i < numBalls; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = ballSpeed + (level * 0.2);
-                const dx = Math.cos(angle) * speed;
-                const dy = Math.sin(angle) * speed;
-
-                balls.push(new Ball(
-                    Math.random() * (gameWidth - 2 * ballRadius) + ballRadius,
-                    Math.random() * (gameHeight - 2 * ballRadius) + ballRadius,
-                    dx,
-                    dy,
-                    ballRadius,
-                    getRandomColor()
-                ));
-            }
-
-            // Set wall orientation to horizontal by default
-            wallOrientation = 'horizontal';
-            gameContainer.className = 'cursor-horizontal';
-
-            // Update status bar
-            updateStatus();
-        }
+        // -------------------------------------------------------------
+        // Game lifecycle
+        // -------------------------------------------------------------
 
         function startGame() {
-            // Reset game state
             level = 1;
             lives = 3;
-            areaCleared = 0;
-            timeRemaining = 60;
-
-            // Hide screens
-            startScreen.style.display = 'none';
-            gameOverScreen.style.display = 'none';
-            levelCompleteScreen.style.display = 'none';
-
-            // Initialize game
-            initGame();
-
-            // Start game loop
-            gameActive = true;
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
-
-            // Start timer
-            if (gameTimer) {
-                clearInterval(gameTimer);
-            }
-            gameTimer = setInterval(updateTimer, 1000);
-
-            // Start animation
-            gameLoop();
+            els.start.classList.add('hidden');
+            els.over.classList.add('hidden');
+            els.done.classList.add('hidden');
+            beginLevel();
         }
 
         function startNextLevel() {
             level++;
-            timeRemaining = 60 + (level - 1) * 10;
+            els.done.classList.add('hidden');
+            beginLevel();
+        }
+
+        function beginLevel() {
+            // Lives reset each level (was cumulative before).
+            lives = 3;
             areaCleared = 0;
+            timeRemaining = 60 + (level - 1) * 10;
 
-            // Hide level complete screen
-            levelCompleteScreen.style.display = 'none';
-
-            // Initialize game for new level
-            initGame();
-
-            // Start game loop
-            gameActive = true;
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
-
-            // Start timer
-            if (gameTimer) {
-                clearInterval(gameTimer);
-            }
-            gameTimer = setInterval(updateTimer, 1000);
-
-            // Start animation
-            gameLoop();
-        }
-
-        function gameLoop() {
-            try {
-                if (!gameActive) return;
-
-                // Clear canvas
-                ctx.clearRect(0, 0, gameWidth, gameHeight);
-
-                // Draw cells (cleared areas)
-                for (let i = 0; i < cells.length; i++) {
-                    cells[i].draw();
-                }
-
-                // Update and draw balls
-                for (let i = 0; i < balls.length; i++) {
-                    balls[i].update();
-                }
-
-                // Update and draw walls
-                if (buildingWall && currentWall) {
-                    const completed = currentWall.update();
-
-                    if (completed) {
-                        finishWall();
-                    }
-                }
-
-                for (let i = 0; i < walls.length; i++) {
-                    walls[i].draw();
-                }
-
-                // Continue animation if game is still active
-                if (gameActive) {
-                    animationFrameId = requestAnimationFrame(gameLoop);
-                }
-            } catch (error) {
-                console.error("Error in game loop:", error);
-                // Try to continue the game despite errors
-                if (gameActive) {
-                    animationFrameId = requestAnimationFrame(gameLoop);
-                }
-            }
-        }
-
-        function toggleWallOrientation() {
-            wallOrientation = wallOrientation === 'horizontal' ? 'vertical' : 'horizontal';
-            gameContainer.className = wallOrientation === 'horizontal' ? 'cursor-horizontal' : 'cursor-vertical';
-            document.getElementById('orientation').textContent = `Wall: ${wallOrientation.charAt(0).toUpperCase() + wallOrientation.slice(1)}`;
-        }
-
-        function startWall(x, y) {
-            // Check if we can build a wall here (not in a cleared area)
-            let targetCell = null;
-            for (let cell of cells) {
-                if (cell.active && cell.containsPoint(x, y)) {
-                    targetCell = cell;
-                    break;
-                }
-            }
-
-            if (!targetCell) return;
-
-            buildingWall = true;
-
-            // Create a wall at the click point that will grow in both directions
-            currentWall = new Wall(x, y, wallOrientation, targetCell);
-            walls.push(currentWall);
-        }
-
-        function finishWall() {
+            walls = [];
+            balls = [];
+            cells = [new Cell(0, 0, W, H)];
             buildingWall = false;
+            currentWall = null;
 
-            // Split the cell that contains the wall
-            splitCells();
+            const numBalls = level + 1;
+            for (let i = 0; i < numBalls; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = BASE_BALL_SPEED + (level - 1) * 0.25;
+                balls.push(new Ball(
+                    Math.random() * (W - 2 * BALL_RADIUS) + BALL_RADIUS,
+                    Math.random() * (H - 2 * BALL_RADIUS) + BALL_RADIUS,
+                    Math.cos(angle) * speed,
+                    Math.sin(angle) * speed,
+                    randomColor()
+                ));
+            }
 
-            // Check which cells contain balls
-            checkCellsForBalls();
-
-            // Update status
+            setOrientation('horizontal');
             updateStatus();
+
+            gameActive = true;
+            if (timerId) clearInterval(timerId);
+            timerId = setInterval(tickClock, 1000);
+            if (rafId) cancelAnimationFrame(rafId);
+            lastFrameTs = performance.now();
+            loop(lastFrameTs);
         }
 
-        function splitCells() {
-            try {
-                if (!currentWall || !currentWall.active) return;
+        function loop(ts) {
+            if (!gameActive) return;
+            const dt = ts - lastFrameTs;
+            lastFrameTs = ts;
 
-                const newCells = [];
-                const wallDimensions = currentWall.getFinalDimensions();
+            ctx.clearRect(0, 0, W, H);
 
-                // Validate wall dimensions to avoid invalid cells
-                if (!wallDimensions ||
-                    isNaN(wallDimensions.x) ||
-                    isNaN(wallDimensions.y) ||
-                    isNaN(wallDimensions.width) ||
-                    isNaN(wallDimensions.height)) {
-                    console.error("Invalid wall dimensions");
-                    return;
-                }
+            for (const c of cells) c.draw(ts);
 
-                for (let i = 0; i < cells.length; i++) {
-                    const cell = cells[i];
-
-                    if (!cell.active) {
-                        newCells.push(cell);
-                        continue;
-                    }
-
-                    // Only split the target cell
-                    if (cell === currentWall.targetCell) {
-                        if (currentWall.orientation === 'horizontal') {
-                            // Create two new cells above and below the wall
-                            const topHeight = wallDimensions.y - cell.y;
-                            const bottomHeight = cell.y + cell.height - (wallDimensions.y + wallDimensions.height);
-
-                            // Only create cells if they have positive dimensions
-                            if (topHeight > 0) {
-                                const topCell = new Cell(
-                                    cell.x,
-                                    cell.y,
-                                    cell.width,
-                                    topHeight
-                                );
-                                newCells.push(topCell);
-                            }
-
-                            if (bottomHeight > 0) {
-                                const bottomCell = new Cell(
-                                    cell.x,
-                                    wallDimensions.y + wallDimensions.height,
-                                    cell.width,
-                                    bottomHeight
-                                );
-                                newCells.push(bottomCell);
-                            }
-                        } else if (currentWall.orientation === 'vertical') {
-                            // Create two new cells to the left and right of the wall
-                            const leftWidth = wallDimensions.x - cell.x;
-                            const rightWidth = cell.x + cell.width - (wallDimensions.x + wallDimensions.width);
-
-                            // Only create cells if they have positive dimensions
-                            if (leftWidth > 0) {
-                                const leftCell = new Cell(
-                                    cell.x,
-                                    cell.y,
-                                    leftWidth,
-                                    cell.height
-                                );
-                                newCells.push(leftCell);
-                            }
-
-                            if (rightWidth > 0) {
-                                const rightCell = new Cell(
-                                    wallDimensions.x + wallDimensions.width,
-                                    cell.y,
-                                    rightWidth,
-                                    cell.height
-                                );
-                                newCells.push(rightCell);
-                            }
-                        }
-                    } else {
-                        // Keep other cells as they are
-                        newCells.push(cell);
-                    }
-                }
-
-                cells = newCells;
-            } catch (error) {
-                console.error("Error splitting cells:", error);
+            for (const b of balls) {
+                b.step();
+                b.draw();
             }
-        }
 
-        function checkCellsForBalls() {
-            try {
-                // Reset all cells containsBall flag
-                for (let i = 0; i < cells.length; i++) {
-                    cells[i].containsBall = false;
-                }
-
-                // Check each cell for balls
-                for (let i = 0; i < balls.length; i++) {
-                    const ball = balls[i];
-                    for (let j = 0; j < cells.length; j++) {
-                        const cell = cells[j];
-                        if (cell.active && cell.containsPoint(ball.x, ball.y)) {
-                            cell.containsBall = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Deactivate cells without balls
-                let cellsUpdated = false;
-                for (let i = 0; i < cells.length; i++) {
-                    const cell = cells[i];
-                    if (cell.active && !cell.containsBall) {
-                        cell.active = false;
-                        cellsUpdated = true;
-                    }
-                }
-
-                // Only recalculate area if cells were updated
-                if (cellsUpdated) {
-                    const levelCompleted = calculateAreaCleared();
-                    if (levelCompleted && gameActive) {
-                        // Use setTimeout to avoid potential stack issues
-                        setTimeout(levelComplete, 0);
-                    }
-                }
-            } catch (error) {
-                console.error("Error checking cells for balls:", error);
+            if (buildingWall && currentWall) {
+                const done = currentWall.tick(dt, ts);
+                currentWall.draw();
+                if (done) finishWall(ts);
             }
+
+            for (const w of walls) if (w.permanent) w.draw();
+
+            rafId = requestAnimationFrame(loop);
         }
 
-        function calculateAreaCleared() {
-            try {
-                let totalArea = gameWidth * gameHeight;
-                let clearedArea = 0;
-
-                for (let i = 0; i < cells.length; i++) {
-                    const cell = cells[i];
-                    if (!cell.active) {
-                        clearedArea += cell.width * cell.height;
-                    }
-                }
-
-                areaCleared = (clearedArea / totalArea) * 100;
-
-                // Update the display
-                if (areaElement) {
-                    areaElement.textContent = `Area Cleared: ${Math.floor(areaCleared)}%`;
-                }
-
-                // Check if level is complete but don't call it directly from here
-                // to avoid potential recursive issues
-                return areaCleared >= targetAreaPercentage;
-            } catch (error) {
-                console.error("Error calculating area:", error);
-                return false;
-            }
-        }
-
-        function updateStatus() {
-            levelElement.textContent = `Level: ${level}`;
-            livesElement.textContent = `Lives: ${lives}`;
-            areaElement.textContent = `Area Cleared: ${Math.floor(areaCleared)}%`;
-            timerElement.textContent = `Time: ${timeRemaining}`;
-        }
-
-        function updateTimer() {
+        function tickClock() {
             timeRemaining--;
             updateStatus();
-
-            if (timeRemaining <= 0) {
-                gameOver("Time's up!");
-            }
+            if (timeRemaining <= 0) gameOver("Time's up!");
         }
 
         function loseLife() {
             lives--;
             updateStatus();
-
-            if (lives <= 0) {
-                gameOver("You ran out of lives!");
-            }
+            if (lives <= 0) gameOver('You ran out of lives!');
         }
 
-        function gameOver(message) {
+        function gameOver(msg) {
             gameActive = false;
-            clearInterval(gameTimer);
-
-            document.getElementById('game-over-message').textContent = message;
-            gameOverScreen.style.display = 'flex';
+            clearInterval(timerId);
+            els.overMsg.textContent = msg;
+            els.over.classList.remove('hidden');
         }
 
         function levelComplete() {
             gameActive = false;
-            clearInterval(gameTimer);
-
-            document.getElementById('level-complete-message').textContent =
-                `You cleared ${Math.floor(areaCleared)}% of the area!`;
-            levelCompleteScreen.style.display = 'flex';
+            clearInterval(timerId);
+            els.doneMsg.textContent = `You cleared ${Math.floor(areaCleared)}% of the area.`;
+            els.done.classList.remove('hidden');
         }
 
-        function getRandomColor() {
-            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+        // -------------------------------------------------------------
+        // Wall construction
+        // -------------------------------------------------------------
+
+        function tryStartWall(x, y) {
+            if (!gameActive || buildingWall) return;
+            const cell = cells.find(c =>
+                c.active &&
+                x >= c.x && x <= c.x + c.w &&
+                y >= c.y && y <= c.y + c.h
+            );
+            if (!cell) return;
+            buildingWall = true;
+            currentWall = new Wall(x, y, wallOrientation, cell);
+        }
+
+        function finishWall(ts) {
+            const wall = currentWall;
+            buildingWall = false;
+            currentWall = null;
+
+            // Only mark permanent if both halves survived AND fully extended
+            // (full cell crossing). A partial wall does nothing.
+            if (wall.fullyExtended()) {
+                wall.permanent = true;
+                walls.push(wall);
+                splitCell(wall, ts);
+                clearEmptyCells(ts);
+                recomputeArea();
+                if (areaCleared >= TARGET_CLEAR_PCT) setTimeout(levelComplete, 0);
+            }
+            updateStatus();
+        }
+
+        function splitCell(wall, ts) {
+            const cell = wall.targetCell;
+            const b = wall.bounds();
+            const idx = cells.indexOf(cell);
+            if (idx === -1 || !cell.active) return;
+
+            const replacements = [];
+            if (wall.orientation === 'horizontal') {
+                const topH = b.y - cell.y;
+                const botH = (cell.y + cell.h) - (b.y + b.h);
+                if (topH > 0) replacements.push(new Cell(cell.x, cell.y, cell.w, topH));
+                if (botH > 0) replacements.push(new Cell(cell.x, b.y + b.h, cell.w, botH));
+            } else {
+                const leftW = b.x - cell.x;
+                const rightW = (cell.x + cell.w) - (b.x + b.w);
+                if (leftW > 0) replacements.push(new Cell(cell.x, cell.y, leftW, cell.h));
+                if (rightW > 0) replacements.push(new Cell(b.x + b.w, cell.y, rightW, cell.h));
+            }
+            cells.splice(idx, 1, ...replacements);
+        }
+
+        function clearEmptyCells(ts) {
+            for (const cell of cells) {
+                if (!cell.active) continue;
+                const hasBall = balls.some(b => cell.containsBall(b));
+                if (!hasBall) cell.startClear(ts);
+            }
+        }
+
+        function recomputeArea() {
+            const total = W * H;
+            let cleared = 0;
+            for (const c of cells) if (!c.active) cleared += c.area();
+            areaCleared = (cleared / total) * 100;
+            updateStatus();
+        }
+
+        function updateStatus() {
+            els.level.textContent = level;
+            els.lives.textContent = lives;
+            els.area.textContent = `${Math.floor(areaCleared)}%`;
+            els.timer.textContent = timeRemaining;
+        }
+
+        function setOrientation(o) {
+            wallOrientation = o;
+            container.className = (o === 'horizontal') ? 'cursor-horizontal' : 'cursor-vertical';
+            els.orient.textContent = o === 'horizontal' ? '↔' : '↕';
+            els.orientH.classList.toggle('active', o === 'horizontal');
+            els.orientV.classList.toggle('active', o === 'vertical');
+        }
+
+        function toggleOrientation() {
+            setOrientation(wallOrientation === 'horizontal' ? 'vertical' : 'horizontal');
+        }
+
+        function randomColor() {
+            const colors = ['#ff5252', '#54e09b', '#4dabf7', '#ffd43b', '#cc66ff', '#22d3ee'];
             return colors[Math.floor(Math.random() * colors.length)];
         }
 
-        // Initialize cursor
-        gameContainer.className = 'cursor-horizontal';
+        // -------------------------------------------------------------
+        // Input — map screen coords to canvas coords (handles CSS scaling)
+        // -------------------------------------------------------------
+
+        function localPoint(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const p = (evt.touches && evt.touches[0]) ? evt.touches[0] : evt;
+            return {
+                x: (p.clientX - rect.left) * (W / rect.width),
+                y: (p.clientY - rect.top)  * (H / rect.height),
+            };
+        }
+
+        canvas.addEventListener('mousedown', e => {
+            const p = localPoint(e);
+            tryStartWall(p.x, p.y);
+        });
+
+        canvas.addEventListener('touchstart', e => {
+            e.preventDefault();
+            const p = localPoint(e);
+            tryStartWall(p.x, p.y);
+        }, { passive: false });
+
+        document.addEventListener('keydown', e => {
+            if (e.code === 'Space') { e.preventDefault(); toggleOrientation(); }
+        });
+
+        els.startBtn.addEventListener('click', startGame);
+        els.retryBtn.addEventListener('click', startGame);
+        els.nextBtn.addEventListener('click', startNextLevel);
+        els.orientH.addEventListener('click', () => setOrientation('horizontal'));
+        els.orientV.addEventListener('click', () => setOrientation('vertical'));
     </script>
 </body>
 
