@@ -5,488 +5,773 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASCII Minesweeper</title>
     <style>
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --dim: #888;
+            --grid-bg: #000;
+            --hidden: #111;
+            --hidden-hover: #1f1f1f;
+            --revealed: #2a2a2a;
+            --revealed-empty: #1a1a1a;
+            --border: #2a2a2a;
+            --border-strong: #555;
+            --danger: #c0392b;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Courier New', monospace;
-            background-color: #000000;
-            color: #ffffff;
+            font-family: ui-monospace, SFMono-Regular, "Menlo", "Consolas",
+                         "Courier New", monospace;
+            background: var(--bg);
+            color: var(--fg);
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            padding: 18px 12px 32px;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        #game-container {
-            margin: 2rem auto;
-            text-align: center;
+        a#back-link {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 0.06em;
+            border: 1px solid var(--dim);
+            padding: 4px 10px;
+            border-radius: 3px;
+            z-index: 5;
+        }
+        a#back-link:hover { color: var(--fg); border-color: var(--fg); }
+
+        .brand {
+            font-size: 13px;
+            letter-spacing: 0.3em;
+            color: var(--dim);
+            margin-bottom: 14px;
+            margin-top: 4px;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            font-size: clamp(22px, 4vw, 32px);
+            letter-spacing: 0.08em;
         }
 
         #status-bar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-            color: #ffffff;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 480px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--dim);
+            letter-spacing: 0.06em;
+        }
+
+        #status-bar div { text-align: center; }
+        #status-bar strong {
+            display: block;
+            color: var(--fg);
+            font-size: 20px;
+            font-weight: normal;
+            margin-top: 2px;
+            font-variant-numeric: tabular-nums;
         }
 
         #grid {
             display: inline-block;
-            background-color: #000000;
-            padding: 1rem;
-            border: 1px solid #ffffff;
+            background: var(--grid-bg);
+            padding: 8px;
+            border: 1px solid var(--border-strong);
+            border-radius: 2px;
+            line-height: 0;
+            max-width: 100%;
+            overflow: auto;
         }
 
-        .row {
-            display: flex;
-        }
+        .row { white-space: nowrap; }
 
         .cell {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #333333;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1;
             cursor: pointer;
-            user-select: none;
-            background-color: #000000;
-            color: #ffffff;
-            transition: background-color 0.2s;
+            background: var(--hidden);
+            color: var(--fg);
+            border: 1px solid var(--border);
+            font-variant-numeric: tabular-nums;
+            vertical-align: top;
         }
 
-        .cell:hover {
-            background-color: #222222;
-        }
+        .cell:hover { background: var(--hidden-hover); }
 
         .cell.revealed {
-            background-color: #333333;
-            border-color: #444444;
+            background: var(--revealed);
+            cursor: default;
         }
-
-        .cell.revealed[data-value="0"] {
-            background-color: #444444;
-        }
+        .cell.revealed:hover { background: var(--revealed); }
+        .cell.revealed[data-value="0"] { background: var(--revealed-empty); }
 
         .cell.mine {
-            background-color: #ff0000;
-            color: #ffffff;
+            background: var(--danger);
+            color: #fff;
+        }
+        .cell.mine.clicked-mine {
+            background: #ff3030;
+            box-shadow: inset 0 0 0 2px #fff;
+        }
+        .cell.wrong-flag {
+            background: var(--revealed);
+            color: var(--danger);
         }
 
-        .cell.flagged {
-            color: #ff0000;
-        }
+        .cell.flagged { color: var(--danger); }
 
-        .cell[data-value="1"] { color: #0000ff; }
-        .cell[data-value="2"] { color: #008000; }
-        .cell[data-value="3"] { color: #ff0000; }
-        .cell[data-value="4"] { color: #000080; }
-        .cell[data-value="5"] { color: #800000; }
-        .cell[data-value="6"] { color: #008080; }
-        .cell[data-value="7"] { color: #000000; }
-        .cell[data-value="8"] { color: #808080; }
+        .cell[data-value="1"] { color: #4dabf7; }
+        .cell[data-value="2"] { color: #54e09b; }
+        .cell[data-value="3"] { color: #ff6b6b; }
+        .cell[data-value="4"] { color: #845ef7; }
+        .cell[data-value="5"] { color: #f59f00; }
+        .cell[data-value="6"] { color: #22d3ee; }
+        .cell[data-value="7"] { color: #e9ecef; }
+        .cell[data-value="8"] { color: #adb5bd; }
 
         #controls {
-            margin: 1rem 0;
+            margin: 14px 0 6px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         button {
-            background-color: #000000;
-            color: #ffffff;
-            border: 1px solid #ffffff;
-            padding: 0.5rem 1rem;
-            margin: 0 0.5rem;
+            background: var(--bg);
+            color: var(--fg);
+            border: 1px solid var(--fg);
+            padding: 8px 14px;
             cursor: pointer;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
+            font-family: inherit;
+            font-size: 13px;
+            letter-spacing: 0.06em;
+        }
+        button:hover { background: #1a1a1a; }
+        button:active { transform: translateY(1px); }
+
+        .hint {
+            color: var(--dim);
+            font-size: 11.5px;
+            text-align: center;
+            margin-top: 6px;
+            line-height: 1.6;
+            max-width: 32em;
+        }
+        .hint kbd {
+            border: 1px solid var(--dim);
+            padding: 1px 5px;
+            border-radius: 2px;
+            font-size: 10.5px;
+            color: var(--fg);
         }
 
-        button:hover {
-            background-color: #222222;
-        }
-
-        #start-screen {
+        .overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000000;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-        }
-
-        #start-screen h1 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            color: #ffffff;
-        }
-
-        #start-screen p {
-            color: #ffffff;
-            margin-bottom: 1rem;
+            padding: 24px;
             text-align: center;
-            max-width: 600px;
+        }
+        .overlay.hidden { display: none; }
+
+        #start-screen { background: var(--bg); }
+
+        #start-screen h1 { font-size: clamp(28px, 6vw, 44px); margin-bottom: 18px; }
+        #start-screen p {
+            color: var(--dim);
+            margin: 4px 0;
+            font-size: 14px;
+            max-width: 50ch;
+            line-height: 1.55;
         }
 
         .difficulty-select {
-            margin: 1rem 0;
-        }
-
-        .difficulty-select button {
-            margin: 0.5rem;
-            padding: 0.5rem 1rem;
-        }
-
-        #game-over {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: none;
+            margin: 22px 0 8px;
+            display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+            gap: 8px;
+            width: min(280px, 100%);
+        }
+        .difficulty-select button {
+            padding: 12px 16px;
+            font-size: 14px;
+        }
+        .difficulty-select .best {
+            color: var(--dim);
+            margin-left: 8px;
+            font-size: 12px;
         }
 
-        #game-over h1 {
-            color: #ff0000;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        #end-screen h1 { font-size: clamp(28px, 6vw, 44px); margin-bottom: 10px; }
+        #end-screen .result-win { color: #54e09b; }
+        #end-screen .result-lose { color: var(--danger); }
+        #end-screen .stats {
+            color: var(--dim);
+            font-size: 14px;
+            margin: 6px 0 16px;
         }
-
-        #game-over p {
-            color: #ffffff;
-            margin-bottom: 2rem;
+        #end-screen .new-best {
+            color: #f59f00;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
-    <div id="start-screen">
-        <h1>ASCII Minesweeper</h1>
-        <p>Welcome to ASCII Minesweeper! Click cells to reveal them, right-click to flag mines.</p>
-        <p>Numbers indicate how many mines are adjacent to each cell.</p>
+    <a id="back-link" href="index.html">&larr; INDEX</a>
+
+    <div class="brand">ASCII · MINESWEEPER</div>
+
+    <div id="status-bar">
+        <div>MINES <strong id="mines-count">10</strong></div>
+        <div>TIME  <strong id="timer">0</strong></div>
+        <div>BEST  <strong id="best-time">—</strong></div>
+    </div>
+
+    <div id="grid"></div>
+
+    <div id="controls">
+        <button id="reset-btn">RESET</button>
+        <button id="new-btn">NEW GAME</button>
+    </div>
+
+    <div class="hint">
+        <kbd>Click</kbd> reveal · <kbd>Right-click</kbd> flag · <kbd>Middle-click</kbd> or
+        <kbd>L+R</kbd> chord-reveal · <kbd>Long-press</kbd> flag on touch
+    </div>
+
+    <div id="start-screen" class="overlay">
+        <h1>ASCII MINESWEEPER</h1>
+        <p>Click to reveal a cell. Right-click (or long-press) to flag a suspected mine.</p>
+        <p>Middle-click or L+R chord on a satisfied number to fast-reveal its neighbors.</p>
         <div class="difficulty-select">
-            <button onclick="startGame('easy')">Easy (9x9, 10 mines)</button>
-            <button onclick="startGame('medium')">Medium (16x16, 40 mines)</button>
-            <button onclick="startGame('hard')">Hard (16x30, 99 mines)</button>
+            <button data-diff="easy">EASY · 9×9 · 10 mines<span class="best" data-best="easy"></span></button>
+            <button data-diff="medium">MEDIUM · 16×16 · 40 mines<span class="best" data-best="medium"></span></button>
+            <button data-diff="hard">HARD · 16×30 · 99 mines<span class="best" data-best="hard"></span></button>
         </div>
     </div>
 
-    <div id="game-container">
-        <div id="status-bar">
-            <div id="mines-count">Mines: 10</div>
-            <div id="timer">Time: 0</div>
-            <div id="flags">Flags: 0</div>
+    <div id="end-screen" class="overlay hidden">
+        <h1 id="end-title" class="result-lose">GAME OVER</h1>
+        <div class="stats" id="end-stats">You hit a mine.</div>
+        <div class="new-best hidden" id="new-best">NEW BEST TIME</div>
+        <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; justify-content:center;">
+            <button id="end-retry">REPLAY</button>
+            <button id="end-new">NEW GAME</button>
         </div>
-        <div id="grid"></div>
-        <div id="controls">
-            <button onclick="resetGame()">Reset Game</button>
-            <button onclick="showStartScreen()">New Game</button>
-        </div>
-    </div>
-
-    <div id="game-over">
-        <h1>Game Over!</h1>
-        <p id="game-over-message"></p>
-        <button onclick="showStartScreen()">Play Again</button>
     </div>
 
     <script>
+        // -------------------------------------------------------------
+        // ASCII Minesweeper — refined
+        // Fixes vs. prior version:
+        //   • Iterative flood-fill (no recursion stack risk)
+        //   • Visible color for value 7 on dark background
+        //   • Right-click disabled only inside the grid (not page-wide)
+        //   • Chord-click: middle-button or L+R reveals neighbors when
+        //     flag count matches a revealed number
+        //   • Clicked mine highlighted distinctly on game over
+        //   • Long-press = flag on touch devices (mobile playable)
+        //   • Best time per difficulty persisted to localStorage
+        //   • Responsive cell sizing (board fits viewport)
+        //   • Single mine counter (no redundant "Flags" stat)
+        //   • Back-to-index link
+        // -------------------------------------------------------------
+
+        const DIFFS = {
+            easy:   { rows: 9,  cols: 9,  mines: 10 },
+            medium: { rows: 16, cols: 16, mines: 40 },
+            hard:   { rows: 16, cols: 30, mines: 99 },
+        };
+
+        const BEST_KEY = 'asciiMinesweeperBest';
+
+        // --- best-times persistence ---
+        function loadBests() {
+            try { return JSON.parse(localStorage.getItem(BEST_KEY)) || {}; }
+            catch (_) { return {}; }
+        }
+        function saveBest(diff, time) {
+            const b = loadBests();
+            b[diff] = time;
+            try { localStorage.setItem(BEST_KEY, JSON.stringify(b)); } catch (_) {}
+        }
+        function getBest(diff) { return loadBests()[diff] ?? null; }
+
+        // --- DOM refs ---
+        const gridEl  = document.getElementById('grid');
+        const minesEl = document.getElementById('mines-count');
+        const timerEl = document.getElementById('timer');
+        const bestEl  = document.getElementById('best-time');
+        const startEl = document.getElementById('start-screen');
+        const endEl   = document.getElementById('end-screen');
+        const endTitle= document.getElementById('end-title');
+        const endStats= document.getElementById('end-stats');
+        const newBest = document.getElementById('new-best');
+
+        // --- Game ---
         class Minesweeper {
-            constructor(rows, cols, mines) {
-                this.rows = rows;
-                this.cols = cols;
-                this.mines = mines;
-                this.gameOver = false;
+            constructor(diff) {
+                const cfg = DIFFS[diff];
+                this.diff   = diff;
+                this.rows   = cfg.rows;
+                this.cols   = cfg.cols;
+                this.mines  = cfg.mines;
+
+                this.gameOver  = false;
                 this.firstClick = true;
                 this.startTime = null;
-                this.timer = null;
-                this.remainingMines = mines;
-                this.remainingFlags = mines;
-                
-                // Initialize arrays
-                this.grid = Array(this.rows).fill().map(() => Array(this.cols).fill(0));
-                this.revealed = Array(this.rows).fill().map(() => Array(this.cols).fill(false));
-                this.flags = Array(this.rows).fill().map(() => Array(this.cols).fill(false));
-                
-                // Cache DOM elements
-                this.gridElement = document.getElementById('grid');
-                this.minesCountElement = document.getElementById('mines-count');
-                this.flagsElement = document.getElementById('flags');
-                this.timerElement = document.getElementById('timer');
-                
-                // Create grid structure once
-                this.createGridStructure();
-            }
+                this.timer     = null;
+                this.elapsed   = 0;
+                this.flagCount = 0;
+                this.lastClickedMine = null;
 
-            createGridStructure() {
-                this.gridElement.innerHTML = '';
-                this.cells = [];
-                
-                for (let i = 0; i < this.rows; i++) {
-                    const row = document.createElement('div');
-                    row.className = 'row';
-                    this.cells[i] = [];
-                    
-                    for (let j = 0; j < this.cols; j++) {
-                        const cell = document.createElement('div');
-                        cell.className = 'cell';
-                        cell.dataset.row = i;
-                        cell.dataset.col = j;
-                        
-                        cell.addEventListener('click', () => this.reveal(i, j));
-                        cell.addEventListener('contextmenu', (e) => {
-                            e.preventDefault();
-                            this.toggleFlag(i, j);
-                        });
-                        
-                        this.cells[i][j] = cell;
-                        row.appendChild(cell);
-                    }
-                    this.gridElement.appendChild(row);
-                }
-            }
+                this.grid      = makeGrid(this.rows, this.cols, 0);
+                this.revealed  = makeGrid(this.rows, this.cols, false);
+                this.flags     = makeGrid(this.rows, this.cols, false);
 
-            init() {
-                // Reset game state
-                this.gameOver = false;
-                this.firstClick = true;
-                this.remainingMines = this.mines;
-                this.remainingFlags = this.mines;
-                
-                // Reset arrays
-                for (let i = 0; i < this.rows; i++) {
-                    for (let j = 0; j < this.cols; j++) {
-                        this.grid[i][j] = 0;
-                        this.revealed[i][j] = false;
-                        this.flags[i][j] = false;
-                        this.cells[i][j].className = 'cell';
-                        this.cells[i][j].textContent = '';
-                    }
-                }
-
+                this.buildDOM();
                 this.updateStatus();
+                this.updateBestDisplay();
             }
 
-            placeMines(firstRow, firstCol) {
-                // Create array of all possible positions
+            buildDOM() {
+                gridEl.innerHTML = '';
+                this.cells = [];
+
+                // Compute cell size to fit viewport with some padding.
+                const reserve = 32;  // grid padding + border
+                const maxByWidth  = Math.floor((window.innerWidth - reserve - 24) / this.cols);
+                const maxByHeight = Math.floor((window.innerHeight - 240) / this.rows);
+                const size = Math.max(18, Math.min(30, maxByWidth, maxByHeight));
+
+                for (let i = 0; i < this.rows; i++) {
+                    const rowEl = document.createElement('div');
+                    rowEl.className = 'row';
+                    this.cells[i] = [];
+
+                    for (let j = 0; j < this.cols; j++) {
+                        const c = document.createElement('div');
+                        c.className = 'cell';
+                        c.style.width = `${size}px`;
+                        c.style.height = `${size}px`;
+                        c.style.fontSize = `${Math.max(11, Math.floor(size * 0.55))}px`;
+                        c.dataset.r = i;
+                        c.dataset.c = j;
+                        this.cells[i][j] = c;
+                        rowEl.appendChild(c);
+                    }
+                    gridEl.appendChild(rowEl);
+                }
+
+                this.bindGridEvents();
+            }
+
+            // ---- Event wiring ----
+            bindGridEvents() {
+                // Mouse buttons currently pressed (for L+R chord detection).
+                const down = { 0: false, 1: false, 2: false };
+                // Set when any chord-trigger condition has been observed
+                // since the last all-buttons-released state. Used to:
+                //   • suppress the click-as-reveal that follows L release
+                //   • suppress the flag from a contextmenu when it's part
+                //     of a chord
+                let chordPending = false;
+                let chordCell = null;
+                // Track if a flag has already been applied this gesture, so
+                // we can undo it if a chord starts immediately after.
+                let lastFlaggedCell = null;
+
+                const cellAt = (e) => e.target.closest('.cell');
+                const rc = (t) => [+t.dataset.r, +t.dataset.c];
+
+                gridEl.addEventListener('mousedown', (e) => {
+                    const t = cellAt(e);
+                    if (!t) return;
+                    down[e.button] = true;
+
+                    // Middle-click → instant chord (no need to wait).
+                    if (e.button === 1) {
+                        e.preventDefault();
+                        chordPending = false;
+                        const [r, c] = rc(t);
+                        this.chord(r, c);
+                        return;
+                    }
+
+                    // Either button completed an L+R pair → arm chord.
+                    if (down[0] && down[2]) {
+                        chordPending = true;
+                        chordCell = t;
+                        // If the right-button mousedown already triggered a
+                        // contextmenu and flagged the cell, undo it — this
+                        // turns out to have been an R-then-L chord.
+                        if (lastFlaggedCell === t) {
+                            const [r, c] = rc(t);
+                            this.toggleFlag(r, c);  // toggles back off
+                            lastFlaggedCell = null;
+                        }
+                    }
+                });
+
+                gridEl.addEventListener('mouseup', (e) => {
+                    down[e.button] = false;
+                    // Fire chord on release of the *second* button.
+                    if (chordPending && !down[0] && !down[2]) {
+                        const t = chordCell || cellAt(e);
+                        chordPending = false;
+                        chordCell = null;
+                        lastFlaggedCell = null;
+                        if (t) {
+                            const [r, c] = rc(t);
+                            this.chord(r, c);
+                        }
+                    }
+                });
+
+                gridEl.addEventListener('mouseleave', () => {
+                    down[0] = down[1] = down[2] = false;
+                    chordPending = false;
+                    chordCell = null;
+                    lastFlaggedCell = null;
+                });
+
+                // Standard click → reveal (only when no chord is in flight).
+                gridEl.addEventListener('click', (e) => {
+                    const t = cellAt(e);
+                    if (!t) return;
+                    if (chordPending || down[2]) return;
+                    const [r, c] = rc(t);
+                    this.reveal(r, c);
+                });
+
+                // Right-click → flag (suppressed by chord on subsequent L).
+                gridEl.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    const t = cellAt(e);
+                    if (!t) return;
+                    // If L is already held, this is the start of an L+R chord
+                    // — don't flag.
+                    if (down[0]) return;
+                    const [r, c] = rc(t);
+                    this.toggleFlag(r, c);
+                    lastFlaggedCell = t;
+                });
+
+                // ---- Touch: long-press = flag, short tap = reveal ----
+                let pressTimer = null;
+                let pressedCell = null;
+                let didLongPress = false;
+
+                gridEl.addEventListener('touchstart', (e) => {
+                    const t = e.target.closest('.cell');
+                    if (!t) return;
+                    e.preventDefault();
+                    pressedCell = t;
+                    didLongPress = false;
+                    pressTimer = setTimeout(() => {
+                        didLongPress = true;
+                        const r = +t.dataset.r, c = +t.dataset.c;
+                        this.toggleFlag(r, c);
+                        if (navigator.vibrate) navigator.vibrate(20);
+                    }, 380);
+                }, { passive: false });
+
+                gridEl.addEventListener('touchmove', () => {
+                    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+                    pressedCell = null;
+                });
+
+                gridEl.addEventListener('touchend', (e) => {
+                    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+                    if (didLongPress || !pressedCell) { pressedCell = null; return; }
+                    const t = pressedCell;
+                    pressedCell = null;
+                    const r = +t.dataset.r, c = +t.dataset.c;
+                    this.reveal(r, c);
+                });
+            }
+
+            // ---- Mine placement (safe 3×3 around first click) ----
+            placeMines(firstR, firstC) {
                 const positions = [];
                 for (let i = 0; i < this.rows; i++) {
                     for (let j = 0; j < this.cols; j++) {
-                        // Skip the first clicked cell and its adjacent cells
-                        if (Math.abs(i - firstRow) <= 1 && Math.abs(j - firstCol) <= 1) continue;
+                        if (Math.abs(i - firstR) <= 1 && Math.abs(j - firstC) <= 1) continue;
                         positions.push([i, j]);
                     }
                 }
-
-                // Shuffle positions using Fisher-Yates algorithm
-                for (let i = positions.length - 1; i > 0; i--) {
+                // Fisher–Yates partial shuffle
+                for (let i = positions.length - 1; i > positions.length - 1 - this.mines; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [positions[i], positions[j]] = [positions[j], positions[i]];
                 }
-
-                // Place mines
-                for (let i = 0; i < this.mines; i++) {
-                    const [row, col] = positions[i];
-                    this.grid[row][col] = -1;
+                for (let k = 0; k < this.mines; k++) {
+                    const [r, c] = positions[positions.length - 1 - k];
+                    this.grid[r][c] = -1;
                 }
-
-                // Calculate numbers for adjacent cells
+                // Number cells
                 for (let i = 0; i < this.rows; i++) {
                     for (let j = 0; j < this.cols; j++) {
-                        if (this.grid[i][j] !== -1) {
-                            this.grid[i][j] = this.countAdjacentMines(i, j);
-                        }
+                        if (this.grid[i][j] !== -1) this.grid[i][j] = this.countAdjMines(i, j);
                     }
                 }
             }
 
-            countAdjacentMines(row, col) {
-                let count = 0;
-                const startRow = Math.max(0, row - 1);
-                const endRow = Math.min(this.rows - 1, row + 1);
-                const startCol = Math.max(0, col - 1);
-                const endCol = Math.min(this.cols - 1, col + 1);
-
-                for (let i = startRow; i <= endRow; i++) {
-                    for (let j = startCol; j <= endCol; j++) {
-                        if (this.grid[i][j] === -1) count++;
-                    }
-                }
-                return count;
+            countAdjMines(r, c) {
+                let n = 0;
+                for (let i = Math.max(0, r - 1); i <= Math.min(this.rows - 1, r + 1); i++)
+                    for (let j = Math.max(0, c - 1); j <= Math.min(this.cols - 1, c + 1); j++)
+                        if (this.grid[i][j] === -1) n++;
+                return n;
             }
 
-            reveal(row, col) {
-                if (this.gameOver || this.flags[row][col]) return;
+            countAdjFlags(r, c) {
+                let n = 0;
+                for (let i = Math.max(0, r - 1); i <= Math.min(this.rows - 1, r + 1); i++)
+                    for (let j = Math.max(0, c - 1); j <= Math.min(this.cols - 1, c + 1); j++)
+                        if (this.flags[i][j]) n++;
+                return n;
+            }
+
+            // ---- Actions ----
+            reveal(r, c) {
+                if (this.gameOver || this.flags[r][c] || this.revealed[r][c]) return;
 
                 if (this.firstClick) {
                     this.firstClick = false;
+                    this.placeMines(r, c);
                     this.startTime = Date.now();
-                    this.startTimer();
-                    this.placeMines(row, col);
+                    this.timer = setInterval(() => this.tickTimer(), 1000);
                 }
 
-                if (this.grid[row][col] === -1) {
-                    this.gameOver = true;
-                    this.revealAll();
-                    clearInterval(this.timer);
-                    document.getElementById('game-over-message').textContent = 'You hit a mine!';
-                    document.getElementById('game-over').style.display = 'flex';
-                    return;
+                if (this.grid[r][c] === -1) {
+                    this.lastClickedMine = [r, c];
+                    return this.endGame(false);
                 }
 
-                this.revealCell(row, col);
+                this.floodReveal(r, c);
                 this.checkWin();
             }
 
-            revealCell(row, col) {
-                if (this.revealed[row][col]) return;
-                
-                this.revealed[row][col] = true;
-                const cell = this.cells[row][col];
-                cell.classList.add('revealed');
-
-                if (this.grid[row][col] > 0) {
-                    cell.textContent = this.grid[row][col];
-                    cell.setAttribute('data-value', this.grid[row][col]);
-                    return;
-                }
-
-                // Reveal adjacent cells if current cell is empty
-                const startRow = Math.max(0, row - 1);
-                const endRow = Math.min(this.rows - 1, row + 1);
-                const startCol = Math.max(0, col - 1);
-                const endCol = Math.min(this.cols - 1, col + 1);
-
-                for (let i = startRow; i <= endRow; i++) {
-                    for (let j = startCol; j <= endCol; j++) {
-                        this.revealCell(i, j);
+            // Iterative flood-fill: avoids any chance of stack overflow.
+            floodReveal(startR, startC) {
+                const stack = [[startR, startC]];
+                while (stack.length) {
+                    const [r, c] = stack.pop();
+                    if (this.revealed[r][c] || this.flags[r][c]) continue;
+                    this.revealed[r][c] = true;
+                    const v = this.grid[r][c];
+                    const cell = this.cells[r][c];
+                    cell.classList.add('revealed');
+                    if (v > 0) {
+                        cell.textContent = v;
+                        cell.dataset.value = v;
+                    } else {
+                        cell.dataset.value = 0;
+                        for (let i = Math.max(0, r - 1); i <= Math.min(this.rows - 1, r + 1); i++)
+                            for (let j = Math.max(0, c - 1); j <= Math.min(this.cols - 1, c + 1); j++)
+                                if (!this.revealed[i][j] && !this.flags[i][j]) stack.push([i, j]);
                     }
                 }
             }
 
-            toggleFlag(row, col) {
-                if (this.gameOver || this.revealed[row][col]) return;
-
-                this.flags[row][col] = !this.flags[row][col];
-                this.remainingFlags += this.flags[row][col] ? -1 : 1;
-                this.remainingMines += this.flags[row][col] ? -1 : 1;
-
-                const cell = this.cells[row][col];
-                if (this.flags[row][col]) {
+            toggleFlag(r, c) {
+                if (this.gameOver || this.revealed[r][c]) return;
+                this.flags[r][c] = !this.flags[r][c];
+                this.flagCount += this.flags[r][c] ? 1 : -1;
+                const cell = this.cells[r][c];
+                if (this.flags[r][c]) {
                     cell.classList.add('flagged');
                     cell.textContent = '⚑';
                 } else {
                     cell.classList.remove('flagged');
                     cell.textContent = '';
                 }
-
                 this.updateStatus();
+            }
+
+            chord(r, c) {
+                if (this.gameOver) return;
+                if (!this.revealed[r][c]) return;
+                const v = this.grid[r][c];
+                if (v <= 0) return;
+                if (this.countAdjFlags(r, c) !== v) return;
+
+                // Reveal all unflagged neighbors. Hitting a mistakenly-unflagged
+                // mine ends the game (this is the chord's risk).
+                for (let i = Math.max(0, r - 1); i <= Math.min(this.rows - 1, r + 1); i++) {
+                    for (let j = Math.max(0, c - 1); j <= Math.min(this.cols - 1, c + 1); j++) {
+                        if (this.revealed[i][j] || this.flags[i][j]) continue;
+                        if (this.grid[i][j] === -1) {
+                            this.lastClickedMine = [i, j];
+                            return this.endGame(false);
+                        }
+                        this.floodReveal(i, j);
+                    }
+                }
                 this.checkWin();
             }
 
-            revealAll() {
+            checkWin() {
+                let unrevealed = 0;
+                for (let i = 0; i < this.rows; i++)
+                    for (let j = 0; j < this.cols; j++)
+                        if (!this.revealed[i][j]) unrevealed++;
+                if (unrevealed === this.mines) this.endGame(true);
+            }
+
+            endGame(won) {
+                this.gameOver = true;
+                clearInterval(this.timer);
+
+                // Reveal all mines, mark mistakes.
                 for (let i = 0; i < this.rows; i++) {
                     for (let j = 0; j < this.cols; j++) {
-                        this.revealed[i][j] = true;
-                        this.flags[i][j] = false;
                         const cell = this.cells[i][j];
-                        cell.classList.remove('flagged');
-                        
                         if (this.grid[i][j] === -1) {
-                            cell.classList.add('mine');
-                            cell.textContent = '*';
-                        } else if (this.grid[i][j] > 0) {
-                            cell.classList.add('revealed');
-                            cell.textContent = this.grid[i][j];
-                            cell.setAttribute('data-value', this.grid[i][j]);
+                            // On win, auto-flag any unflagged mines for nice visuals.
+                            if (won && !this.flags[i][j]) {
+                                cell.classList.add('flagged');
+                                cell.textContent = '⚑';
+                            } else if (!won && !this.flags[i][j]) {
+                                cell.classList.add('mine');
+                                cell.textContent = '*';
+                            }
+                        } else if (this.flags[i][j]) {
+                            // Wrong flag on a non-mine cell — show it on loss.
+                            if (!won) {
+                                cell.classList.add('wrong-flag');
+                                cell.textContent = 'X';
+                            }
                         }
                     }
                 }
-            }
+                if (!won && this.lastClickedMine) {
+                    const [r, c] = this.lastClickedMine;
+                    this.cells[r][c].classList.add('clicked-mine');
+                }
 
-            checkWin() {
-                let unrevealedCount = 0;
-                for (let i = 0; i < this.rows; i++) {
-                    for (let j = 0; j < this.cols; j++) {
-                        if (!this.revealed[i][j]) unrevealedCount++;
+                // Stats / best-time
+                let nb = false;
+                if (won) {
+                    const prev = getBest(this.diff);
+                    if (prev === null || this.elapsed < prev) {
+                        saveBest(this.diff, this.elapsed);
+                        nb = true;
                     }
                 }
+                showEnd(won, this.elapsed, nb);
+            }
 
-                if (unrevealedCount === this.mines) {
-                    this.gameOver = true;
-                    clearInterval(this.timer);
-                    document.getElementById('game-over-message').textContent = 'Congratulations! You won!';
-                    document.getElementById('game-over').style.display = 'flex';
-                }
+            tickTimer() {
+                this.elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                timerEl.textContent = this.elapsed;
             }
 
             updateStatus() {
-                this.minesCountElement.textContent = `Mines: ${this.remainingMines}`;
-                this.flagsElement.textContent = `Flags: ${this.remainingFlags}`;
+                minesEl.textContent = this.mines - this.flagCount;
+                timerEl.textContent = this.elapsed;
             }
 
-            startTimer() {
-                this.timer = setInterval(() => {
-                    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
-                    this.timerElement.textContent = `Time: ${elapsed}`;
-                }, 1000);
+            updateBestDisplay() {
+                const b = getBest(this.diff);
+                bestEl.textContent = b === null ? '—' : b;
             }
         }
 
+        // --- Helpers ---
+        function makeGrid(rows, cols, fill) {
+            return Array.from({ length: rows }, () => Array(cols).fill(
+                typeof fill === 'function' ? fill() : fill));
+        }
+
+        // --- Lifecycle ---
         let game = null;
+        let currentDiff = 'easy';
 
-        function startGame(difficulty) {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-over').style.display = 'none';
-
-            let rows, cols, mines;
-            switch (difficulty) {
-                case 'easy':
-                    rows = 9;
-                    cols = 9;
-                    mines = 10;
-                    break;
-                case 'medium':
-                    rows = 16;
-                    cols = 16;
-                    mines = 40;
-                    break;
-                case 'hard':
-                    rows = 16;
-                    cols = 30;
-                    mines = 99;
-                    break;
-            }
-
-            game = new Minesweeper(rows, cols, mines);
-            game.init();
+        function startGame(diff) {
+            currentDiff = diff;
+            startEl.classList.add('hidden');
+            endEl.classList.add('hidden');
+            newBest.classList.add('hidden');
+            game = new Minesweeper(diff);
         }
 
         function resetGame() {
-            if (game) {
-                game.init();
+            if (currentDiff) startGame(currentDiff);
+        }
+
+        function showStart() {
+            if (game) clearInterval(game.timer);
+            updateStartScreenBests();
+            startEl.classList.remove('hidden');
+            endEl.classList.add('hidden');
+        }
+
+        function showEnd(won, time, newBestTime) {
+            endTitle.textContent = won ? 'CLEARED' : 'GAME OVER';
+            endTitle.className = won ? 'result-win' : 'result-lose';
+            endStats.textContent = won
+                ? `Solved in ${time}s · ${currentDiff.toUpperCase()}`
+                : `You hit a mine after ${time}s.`;
+            newBest.classList.toggle('hidden', !newBestTime);
+            endEl.classList.remove('hidden');
+        }
+
+        function updateStartScreenBests() {
+            const bests = loadBests();
+            for (const el of document.querySelectorAll('[data-best]')) {
+                const d = el.dataset.best;
+                el.textContent = bests[d] != null ? ` · best ${bests[d]}s` : '';
             }
         }
 
-        function showStartScreen() {
-            document.getElementById('start-screen').style.display = 'flex';
-            document.getElementById('game-over').style.display = 'none';
-            if (game) {
-                clearInterval(game.timer);
-            }
+        // --- Buttons ---
+        for (const b of document.querySelectorAll('[data-diff]')) {
+            b.addEventListener('click', () => startGame(b.dataset.diff));
         }
+        document.getElementById('reset-btn').addEventListener('click', resetGame);
+        document.getElementById('new-btn').addEventListener('click', showStart);
+        document.getElementById('end-retry').addEventListener('click', resetGame);
+        document.getElementById('end-new').addEventListener('click', showStart);
 
-        // Prevent context menu on right-click
-        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        // Resize → rebuild grid at new cell size, preserving game state.
+        window.addEventListener('resize', () => {
+            if (!game || game.gameOver) return;
+            // Re-measure size only; keep cell DOM intact for simplicity.
+            // (A full rebuild would lose revealed visuals — accept some
+            // suboptimal sizing until next game on resize.)
+        });
+
+        updateStartScreenBests();
     </script>
 </body>
-</html> 
+</html>
