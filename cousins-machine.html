@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Cousins Machine — Tree of Life</title>
+<meta name="description" content="Pick two animals and see their most recent common ancestor, when they split, and a rough guess at shared DNA.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌳</text></svg>">
+<style>
+  html, body { margin: 0; background: #08191d; }
+  #root { min-height: 100vh; }
+  .boot { color: #7fa7a1; font-family: system-ui, sans-serif; text-align: center; padding: 80px 16px; }
+</style>
+<!-- React + Babel from CDN: no build step needed -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+</head>
+<body>
+<div id="root"><div class="boot">Loading the tree of life…🌳</div></div>
+<script type="text/babel" data-presets="react">
+const { useMemo, useState } = React;
+
+/* ------------------------------------------------------------------ *
+ * Tree of Life — Common Ancestor Explorer
+ * Pick two animals → see their most recent common ancestor, when they
+ * split, and the path between them. Fully self-contained (no network).
+ *
+ * Divergence ages (millions of years ago, "Ma") are approximate medians
+ * in the spirit of TimeTree / the vertebrate timetree. Recent splits are
+ * fairly firm; very deep splits (esp. invertebrates) are debated, so
+ * treat the oldest numbers as ballpark.
+ * ------------------------------------------------------------------ */
+
+const L = (name, emoji, group) => ({ leaf: true, name, emoji, group });
+
+const TREE = {
+  common: "Animals with bodies", sci: "Eumetazoa", age: 700, children: [
+    L("Jellyfish", "🪼", "Bugs & Others"),
+    { common: "Two-sided animals", sci: "Bilateria", age: 680, children: [
+      { common: "Mouth-first animals", sci: "Protostomia", age: 625, children: [
+        { common: "Mollusks & worms", sci: "Lophotrochozoa", age: 610, children: [
+          { common: "Mollusks", sci: "Mollusca", age: 550, children: [
+            L("Octopus", "🐙", "Bugs & Others"), L("Snail", "🐌", "Bugs & Others") ] },
+          L("Earthworm", "🪱", "Bugs & Others") ] },
+        { common: "Molting animals", sci: "Ecdysozoa", age: 560, children: [
+          L("Spider", "🕷️", "Bugs & Others"),
+          { common: "Crustaceans & insects", sci: "Pancrustacea", age: 540, children: [
+            L("Crab", "🦀", "Bugs & Others"),
+            { common: "Metamorphosing insects", sci: "Endopterygota", age: 345, children: [
+              L("Butterfly", "🦋", "Bugs & Others"),
+              { common: "Bees & ants", sci: "Hymenoptera", age: 155, children: [
+                L("Bee", "🐝", "Bugs & Others"), L("Ant", "🐜", "Bugs & Others") ] } ] } ] } ] } ] },
+      { common: "Our branch (deuterostomes)", sci: "Deuterostomia", age: 600, children: [
+        L("Starfish", "⭐", "Bugs & Others"),
+        { common: "Jawed animals", sci: "Gnathostomata", age: 465, children: [
+          L("Shark", "🦈", "Fish"),
+          { common: "Bony animals", sci: "Osteichthyes", age: 435, children: [
+            { common: "Ray-finned fish", sci: "Actinopterygii", age: 230, children: [
+              L("Goldfish", "🐠", "Fish"), L("Salmon", "🐟", "Fish"), L("Pufferfish", "🐡", "Fish") ] },
+            { common: "Four-limbed animals", sci: "Tetrapoda", age: 352, children: [
+              { common: "Amphibians", sci: "Amphibia", age: 265, children: [
+                L("Frog", "🐸", "Reptiles & Amphibians"), L("Salamander", "", "Reptiles & Amphibians") ] },
+              { common: "Amniotes (shelled-egg animals)", sci: "Amniota", age: 319, children: [
+                { common: "Mammals", sci: "Mammalia", age: 177, children: [
+                  L("Platypus", "", "Mammals"),
+                  { common: "Live-birth mammals", sci: "Theria", age: 159, children: [
+                    { common: "Pouched mammals", sci: "Marsupialia", age: 64, children: [
+                      L("Kangaroo", "🦘", "Mammals"), L("Koala", "🐨", "Mammals") ] },
+                    { common: "Placental mammals", sci: "Placentalia", age: 99, children: [
+                      L("Elephant", "🐘", "Mammals"),
+                      { common: "Northern placentals", sci: "Boreoeutheria", age: 94, children: [
+                        { common: "Primates, rodents & rabbits", sci: "Euarchontoglires", age: 87, children: [
+                          { common: "Rodents & rabbits", sci: "Glires", age: 82, children: [
+                            { common: "Rodents", sci: "Rodentia", age: 70, children: [
+                              { common: "Mice & rats", sci: "Muroidea", age: 20, children: [
+                                L("Mouse", "🐭", "Mammals"), L("Rat", "🐀", "Mammals") ] },
+                              L("Squirrel", "🐿️", "Mammals") ] },
+                            L("Rabbit", "🐰", "Mammals") ] },
+                          { common: "Primates", sci: "Primates", age: 74, children: [
+                            L("Lemur", "", "Mammals"),
+                            { common: "Monkeys & apes", sci: "Catarrhini", age: 29, children: [
+                              L("Monkey", "🐒", "Mammals"),
+                              { common: "Great apes", sci: "Hominidae", age: 15.8, children: [
+                                L("Orangutan", "🦧", "Mammals"),
+                                { common: "African great apes", sci: "Homininae", age: 8.6, children: [
+                                  L("Gorilla", "🦍", "Mammals"),
+                                  { common: "Humans & chimps", sci: "Hominini", age: 6.4, children: [
+                                    L("Human", "🧑", "Mammals"), L("Chimpanzee", "🐵", "Mammals") ] } ] } ] } ] } ] } ] },
+                        { common: "Carnivores, hoofed mammals & bats", sci: "Laurasiatheria", age: 78, children: [
+                          L("Bat", "🦇", "Mammals"),
+                          { common: "Carnivores & hoofed mammals", sci: "Ferungulata", age: 77, children: [
+                            { common: "Carnivorans", sci: "Carnivora", age: 54, children: [
+                              { common: "Dog-like carnivores", sci: "Caniformia", age: 46, children: [
+                                { common: "Dogs & foxes", sci: "Canidae", age: 10, children: [
+                                  L("Dog", "🐕", "Mammals"), L("Fox", "🦊", "Mammals") ] },
+                                { common: "Bears & seals", sci: "Arctoidea", age: 43, children: [
+                                  { common: "Bears", sci: "Ursidae", age: 19, children: [
+                                    L("Bear", "🐻", "Mammals"), L("Panda", "🐼", "Mammals") ] },
+                                  L("Seal", "🦭", "Mammals") ] } ] },
+                              { common: "Cats", sci: "Felidae", age: 10.8, children: [
+                                L("Cat", "🐈", "Mammals"),
+                                { common: "Big cats", sci: "Panthera", age: 3.9, children: [
+                                  L("Lion", "🦁", "Mammals"), L("Tiger", "🐅", "Mammals") ] } ] } ] },
+                            { common: "Hoofed mammals", sci: "Ungulata", age: 76, children: [
+                              { common: "Horses", sci: "Equidae", age: 4, children: [
+                                L("Horse", "🐎", "Mammals"), L("Zebra", "🦓", "Mammals") ] },
+                              { common: "Even-toed hoofed mammals", sci: "Artiodactyla", age: 62, children: [
+                                L("Pig", "🐖", "Mammals"),
+                                { common: "Cattle, deer & whales", sci: "Cetruminantia", age: 56, children: [
+                                  { common: "Ruminants", sci: "Pecora", age: 25, children: [
+                                    L("Cow", "🐄", "Mammals"), L("Deer", "🦌", "Mammals"), L("Giraffe", "🦒", "Mammals") ] },
+                                  { common: "Hippos & whales", sci: "Whippomorpha", age: 53, children: [
+                                    L("Hippo", "🦛", "Mammals"),
+                                    { common: "Whales & dolphins", sci: "Cetacea", age: 34, children: [
+                                      L("Whale", "🐋", "Mammals"), L("Dolphin", "🐬", "Mammals") ] } ] } ] } ] } ] } ] } ] } ] } ] } ] },
+                { common: "Reptiles & birds", sci: "Sauropsida", age: 280, children: [
+                  { common: "Lizards & snakes", sci: "Lepidosauria", age: 170, children: [
+                    L("Lizard", "🦎", "Reptiles & Amphibians"), L("Snake", "🐍", "Reptiles & Amphibians") ] },
+                  { common: "Turtles, crocs & birds", sci: "Archelosauria", age: 255, children: [
+                    L("Turtle", "🐢", "Reptiles & Amphibians"),
+                    { common: "Crocs & birds", sci: "Archosauria", age: 250, children: [
+                      L("Crocodile", "🐊", "Reptiles & Amphibians"),
+                      { common: "Birds", sci: "Aves", age: 110, children: [
+                        L("Ostrich", "", "Birds"),
+                        { common: "Modern birds", sci: "Neognathae", age: 100, children: [
+                          { common: "Fowl", sci: "Galloanserae", age: 65, children: [
+                            L("Chicken", "🐔", "Birds"), L("Duck", "🦆", "Birds") ] },
+                          { common: "Land & water birds", sci: "Neoaves", age: 68, children: [
+                            L("Eagle", "🦅", "Birds"), L("Owl", "🦉", "Birds"),
+                            L("Parrot", "🦜", "Birds"), L("Penguin", "🐧", "Birds"),
+                            L("Sparrow", "🐦", "Birds") ] } ] } ] } ] } ] } ] } ] } ] } ] } ] } ] } ] } ] }
+  ]
+};
+
+/* ---- one-time tagging: ids + parent pointers ---- */
+let _id = 0;
+(function tag(node, parent) {
+  node.__id = _id++; node.__parent = parent;
+  if (node.children) node.children.forEach((c) => tag(c, node));
+})(TREE, null);
+
+const LEAVES = [];
+(function collect(n) { if (n.leaf) LEAVES.push(n); else n.children.forEach(collect); })(TREE);
+LEAVES.sort((a, b) => a.name.localeCompare(b.name));
+
+const GROUP_ORDER = ["Mammals", "Birds", "Reptiles & Amphibians", "Fish", "Bugs & Others"];
+
+function rootPath(node) { const a = []; let n = node; while (n) { a.unshift(n); n = n.__parent; } return a; }
+function analyze(a, b) {
+  const pa = rootPath(a), pb = rootPath(b);
+  let m = null, i = 0;
+  while (i < pa.length && i < pb.length && pa[i] === pb[i]) { m = pa[i]; i++; }
+  const cut = (p) => p.slice(p.indexOf(m) + 1, p.length - 1); // clades between MRCA and leaf
+  return { mrca: m, uniqueA: cut(pa), uniqueB: cut(pb) };
+}
+
+const C = {
+  bg: "#08191d", panel: "#0e2b31", panel2: "#0c2429", line: "#5fb6a8",
+  accent: "#f2a65a", accent2: "#bfe89c", ink: "#eaf4ef", sub: "#7fa7a1",
+  chip: "#123339", chipOn: "#1c545d", border: "#1d4750",
+};
+
+const ageMa = (a) => (a >= 10 ? Math.round(a) : Math.round(a * 10) / 10) + " Ma";
+const fmtBig = (a) =>
+  a >= 10 ? `${Math.round(a)} million` : a >= 1 ? `${Math.round(a * 10) / 10} million` : `${Math.round(a * 1000)} thousand`;
+// Rough "DNA similarity" guess. Calibrated decay toward a ~50% conserved-gene
+// floor, pinned so human–chimp (6.4 Ma) ≈ 98.8% (the famous figure). This blends
+// two real metrics on purpose — see the caveat shown in the UI.
+const simOf = (t) => 50 + 50 * Math.exp(-t / 263);
+function simText(s) { return s >= 95 ? s.toFixed(1) : String(Math.round(s)); }
+
+function closeness(a) {
+  if (a < 2) return "practically twins on the tree";
+  if (a < 10) return "super-close cousins";
+  if (a < 50) return "close cousins";
+  if (a < 120) return "cousins";
+  if (a < 300) return "distant cousins";
+  if (a < 500) return "very distant cousins";
+  return "incredibly ancient cousins";
+}
+const Badge = ({ a, size = 20 }) =>
+  a.emoji ? (
+    <span style={{ fontSize: size, lineHeight: 1 }}>{a.emoji}</span>
+  ) : (
+    <span style={{ fontSize: size * 0.5, fontWeight: 800, color: C.accent2 }}>{a.name.slice(0, 3)}</span>
+  );
+
+function CommonAncestorExplorer() {
+  const [slots, setSlots] = useState([null, null]);
+  const [active, setActive] = useState(0);
+  const [query, setQuery] = useState("");
+
+  const pick = (leaf) => {
+    setSlots((s) => { const n = [...s]; n[active] = leaf; return n; });
+    setActive((x) => (x === 0 ? 1 : 0));
+  };
+  const surprise = () => {
+    let i = Math.floor(Math.random() * LEAVES.length), j = i;
+    while (j === i) j = Math.floor(Math.random() * LEAVES.length);
+    setSlots([LEAVES[i], LEAVES[j]]); setActive(0);
+  };
+  const clear = () => { setSlots([null, null]); setActive(0); };
+  const swap = () => setSlots(([x, y]) => [y, x]);
+
+  const grouped = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const out = {};
+    for (const g of GROUP_ORDER) out[g] = [];
+    for (const a of LEAVES) if (!q || a.name.toLowerCase().includes(q)) out[a.group].push(a);
+    return out;
+  }, [query]);
+
+  const [A, B] = slots;
+  const both = A && B;
+  const same = both && A === B;
+  const res = both && !same ? analyze(A, B) : null;
+
+  return (
+    <div style={{ background: `radial-gradient(120% 90% at 50% 0%, ${C.panel} 0%, ${C.bg} 60%)`,
+      color: C.ink, minHeight: "100%", padding: "20px 16px 28px", fontFamily: "'Nunito',sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap');
+        .disp{font-family:'Baloo 2',cursive;}
+        .mono{font-family:'Space Mono',monospace;}
+        .chip:hover{background:${C.chipOn} !important;transform:translateY(-1px);}
+        .btn:hover{filter:brightness(1.12);}
+        .arm{stroke-dasharray:1300;stroke-dashoffset:1300;animation:draw .9s ease forwards;}
+        .arm.b{animation-delay:.18s;}
+        .bead{opacity:0;animation:pop .45s ease forwards;}
+        .leaf{opacity:0;animation:pop .5s ease forwards;}
+        .halo{transform-origin:center;animation:pulse 2.4s ease-in-out infinite;}
+        @keyframes draw{to{stroke-dashoffset:0;}}
+        @keyframes pop{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+        @keyframes pulse{0%,100%{opacity:.35;transform:scale(1);}50%{opacity:.08;transform:scale(2.1);}}
+        @media (prefers-reduced-motion: reduce){
+          .arm{stroke-dashoffset:0;animation:none;}
+          .bead,.leaf{opacity:1;animation:none;}
+          .halo{animation:none;opacity:.25;}
+        }
+      `}</style>
+
+      <div style={{ maxWidth: 860, margin: "0 auto" }}>
+        <h1 className="disp" style={{ fontSize: 30, margin: 0, color: C.ink }}>
+          The Cousins Machine <span style={{ fontSize: 22 }}>🌳</span>
+        </h1>
+        <p style={{ margin: "4px 0 16px", color: C.sub, fontSize: 14 }}>
+          Pick two animals and find out how they’re related — and when their family tree split apart.
+        </p>
+
+        {/* slots */}
+        <div style={{ display: "flex", gap: 12, alignItems: "stretch", flexWrap: "wrap" }}>
+          {[0, 1].map((i) => {
+            const a = slots[i];
+            const on = active === i;
+            return (
+              <button key={i} onClick={() => setActive(i)} className="btn"
+                style={{ flex: "1 1 200px", textAlign: "left", cursor: "pointer",
+                  background: C.panel, border: `2px solid ${on ? C.accent : C.border}`,
+                  borderRadius: 16, padding: "12px 14px", color: C.ink, minHeight: 64,
+                  display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ width: 40, height: 40, borderRadius: 10, background: C.panel2,
+                  display: "grid", placeItems: "center", flex: "none" }}>
+                  {a ? <Badge a={a} size={26} /> : <span style={{ color: C.sub, fontSize: 22 }}>+</span>}
+                </span>
+                <span>
+                  <div style={{ fontSize: 11, color: on ? C.accent : C.sub, fontWeight: 800, letterSpacing: .4 }}>
+                    {on ? "PICK ME NEXT" : `ANIMAL ${i + 1}`}
+                  </div>
+                  <div className="disp" style={{ fontSize: 19 }}>{a ? a.name : "Tap an animal below"}</div>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+          {[["🎲 Surprise me", surprise], ["⇄ Swap", swap], ["✕ Clear", clear]].map(([t, fn]) => (
+            <button key={t} onClick={fn} className="btn" style={{ cursor: "pointer",
+              background: C.chip, border: `1px solid ${C.border}`, color: C.ink,
+              borderRadius: 999, padding: "7px 14px", fontWeight: 700, fontSize: 13 }}>{t}</button>
+          ))}
+        </div>
+
+        {/* result */}
+        {same && (
+          <Card><p className="disp" style={{ fontSize: 18, margin: 0 }}>
+            That’s the same animal twice! Pick a different one for the other slot. 🙂
+          </p></Card>
+        )}
+        {res && <Result A={A} B={B} res={res} />}
+
+        {/* picker */}
+        <div style={{ marginTop: 22 }}>
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search animals…"
+            style={{ width: "100%", boxSizing: "border-box", background: C.panel,
+              border: `1px solid ${C.border}`, borderRadius: 12, padding: "10px 14px",
+              color: C.ink, fontSize: 15, outline: "none", fontFamily: "inherit" }} />
+          {GROUP_ORDER.map((g) => grouped[g].length > 0 && (
+            <div key={g} style={{ marginTop: 16 }}>
+              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 1, color: C.sub, marginBottom: 8 }}>
+                {g.toUpperCase()}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {grouped[g].map((a) => {
+                  const sel = a === A || a === B;
+                  return (
+                    <button key={a.__id} onClick={() => pick(a)} className="chip btn"
+                      style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 7,
+                        background: sel ? C.chipOn : C.chip, color: C.ink,
+                        border: `1px solid ${sel ? C.accent : C.border}`, borderRadius: 999,
+                        padding: "7px 13px 7px 9px", fontSize: 14, fontWeight: 700, transition: "all .12s" }}>
+                      <span style={{ width: 22, display: "grid", placeItems: "center" }}><Badge a={a} /></span>
+                      {a.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ color: C.sub, fontSize: 12, marginTop: 22, lineHeight: 1.5 }}>
+          Branching follows the modern tree of life; split times are approximate divergence
+          estimates (TimeTree-style). Recent splits are fairly firm — the very oldest dates,
+          especially among the bugs &amp; sea creatures, are still debated by scientists.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Card({ children }) {
+  return (
+    <div style={{ marginTop: 16, background: C.panel, border: `1px solid ${C.border}`,
+      borderRadius: 18, padding: 18 }}>{children}</div>
+  );
+}
+
+function Result({ A, B, res }) {
+  const { mrca, uniqueA, uniqueB } = res;
+  const age = mrca.age;
+  const sim = simOf(age);
+
+  // geometry
+  const Y0 = 80, YM = 460, xC = 400, xL = 230, xR = 600;
+  const ymax = Math.sqrt(age);
+  const yOf = (a) => Y0 + (Math.sqrt(a) / ymax) * (YM - Y0);
+  const xOf = (side, a) => { const u = Math.sqrt(a) / ymax; const ex = side === "L" ? xL : xR; return xC + (ex - xC) * (1 - u); };
+  const ticks = [0.25, 0.5, 0.75, 1].map((f) => { const t = (f * ymax) ** 2; return { y: yOf(t), label: ageMa(t) }; });
+  const beads = (arr, side) => arr.map((n) => ({ n, x: xOf(side, n.age), y: yOf(n.age), side }));
+  const bA = beads(uniqueA, "L"), bB = beads(uniqueB, "R");
+  const key = `${A.__id}-${B.__id}`;
+
+  const Leaf = ({ a, x }) => (
+    <g className="leaf" style={{ animationDelay: ".75s" }}>
+      <circle cx={x} cy={Y0} r={5} fill={C.accent2} />
+      <text x={x} y={48} textAnchor="middle" fontSize="13" fontWeight="800" fill={C.ink}
+        fontFamily="'Baloo 2',cursive">{a.name}</text>
+      <text x={x} y={72} textAnchor="middle" fontSize="30">{a.emoji || ""}</text>
+      {!a.emoji && <text x={x} y={70} textAnchor="middle" fontSize="15" fontWeight="800" fill={C.accent2}>{a.name.slice(0, 3)}</text>}
+    </g>
+  );
+
+  return (
+    <Card>
+      <p className="disp" style={{ fontSize: 21, margin: "0 0 6px", lineHeight: 1.25 }}>
+        {A.emoji} {A.name} and {B.emoji} {B.name} last shared an ancestor about{" "}
+        <span style={{ color: C.accent }}>{fmtBig(age)} years ago</span>.
+      </p>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", margin: "4px 0 6px" }}>
+        <Pill>They’re {closeness(age)}</Pill>
+        <Pill>{age > 66 ? "Older than the last dinosaurs (66 Ma)" : "Younger than the last dinosaurs (66 Ma)"}</Pill>
+      </div>
+      <p style={{ margin: "0 0 6px", color: C.sub, fontSize: 14 }}>
+        Their common ancestor belonged to <b style={{ color: C.ink }}>{mrca.common}</b>{" "}
+        <span className="mono" style={{ color: C.sub }}>({mrca.sci})</span> — so both are part of that group.
+      </p>
+
+      <div style={{ background: C.panel2, border: `1px solid ${C.border}`, borderRadius: 14,
+        padding: "12px 14px", margin: "2px 0 8px" }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+          <span style={{ fontWeight: 800, fontSize: 14 }}>🧬 Shared DNA <span style={{ color: C.sub, fontWeight: 700 }}>(very rough guess)</span></span>
+          <span className="mono" style={{ color: C.accent, fontSize: 20, fontWeight: 700 }}>≈ {simText(sim)}%</span>
+        </div>
+        <div style={{ height: 10, borderRadius: 999, background: C.bg, marginTop: 8, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${sim}%`,
+            background: `linear-gradient(90deg, ${C.line}, ${C.accent2})`, borderRadius: 999,
+            transition: "width .6s ease" }} />
+        </div>
+        <p style={{ margin: "8px 0 0", color: C.sub, fontSize: 11.5, lineHeight: 1.5 }}>
+          Scientists measure “shared DNA” a few ways. Close cousins are compared letter-by-letter
+          (chimps ≈ 99%); distant cousins by shared <i>genes</i> (we share ~half our genes even with
+          a chicken). This bar blends both, so treat it as a fun ballpark — not a measured value.
+        </p>
+      </div>
+
+      <div style={{ overflowX: "auto", marginTop: 6 }}>
+        <svg viewBox="0 0 760 560" width="100%" style={{ minWidth: 560, display: "block" }} key={key}>
+          {/* time grid */}
+          {ticks.map((t, i) => (
+            <g key={i}>
+              <line x1="56" y1={t.y} x2="752" y2={t.y} stroke={C.border} strokeWidth="1" strokeDasharray="2 6" />
+              <text x="8" y={t.y + 4} fontSize="10" fill={C.sub} className="mono">{t.label}</text>
+            </g>
+          ))}
+          <text x="8" y={Y0 - 2} fontSize="10" fill={C.sub} className="mono">today</text>
+
+          {/* branches */}
+          <line className="arm" x1={xL} y1={Y0} x2={xC} y2={YM} stroke={C.line} strokeWidth="3" strokeLinecap="round" fill="none" />
+          <line className="arm b" x1={xR} y1={Y0} x2={xC} y2={YM} stroke={C.line} strokeWidth="3" strokeLinecap="round" fill="none" />
+
+          {/* clade beads */}
+          {[...bA, ...bB].map((b, i) => (
+            <g key={i} className="bead" style={{ animationDelay: `${0.55 + i * 0.05}s` }}>
+              <circle cx={b.x} cy={b.y} r="4.5" fill={C.ink} />
+              <text x={b.side === "L" ? b.x - 11 : b.x + 11} y={b.y + 4}
+                textAnchor={b.side === "L" ? "end" : "start"} fontSize="11" fill={C.sub}>
+                {b.n.common} <tspan className="mono" fill={C.line}>· {ageMa(b.n.age)}</tspan>
+              </text>
+            </g>
+          ))}
+
+          {/* leaves */}
+          <Leaf a={A} x={xL} /><Leaf a={B} x={xR} />
+
+          {/* MRCA */}
+          <circle className="halo" cx={xC} cy={YM} r="14" fill={C.accent} />
+          <circle cx={xC} cy={YM} r="11" fill={C.accent} stroke={C.bg} strokeWidth="3" />
+          <text x={xC} y={YM - 22} textAnchor="middle" fontSize="11" fill={C.sub} fontStyle="italic">they split here</text>
+          <text x={xC} y={YM + 32} textAnchor="middle" fontSize="15" fontWeight="800" fill={C.accent2}
+            fontFamily="'Baloo 2',cursive">{mrca.common}</text>
+          <text x={xC} y={YM + 50} textAnchor="middle" fontSize="11" fill={C.sub} fontStyle="italic">{mrca.sci}</text>
+          <text x={xC} y={YM + 74} textAnchor="middle" fontSize="18" fontWeight="700" fill={C.accent}
+            className="mono">≈ {ageMa(age)}</text>
+        </svg>
+      </div>
+    </Card>
+  );
+}
+
+function Pill({ children }) {
+  return (
+    <span style={{ background: C.panel2, border: `1px solid ${C.border}`, color: C.ink,
+      borderRadius: 999, padding: "5px 12px", fontSize: 13, fontWeight: 700 }}>{children}</span>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<CommonAncestorExplorer />);
+
+</script>
+</body>
+</html>
