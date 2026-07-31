@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Time — A Timeline of Earth and Life</title>
+<meta name="description" content="A zoomable, scrollable timeline of Earth's history, from the planet's formation 4.54 billion years ago to the present day.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏳</text></svg>">
+<style>
+  html, body { margin: 0; background: #08191d; height: 100%; overflow: hidden; }
+  #root { height: 100%; }
+  .boot { color: #7fa7a1; font-family: system-ui, sans-serif; text-align: center; padding: 80px 16px; }
+</style>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+</head>
+<body>
+<div id="root"><div class="boot">Winding back the clock…⏳</div></div>
+
+<!--
+  DATA NOTE
+  ---------
+  The DATA object below is a copy of timeline-data.json, inlined so this page
+  works when opened directly from disk (a file:// fetch of a sibling JSON is
+  blocked by CORS). timeline-data.json remains the standalone data artifact;
+  if you edit one, mirror the change to the other.
+
+  DESIGN NOTE
+  -----------
+  Colour encodes the three GROUPS (Earth / Life / Humans), not the eight
+  categories: an eight-hue categorical palette cannot clear the all-pairs
+  colour-blindness gate at any ordering, and timeline marks scatter freely
+  rather than sitting in a fixed adjacency. So category identity is carried by
+  ROW POSITION plus an emoji and a direct text label on every mark, and colour
+  is redundant reinforcement. Certainty is carried by mark texture. The
+  three-hue palette is validated for this exact surface (#08191d).
+-->
+
+<script type="text/babel" data-presets="react">
+const { useState, useRef, useEffect, useCallback, useMemo, useLayoutEffect } = React;
+
+/* ==================================================================== *
+ * DATA — mirror of timeline-data.json
+ * ==================================================================== */
+
+const REF_YEAR = 2026;
+
+const GROUPS = {
+  earth:  { name: "The Planet", color: "#3987e5", blurb: "Rock, ice, air, and the occasional asteroid." },
+  life:   { name: "Life",       color: "#199e70", blurb: "Origins and endings of the living world." },
+  humans: { name: "Humans",     color: "#d95926", blurb: "Our own branch, and everything it built." },
+};
+
+const CATEGORIES = {
+  geology:      { name: "Planet & continents", emoji: "🌍", group: "earth" },
+  impact:       { name: "Impacts",             emoji: "☄️", group: "earth" },
+  climate:      { name: "Climate & ice",       emoji: "🌡️", group: "earth" },
+  origin:       { name: "Life appears",        emoji: "🌱", group: "life"  },
+  extinction:   { name: "Extinctions",         emoji: "💀", group: "life"  },
+  human:        { name: "Human evolution",     emoji: "🦴", group: "humans"},
+  civilization: { name: "Civilization",        emoji: "🏛️", group: "humans"},
+  tech:         { name: "Discovery & tech",    emoji: "💡", group: "humans"},
+};
+
+const CAT_ORDER = ["geology","impact","climate","origin","extinction","human","civilization","tech"];
+
+const SCALE = [
+  { id:"hadean", name:"Hadean", rank:"eon", parent:null, startYbp:4567e6, endYbp:4031e6, blurb:"A molten, hellish world under constant bombardment. Named for Hades." },
+  { id:"archean", name:"Archean", rank:"eon", parent:null, startYbp:4031e6, endYbp:2500e6, blurb:"Oceans form, the first life appears, and the sky has no oxygen." },
+  { id:"proterozoic", name:"Proterozoic", rank:"eon", parent:null, startYbp:2500e6, endYbp:538.8e6, blurb:"Oxygen floods the air, complex cells evolve, and the planet freezes over twice." },
+  { id:"phanerozoic", name:"Phanerozoic", rank:"eon", parent:null, startYbp:538.8e6, endYbp:0, blurb:"The age of visible life — everything with shells, bones, leaves, and legs." },
+
+  { id:"eoarchean", name:"Eoarchean", rank:"era", parent:"archean", startYbp:4031e6, endYbp:3600e6 },
+  { id:"paleoarchean", name:"Paleoarchean", rank:"era", parent:"archean", startYbp:3600e6, endYbp:3200e6 },
+  { id:"mesoarchean", name:"Mesoarchean", rank:"era", parent:"archean", startYbp:3200e6, endYbp:2800e6 },
+  { id:"neoarchean", name:"Neoarchean", rank:"era", parent:"archean", startYbp:2800e6, endYbp:2500e6 },
+  { id:"paleoproterozoic", name:"Paleoproterozoic", rank:"era", parent:"proterozoic", startYbp:2500e6, endYbp:1600e6 },
+  { id:"mesoproterozoic", name:"Mesoproterozoic", rank:"era", parent:"proterozoic", startYbp:1600e6, endYbp:1000e6 },
+  { id:"neoproterozoic", name:"Neoproterozoic", rank:"era", parent:"proterozoic", startYbp:1000e6, endYbp:538.8e6 },
+  { id:"paleozoic", name:"Paleozoic", rank:"era", parent:"phanerozoic", startYbp:538.8e6, endYbp:251.902e6, blurb:"Life conquers the sea, then the land. Ends in the worst catastrophe ever." },
+  { id:"mesozoic", name:"Mesozoic", rank:"era", parent:"phanerozoic", startYbp:251.902e6, endYbp:66e6, blurb:"The age of dinosaurs, from the Great Dying to the asteroid." },
+  { id:"cenozoic", name:"Cenozoic", rank:"era", parent:"phanerozoic", startYbp:66e6, endYbp:0, blurb:"The age of mammals, grass, and eventually us." },
+
+  { id:"tonian", name:"Tonian", rank:"period", parent:"neoproterozoic", startYbp:1000e6, endYbp:720e6 },
+  { id:"cryogenian", name:"Cryogenian", rank:"period", parent:"neoproterozoic", startYbp:720e6, endYbp:635e6, blurb:"Snowball Earth — glaciers reach the equator, twice." },
+  { id:"ediacaran", name:"Ediacaran", rank:"period", parent:"neoproterozoic", startYbp:635e6, endYbp:538.8e6, blurb:"The first large, soft-bodied animals — unlike anything alive today." },
+  { id:"cambrian", name:"Cambrian", rank:"period", parent:"paleozoic", startYbp:538.8e6, endYbp:486.85e6, blurb:"Almost every animal body plan appears in a geological instant." },
+  { id:"ordovician", name:"Ordovician", rank:"period", parent:"paleozoic", startYbp:486.85e6, endYbp:443.8e6, blurb:"Sea life diversifies wildly; the first plants creep onto land." },
+  { id:"silurian", name:"Silurian", rank:"period", parent:"paleozoic", startYbp:443.8e6, endYbp:419.2e6, blurb:"Jawed fish, and the first animals to walk on dry land." },
+  { id:"devonian", name:"Devonian", rank:"period", parent:"paleozoic", startYbp:419.2e6, endYbp:358.9e6, blurb:"The Age of Fishes. Forests appear, and fins become feet." },
+  { id:"carboniferous", name:"Carboniferous", rank:"period", parent:"paleozoic", startYbp:358.9e6, endYbp:298.9e6, blurb:"Vast coal swamps, 35% oxygen, and dragonflies the size of hawks." },
+  { id:"permian", name:"Permian", rank:"period", parent:"paleozoic", startYbp:298.9e6, endYbp:251.902e6, blurb:"One giant continent, sprawling deserts, and the rise of reptiles." },
+  { id:"triassic", name:"Triassic", rank:"period", parent:"mesozoic", startYbp:251.902e6, endYbp:201.4e6, blurb:"Recovery from the Great Dying. The first dinosaurs and first mammals." },
+  { id:"jurassic", name:"Jurassic", rank:"period", parent:"mesozoic", startYbp:201.4e6, endYbp:145e6, blurb:"Giant sauropods, the first birds, and Pangaea tearing apart." },
+  { id:"cretaceous", name:"Cretaceous", rank:"period", parent:"mesozoic", startYbp:145e6, endYbp:66e6, blurb:"Flowers bloom, T. rex hunts, and it ends with a bang." },
+  { id:"paleogene", name:"Paleogene", rank:"period", parent:"cenozoic", startYbp:66e6, endYbp:23.03e6, blurb:"Mammals inherit an empty world and get big fast." },
+  { id:"neogene", name:"Neogene", rank:"period", parent:"cenozoic", startYbp:23.03e6, endYbp:2.58e6, blurb:"Grasslands spread, apes diversify, and our lineage splits off." },
+  { id:"quaternary", name:"Quaternary", rank:"period", parent:"cenozoic", startYbp:2.58e6, endYbp:0, blurb:"Repeating ice ages — and the whole human story." },
+
+  { id:"paleocene", name:"Paleocene", rank:"epoch", parent:"paleogene", startYbp:66e6, endYbp:56e6 },
+  { id:"eocene", name:"Eocene", rank:"epoch", parent:"paleogene", startYbp:56e6, endYbp:33.9e6 },
+  { id:"oligocene", name:"Oligocene", rank:"epoch", parent:"paleogene", startYbp:33.9e6, endYbp:23.03e6 },
+  { id:"miocene", name:"Miocene", rank:"epoch", parent:"neogene", startYbp:23.03e6, endYbp:5.333e6 },
+  { id:"pliocene", name:"Pliocene", rank:"epoch", parent:"neogene", startYbp:5.333e6, endYbp:2.58e6 },
+  { id:"pleistocene", name:"Pleistocene", rank:"epoch", parent:"quaternary", startYbp:2.58e6, endYbp:11700, blurb:"The Ice Age proper — mammoths, cave lions, and glaciers to Ohio." },
+  { id:"holocene", name:"Holocene", rank:"epoch", parent:"quaternary", startYbp:11700, endYbp:0, blurb:"The warm window in which every civilization has existed." },
+];
+
+const E = (id,label,emoji,category,time,certainty,blurb,year) => {
+  const e = { id, label, emoji, category, certainty, blurb };
+  if (Array.isArray(time)) { e.startYbp = time[0]; e.endYbp = time[1]; }
+  else e.ybp = time;
+  if (year !== undefined) e.year = year;
+  return e;
+};
+
+const EVENTS = [
+  E("earth-formation","Earth forms","🌍","geology",4540e6,"firm","Dust and rock in the young Sun's disk clump together into a planet in perhaps 10-20 million years."),
+  E("moon-forming-impact","A Mars-sized world hits Earth; the Moon forms","🌙","impact",4510e6,"approximate","The impactor, nicknamed Theia, blasts enough debris into orbit to coalesce into the Moon. Earth's day is about 5 hours long afterward."),
+  E("first-oceans","Liquid water oceans appear","🌊","geology",4400e6,"debated","Zircon crystals from Australia hint that Earth had cooled enough for oceans surprisingly early."),
+  E("late-heavy-bombardment","Late Heavy Bombardment","☄️","impact",[4100e6,3800e6],"debated","A proposed storm of asteroids batters the inner planets — the source of most large lunar craters. Whether it was a distinct spike is still argued."),
+  E("first-life","Life begins","🦠","origin",3800e6,"debated","Chemical signatures in ancient rocks suggest single-celled life already existed. Everything alive today descends from one of these populations."),
+  E("stromatolites","Oldest clear microbial fossils","🪨","origin",3480e6,"approximate","Layered mats of bacteria — stromatolites — leave unmistakable structures in Australian rock. Living versions still grow in Shark Bay."),
+  E("photosynthesis","Photosynthesis evolves","☀️","origin",3400e6,"debated","Early microbes learn to run on sunlight. The first versions produce no oxygen at all."),
+  E("cyanobacteria","Cyanobacteria start making oxygen","🫧","origin",2800e6,"debated","A new kind of photosynthesis splits water and dumps oxygen as waste. It will remake the entire planet."),
+  E("great-oxidation","Great Oxidation Event","💨","climate",[2430e6,2100e6],"firm","Oxygen finally builds up in the air. To most life at the time it is a deadly poison — probably the largest extinction in Earth's history, and it left no fossils."),
+  E("huronian-glaciation","Huronian glaciation — first great ice age","🧊","climate",[2400e6,2100e6],"approximate","Rising oxygen destroys atmospheric methane, and the planet plunges into a 300-million-year freeze."),
+  E("eukaryotes","Complex cells (eukaryotes) evolve","🧬","origin",1900e6,"debated","One cell swallows another and keeps it. That captive becomes the mitochondrion — the power plant in every cell of your body."),
+  E("sexual-reproduction","Sexual reproduction appears","🔀","origin",1200e6,"debated","Shuffling genes between two parents massively speeds up evolution. Fossil red algae show the earliest good evidence."),
+  E("multicellular","First multicellular life","🪸","origin",1050e6,"debated","Bangiomorpha, a fossil red seaweed, is the oldest known organism made of specialized cells working as one body."),
+  E("snowball-earth","Snowball Earth","❄️","climate",[717e6,635e6],"approximate","Two enormous glaciations — the Sturtian and Marinoan — may have carried ice sheets all the way to the equator."),
+  E("first-animals","First animals (sponges)","🧽","origin",700e6,"debated","Molecular clocks put the animal kingdom's origin here, though convincing sponge fossils come later. Every animal, including you, traces back to this branch."),
+  E("ediacaran-biota","Ediacaran biota — the strange first big life","🌿","origin",[575e6,538.8e6],"firm","Fronds, discs, and quilted bags up to a meter across. Many are so alien that scientists still argue whether they were animals at all."),
+  E("cambrian-explosion","Cambrian Explosion","🦐","origin",[538.8e6,515e6],"firm","In roughly 25 million years, nearly every major animal body plan alive today shows up — along with eyes, shells, guts, and predators."),
+  E("first-vertebrates","First vertebrates — jawless fish","🐟","origin",530e6,"approximate","Small, finless swimmers like Haikouichthys have the first true backbones. This is the start of our own lineage."),
+  E("first-land-plants","Plants move onto land","🌱","origin",470e6,"approximate","Mossy, rootless pioneers colonize bare rock, beginning the long process of building soil."),
+  E("ordovician-extinction","Ordovician-Silurian extinction","💀","extinction",444e6,"firm","The second-deadliest mass extinction: about 85% of species vanish as a sudden glaciation drops sea levels worldwide."),
+  E("first-land-animals","Animals crawl onto land","🦗","origin",430e6,"approximate","Millipede-like arthropods are the first animals to live out of water — 60 million years before anything with a backbone follows."),
+  E("jawed-fish","Fish evolve jaws","🦷","origin",423e6,"approximate","Hinged jaws turn fish from filter-feeders into hunters. Your own jaw is a direct descendant of this innovation."),
+  E("first-insects","First insects","🪰","origin",400e6,"approximate","Six legs, three body segments. Insects will go on to become the most species-rich group of animals on Earth."),
+  E("first-forests","First forests","🌲","origin",385e6,"approximate","Archaeopteris grows 30 meters tall with real wood and roots. Deep roots crack rock and pull CO2 from the air, cooling the planet."),
+  E("first-tetrapods","Fins become legs — first tetrapods","🦶","origin",375e6,"firm","Fish like Tiktaalik have shoulders, elbows, wrists, and a neck. Every amphibian, reptile, bird, and mammal is a modified fish because of this."),
+  E("late-devonian-extinction","Late Devonian extinction","💀","extinction",[372e6,359e6],"approximate","A drawn-out series of pulses wipes out roughly 75% of species, hitting reef ecosystems especially hard."),
+  E("coal-forests","Coal swamps and giant insects","🪲","climate",[358.9e6,298.9e6],"firm","Oxygen peaks near 35% of the atmosphere, letting dragonflies reach 70 cm wingspans. Buried swamp plants become nearly all the coal we burn today."),
+  E("first-reptiles","First reptiles","🦎","origin",318e6,"approximate","The shelled egg frees vertebrates from water entirely. Hylonomus, a lizard-like animal about 20 cm long, is among the earliest known."),
+  E("rainforest-collapse","Carboniferous rainforest collapse","🍂","extinction",305e6,"approximate","The great coal forests fragment and die as the climate dries. Amphibians crash; reptiles, freed from needing water, take over."),
+  E("pangaea","Pangaea fully assembled","🗺️","geology",300e6,"approximate","Nearly all land on Earth is welded into one supercontinent, surrounded by a single global ocean. You could walk from the South Pole to the Arctic."),
+  E("permian-extinction","The Great Dying","☠️","extinction",251.902e6,"firm","The worst extinction ever: up to 90% of marine species die as Siberian volcanoes erupt for a million years, acidifying and cooking the oceans. Life takes 10 million years to recover."),
+  E("first-dinosaurs","First dinosaurs","🦕","origin",231e6,"approximate","The earliest unambiguous dinosaurs are small, fast bipeds a couple of meters long — nothing like the giants to come."),
+  E("first-mammals","First mammals","🐁","origin",225e6,"approximate","Shrew-sized, furry, warm-blooded, and probably nocturnal. Mammals spend their first 160 million years staying small and out of the way."),
+  E("triassic-jurassic-extinction","Triassic-Jurassic extinction","💀","extinction",201.4e6,"firm","Massive volcanism as Pangaea begins to rift kills off about 75% of species — and clears the field for dinosaurs to dominate."),
+  E("pangaea-breakup","Pangaea breaks apart","🧩","geology",[175e6,100e6],"firm","The supercontinent splits, opening the Atlantic. Isolated landmasses send life down separate evolutionary paths."),
+  E("sauropods","Giant sauropods roam","🦕","origin",[165e6,145e6],"firm","Brachiosaurus and kin become the largest land animals ever — some over 30 meters long and 50 tonnes."),
+  E("first-birds","First birds","🪶","origin",150e6,"firm","Archaeopteryx has feathers and wings but also teeth and a long bony tail. Birds are dinosaurs — the only lineage that survived."),
+  E("flowering-plants","Flowering plants appear","🌸","origin",135e6,"approximate","Flowers strike a deal with insects: pollen delivery in exchange for nectar. Angiosperms now make up about 90% of all plant species."),
+  E("trex","Tyrannosaurus rex","🦖","origin",[68e6,66e6],"firm","T. rex lives only in the final 2 million years of the dinosaur age — closer in time to us than to Stegosaurus, which died out 80 million years earlier."),
+  E("chicxulub","Asteroid strikes; dinosaurs die","☄️","impact",66e6,"firm","A 10 km asteroid hits the Yucatan at Chicxulub. About 75% of species die, including every dinosaur except birds. Mammals inherit the planet."),
+  E("first-primates","First primates","🐒","origin",66e6,"debated","Small, tree-dwelling insect-eaters with grasping hands and forward-facing eyes appear almost immediately after the asteroid."),
+  E("petm","Paleocene-Eocene Thermal Maximum","🌡️","climate",55.8e6,"firm","A colossal carbon release warms the planet 5-8°C in a few thousand years. Crocodiles live in the Arctic. It is the closest natural analogue to modern warming."),
+  E("whales-to-sea","Whales return to the sea","🐋","origin",50e6,"firm","Hoofed land mammals related to hippos go back into the water. Fossils track the whole transition — Pakicetus walked, Basilosaurus swam."),
+  E("antarctic-glaciation","Antarctica freezes over","🏔️","climate",34e6,"firm","As Antarctica isolates and CO2 falls, permanent ice sheets form. Earth shifts from a hothouse to the icehouse world we still live in."),
+  E("grasslands","Grasslands spread worldwide","🌾","origin",[34e6,7e6],"approximate","Grasses take over drying continents, driving the evolution of grazers with high-crowned teeth — horses, antelope, cattle."),
+  E("great-apes","Great apes diverge","🦍","origin",15.8e6,"approximate","Orangutans split from the line leading to gorillas, chimps, and humans. Big-bodied, big-brained, slow-breeding apes spread across Africa and Asia."),
+  E("human-chimp-split","Human and chimpanzee lines split","🧬","human",6.4e6,"approximate","Our last common ancestor with chimpanzees lives around here. Neither species existed yet — both descend from it."),
+  E("bipedalism","Upright walking","🚶","human",4.2e6,"approximate","Australopithecus walks fully upright — the Laetoli footprints show a modern human stride 3.7 million years ago. Big brains come much later."),
+  E("stone-tools","First stone tools","⚒️","human",3.3e6,"debated","Sharp flakes from Lomekwi, Kenya, predate our own genus. Somebody in our family tree was making cutting edges before Homo existed."),
+  E("genus-homo","Genus Homo appears","🦴","human",2.8e6,"debated","Smaller faces, bigger brains, and a committed reliance on tools and meat. The earliest fossils assigned to our genus are frustratingly fragmentary."),
+  E("ice-ages-begin","The Ice Ages begin","🧊","climate",[2.58e6,11700],"firm","Not one ice age but dozens, cycling roughly every 100,000 years as Earth's orbit wobbles. Ice sheets repeatedly bury Canada and northern Europe."),
+  E("homo-erectus","Homo erectus — the first great traveler","🚶","human",[2e6,110000],"firm","Body proportions much like ours, and the first hominin to leave Africa — reaching China and Indonesia. It survives nearly 2 million years, ten times longer than us so far."),
+  E("fire","Control of fire","🔥","human",1e6,"debated","Hearths appear in the archaeological record. Cooking unlocks far more calories from food and may have paid for our expensive brains."),
+  E("neanderthals","Neanderthals","🦴","human",[400000,40000],"firm","Cold-adapted, big-brained, and skilled toolmakers who buried their dead. They interbred with us — most people outside Africa carry 1-2% Neanderthal DNA."),
+  E("homo-sapiens","Homo sapiens appears","🧍","human",300000,"approximate","Anatomically modern humans emerge in Africa. Fossils from Jebel Irhoud, Morocco, push our origin far earlier than once thought."),
+  E("out-of-africa","Out of Africa","🌍","human",[70000,50000],"approximate","The migration that populated the world. Every non-African alive today descends largely from this relatively small group."),
+  E("australia-settled","People reach Australia","🦘","human",65000,"debated","Crossing open ocean to Sahul requires real boats — the earliest strong evidence of deliberate sea voyaging."),
+  E("megafauna-extinction","Megafauna extinction","🦣","extinction",[50000,10000],"debated","Mammoths, giant sloths, sabertooths, and moa disappear continent by continent, closely tracking the arrival of humans. Climate change and hunting both played a part."),
+  E("cave-art","Cave art","🎨","human",45500,"firm","A warty pig painted on a wall in Sulawesi is the oldest known figurative art. Chauvet and Lascaux follow thousands of years later."),
+  E("last-glacial-maximum","Last Glacial Maximum","❄️","climate",[26500,19000],"firm","Ice sheets reach their peak. Sea level sits about 125 m lower, exposing land bridges — including the one from Siberia to Alaska."),
+  E("dog-domestication","Dogs domesticated","🐕","human",20000,"debated","Wolves become companions — the first domesticated animal, thousands of years before any crop or livestock."),
+  E("americas-settled","People reach the Americas","🧭","human",16000,"debated","Migration from Siberia into a continent with no humans in it. Some sites, like White Sands footprints, may push this back to 23,000 years."),
+  E("younger-dryas","Younger Dryas cold snap","🧊","climate",[12900,11700],"firm","The warming world lurches back into near-glacial cold within decades, then recovers just as abruptly. Proof that climate can flip fast."),
+  E("agriculture","Agriculture invented","🌾","human",[12000,7000],"firm","Farming begins independently in at least 11 regions — wheat in the Fertile Crescent, rice in China, maize in Mexico, potatoes in the Andes. Everything else follows from this."),
+  E("holocene-begins","Holocene begins — the warm window","🌤️","climate",11700,"firm","The current interglacial starts. Every city, empire, and written word in human history fits inside it."),
+  E("jericho","First walled towns","🏘️","civilization",11000,"approximate","Jericho and Çatalhöyük hold thousands of people — permanent settlement on a scale never seen before."),
+  E("wheel","The wheel","⚙️","tech",5526,"approximate","First used for pottery, then carts. Notably, it was never adopted for transport in the pre-Columbian Americas — there were no draft animals to pull it.",-3500),
+  E("bronze-age","Bronze Age","⚔️","civilization",[5300,3200],"firm","Alloying copper with tin makes the first hard metal tools, and the first long-distance trade networks to supply them."),
+  E("writing","Writing invented","📜","civilization",5226,"firm","Sumerian cuneiform starts as accounting marks on clay. History, in the literal sense of written record, begins here.",-3200),
+  E("great-pyramid","Great Pyramid of Giza built","🗼","civilization",4586,"firm","It stayed the tallest structure humans had ever built for about 3,800 years. Cleopatra lived closer to us in time than to its construction.",-2560),
+  E("chicken-domestication","Chickens domesticated","🐔","human",3526,"approximate","Red junglefowl in Southeast Asia become chickens, probably drawn in by rice farming. There are now about 26 billion of them — the most numerous bird on Earth, and the closest living relative you can eat to a tyrannosaur.",-1500),
+  E("iron-age","Iron Age","🔨","civilization",[3200,2000],"firm","Iron is far more common than tin, so good tools and weapons stop being a luxury of the elite."),
+  E("classical-antiquity","Classical Greece, Persia, and the Warring States","🏛️","civilization",[2600,2200],"firm","A remarkable few centuries: Athenian democracy, Greek philosophy, the Achaemenid Empire, Confucius, the Buddha, and the first Chinese unification all fall close together."),
+  E("roman-empire","Roman Empire","🏰","civilization",[2053,1550],"firm","From Augustus to the fall of the West in 476 CE. At its height it governed roughly a quarter of humanity.",-27),
+  E("islamic-golden-age","Islamic Golden Age","📖","civilization",[1250,750],"firm","Baghdad, Córdoba, and Cairo lead the world in mathematics, astronomy, medicine, and optics. Algebra and our numerals come through this era."),
+  E("printing-press","Printing press","🖨️","tech",586,"firm","Gutenberg's movable type makes books cheap in Europe. Movable type existed in China centuries earlier, but Europe's alphabet suited it better.",1440),
+  E("columbian-exchange","Columbian Exchange begins","⛵","civilization",534,"firm","Two biological worlds separated for 12,000 years collide. Crops, animals, and — devastatingly — diseases move both ways, killing perhaps 90% of the Americas' population.",1492),
+  E("scientific-revolution","Scientific Revolution","🔭","tech",[483,299],"firm","Copernicus to Newton. Explaining nature by testable mathematical law rather than authority turns out to be the most productive idea humans have ever had."),
+  E("industrial-revolution","Industrial Revolution","🏭","tech",[266,186],"firm","Coal-fired steam power ends the age of muscle and water. Human population and atmospheric CO2 both start climbing steeply from here.",1760),
+  E("deep-time-discovered","Deep time discovered","🪨","tech",238,"firm","James Hutton looks at Siccar Point and realizes Earth is unimaginably older than a few thousand years. Everything on this timeline before written history is a consequence of that insight.",1788),
+  E("origin-of-species","On the Origin of Species published","📗","tech",167,"firm","Darwin explains how the whole branching tree on this timeline came to be, without needing a designer.",1859),
+  E("germ-theory","Germ theory and vaccines","💉","tech",[165,120],"firm","Pasteur and Koch show that microbes cause disease. Average human life expectancy roughly doubles over the following century."),
+  E("world-wars","The World Wars","🕊️","civilization",[112,81],"firm","Industrial-scale warfare kills perhaps 100 million people across two conflicts and reshapes the political map of the entire world.",1914),
+  E("anthropocene","Human-driven change becomes global","🌡️","climate",[76,0],"debated","CO2 climbs past any level in 3 million years, species are lost at hundreds of times the background rate, and human-made mass now outweighs all living biomass. Whether to formally name this the Anthropocene epoch is still contested.",1950),
+  E("dna-structure","Structure of DNA solved","🧬","tech",73,"firm","Watson, Crick, Franklin, and Wilkins reveal the double helix — the molecule that connects every organism on this timeline to every other.",1953),
+  E("moon-landing","Humans walk on the Moon","🚀","tech",57,"firm","About 66 million years after the asteroid, and 3.8 billion years after life began, a descendant of those first cells stands on another world.",1969),
+  E("internet","The Internet goes public","🌐","tech",35,"firm","The World Wide Web is released to everyone. Within 30 years most of humanity is connected to it.",1991),
+  E("human-genome","Human genome sequenced","🧫","tech",23,"firm","All 3 billion letters read. It confirms in detail what the fossils already suggested about our place on the tree of life.",2003),
+];
+
+/* ==================================================================== *
+ * THEME
+ * ==================================================================== */
+
+const C = {
+  bg:"#08191d", panel:"#0e2b31", panel2:"#0c2429", border:"#1d4750",
+  ink:"#eaf4ef", sub:"#7fa7a1", faint:"#4e7a77",
+  accent:"#f2a65a", grid:"#15343a",
+};
+
+const MAX_YBP = 4.62e9;
+const MIN_SPAN = 20;
+const GUTTER = 174;
+const GUTTER_NARROW = 94;
+const NARROW_AT = 560;
+
+const PRESETS = [
+  { label:"All of time",       start: MAX_YBP,  end: 0 },
+  { label:"Life on Earth",     start: 4.0e9,    end: 0 },
+  { label:"Animals",           start: 620e6,    end: 0 },
+  { label:"Age of dinosaurs",  start: 260e6,    end: 55e6 },
+  { label:"Since the asteroid",start: 70e6,     end: 0 },
+  { label:"Human story",       start: 8e6,      end: 0 },
+  { label:"Ice age & us",      start: 320000,   end: 0 },
+  { label:"Recorded history",  start: 7000,     end: 0 },
+  { label:"Modern era",        start: 300,      end: 0 },
+];
+
+/* ==================================================================== *
+ * TIME FORMATTING
+ * ==================================================================== */
+
+function num(x, dec) {
+  let s = x.toFixed(dec);
+  if (s.indexOf(".") >= 0) s = s.replace(/0+$/, "").replace(/\.$/, "");
+  return s;
+}
+
+function decimalsFor(step, unit) {
+  const s = step / unit;
+  if (s >= 1) return 0;
+  if (s >= 0.1) return 1;
+  if (s >= 0.01) return 2;
+  return 3;
+}
+
+/** Axis tick label. `step` sets precision so labels never show false detail. */
+function fmtTick(v, step) {
+  if (v <= 0.5) return "now";
+  if (step < 2000) {
+    const y = Math.round(REF_YEAR - v);
+    if (y > 0) return String(y);
+    return num(1 - y, 0) + " BCE";
+  }
+  if (v >= 1e9) return num(v / 1e9, decimalsFor(step, 1e9)) + " Ga";
+  if (v >= 1e6) return num(v / 1e6, decimalsFor(step, 1e6)) + " Ma";
+  if (v >= 1e3) return num(v / 1e3, decimalsFor(step, 1e3)) + "ka";
+  return num(v, 0) + "y";
+}
+
+/** Rich, human-readable time for the detail panel. */
+function fmtFull(v) {
+  if (v <= 0.5) return "the present day";
+  if (v >= 1e9) return num(v / 1e9, 2) + " billion years ago";
+  if (v >= 1e6) return num(v / 1e6, 1) + " million years ago";
+  if (v >= 10000) return Math.round(v).toLocaleString() + " years ago";
+  const y = Math.round(REF_YEAR - v);
+  const cal = y > 0 ? y + " CE" : (1 - y) + " BCE";
+  return Math.round(v).toLocaleString() + " years ago (" + cal + ")";
+}
+
+function fmtDuration(a, b) {
+  const d = a - b;
+  if (d >= 1e9) return num(d / 1e9, 2) + " billion years";
+  if (d >= 1e6) return num(d / 1e6, 1) + " million years";
+  if (d >= 1e3) return Math.round(d).toLocaleString() + " years";
+  return Math.round(d) + " years";
+}
+
+function fmtSpan(span) {
+  if (span >= 1e9) return num(span / 1e9, 2) + " billion years";
+  if (span >= 1e6) return num(span / 1e6, 1) + " million years";
+  if (span >= 1e3) return Math.round(span).toLocaleString() + " years";
+  return Math.round(span) + " years";
+}
+
+function niceStep(span, target) {
+  const raw = span / target;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / mag;
+  const mult = norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10;
+  return mult * mag;
+}
+
+const evStart = (e) => (e.startYbp !== undefined ? e.startYbp : e.ybp);
+const evEnd   = (e) => (e.endYbp   !== undefined ? e.endYbp   : e.ybp);
+const isRange = (e) => e.startYbp !== undefined;
+
+/* ==================================================================== *
+ * ROOT
+ * ==================================================================== */
+
+function TimelineExplorer() {
+  const [view, setView] = useState({ start: MAX_YBP, end: 0 });
+  const [selected, setSelected] = useState(null);
+  const [hidden, setHidden] = useState(new Set());
+  const [query, setQuery] = useState("");
+  const [listMode, setListMode] = useState(false);
+  const [width, setWidth] = useState(900);
+  const [winW, setWinW] = useState(() => (typeof window !== "undefined" ? window.innerWidth : 1200));
+
+  useEffect(() => {
+    const onResize = () => setWinW(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  const narrow = winW < NARROW_AT;
+  const gut = narrow ? GUTTER_NARROW : GUTTER;
+
+  const plotRef = useRef(null);
+  const drag = useRef(null);
+  const pinch = useRef(null);
+
+  /* --- responsive width ----------------------------------------- */
+  useLayoutEffect(() => {
+    const el = plotRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setWidth(Math.max(240, el.clientWidth)));
+    ro.observe(el);
+    setWidth(Math.max(240, el.clientWidth));
+    return () => ro.disconnect();
+  }, [listMode]);
+
+  const span = view.start - view.end;
+  const xOf = useCallback((v) => ((view.start - v) / span) * width, [view, span, width]);
+  const vAt = useCallback((x) => view.start - (x / width) * span, [view, span, width]);
+
+  /* --- view manipulation ---------------------------------------- */
+  const applyView = useCallback((start, end) => {
+    let s = start, e = end, sp = s - e;
+    if (sp < MIN_SPAN) { const m = (s + e) / 2; s = m + MIN_SPAN / 2; e = m - MIN_SPAN / 2; sp = MIN_SPAN; }
+    if (sp > MAX_YBP)  { s = MAX_YBP; e = 0; sp = MAX_YBP; }
+    if (e < 0)         { e = 0; s = sp; }
+    if (s > MAX_YBP)   { s = MAX_YBP; e = Math.max(0, MAX_YBP - sp); }
+    setView({ start: s, end: e });
+  }, []);
+
+  const zoomAt = useCallback((px, factor) => {
+    const anchor = vAt(px);
+    const newSpan = Math.min(MAX_YBP, Math.max(MIN_SPAN, span * factor));
+    const s = anchor + (px / width) * newSpan;
+    applyView(s, s - newSpan);
+  }, [vAt, span, width, applyView]);
+
+  const zoomTo = useCallback((a, b, pad = 0.12) => {
+    const lo = Math.min(a, b), hi = Math.max(a, b);
+    const sp = Math.max(hi - lo, MIN_SPAN);
+    const p = sp * pad;
+    applyView(hi + p, Math.max(0, lo - p));
+  }, [applyView]);
+
+  /* --- wheel: zoom (or pan with shift) --------------------------- */
+  useEffect(() => {
+    const el = plotRef.current;
+    if (!el) return;
+    const onWheel = (ev) => {
+      ev.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const px = ev.clientX - rect.left;
+      if (ev.shiftKey) {
+        const dv = (ev.deltaY / width) * span;
+        applyView(view.start + dv, view.end + dv);
+      } else {
+        zoomAt(px, Math.exp(ev.deltaY * 0.0018));
+      }
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [zoomAt, applyView, view, span, width]);
+
+  /* --- drag to pan ----------------------------------------------- */
+  const onPointerDown = (ev) => {
+    if (ev.button !== 0) return;
+    drag.current = { x: ev.clientX, start: view.start, end: view.end, moved: false };
+    ev.currentTarget.setPointerCapture?.(ev.pointerId);
+  };
+  const onPointerMove = (ev) => {
+    const d = drag.current;
+    if (!d) return;
+    const dx = ev.clientX - d.x;
+    if (Math.abs(dx) > 3) d.moved = true;
+    const dv = (dx / width) * span;
+    applyView(d.start + dv, d.end + dv);
+  };
+  const onPointerUp = () => { drag.current = null; };
+
+  /* --- touch: pan + pinch ---------------------------------------- */
+  const onTouchStart = (ev) => {
+    if (ev.touches.length === 2) {
+      const [a, b] = ev.touches;
+      pinch.current = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), start: view.start, end: view.end };
+      drag.current = null;
+    } else if (ev.touches.length === 1) {
+      drag.current = { x: ev.touches[0].clientX, start: view.start, end: view.end, moved: false };
+    }
+  };
+  const onTouchMove = (ev) => {
+    const el = plotRef.current;
+    if (ev.touches.length === 2 && pinch.current && el) {
+      ev.preventDefault();
+      const [a, b] = ev.touches;
+      const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      const rect = el.getBoundingClientRect();
+      const px = (a.clientX + b.clientX) / 2 - rect.left;
+      const p = pinch.current;
+      const factor = Math.max(0.15, p.d / Math.max(dist, 1));
+      const pSpan = p.start - p.end;
+      const anchor = p.start - (px / width) * pSpan;
+      const newSpan = Math.min(MAX_YBP, Math.max(MIN_SPAN, pSpan * factor));
+      const s = anchor + (px / width) * newSpan;
+      applyView(s, s - newSpan);
+    } else if (ev.touches.length === 1 && drag.current) {
+      ev.preventDefault();
+      const d = drag.current;
+      const dx = ev.touches[0].clientX - d.x;
+      if (Math.abs(dx) > 3) d.moved = true;
+      const dv = (dx / width) * span;
+      applyView(d.start + dv, d.end + dv);
+    }
+  };
+  const onTouchEnd = () => { drag.current = null; pinch.current = null; };
+
+  /* --- keyboard --------------------------------------------------- */
+  useEffect(() => {
+    const onKey = (ev) => {
+      if (ev.target.tagName === "INPUT") return;
+      const pan = span * 0.18;
+      if (ev.key === "ArrowLeft")  { applyView(view.start + pan, view.end + pan); ev.preventDefault(); }
+      if (ev.key === "ArrowRight") { applyView(view.start - pan, view.end - pan); ev.preventDefault(); }
+      if (ev.key === "=" || ev.key === "+") zoomAt(width / 2, 0.7);
+      if (ev.key === "-" || ev.key === "_") zoomAt(width / 2, 1.4);
+      if (ev.key === "Escape") setSelected(null);
+      if (ev.key === "0") applyView(MAX_YBP, 0);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [view, span, width, applyView, zoomAt]);
+
+  /* --- search ------------------------------------------------------ */
+  const matches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return null;
+    return EVENTS.filter((e) =>
+      e.label.toLowerCase().includes(q) ||
+      e.blurb.toLowerCase().includes(q) ||
+      CATEGORIES[e.category].name.toLowerCase().includes(q)
+    );
+  }, [query]);
+  const matchIds = useMemo(() => (matches ? new Set(matches.map((m) => m.id)) : null), [matches]);
+
+  /* --- visible ticks ------------------------------------------------ */
+  const ticks = useMemo(() => {
+    const step = niceStep(span, Math.max(3, Math.floor(width / 96)));
+    const out = [];
+    const first = Math.ceil(view.end / step) * step;
+    for (let v = first; v <= view.start + step * 0.5; v += step) {
+      if (v < view.end - step * 0.5) continue;
+      out.push({ v, label: fmtTick(v, step) });
+      if (out.length > 60) break;
+    }
+    return out;
+  }, [view, span, width]);
+
+  /* --- rows: one per category, sub-lane packed --------------------- */
+  const rows = useMemo(() => {
+    const LANE_H = 26, ROW_PAD = 7;
+    let y = 0;
+    const out = [];
+    for (const cat of CAT_ORDER) {
+      if (hidden.has(cat)) continue;
+      const inCat = EVENTS.filter(
+        (e) => e.category === cat && evStart(e) >= view.end && evEnd(e) <= view.start
+      ).sort((a, b) => evStart(b) - evStart(a));
+
+      // Greedy lane packing, capped. Past the cap an event keeps its mark but
+      // loses its label and shares a lane — so a dense cluster collapses into a
+      // readable row of dots instead of inflating the row to dozens of lanes.
+      const MAX_LANES = 3;
+      const lanes = [];
+      const placed = [];
+      for (const e of inCat) {
+        const x1 = xOf(evStart(e));
+        const x2 = xOf(evEnd(e));
+        const textW = e.label.length * 6.15 + 30;
+        const barOnly = Math.max(x2, x1 + 11);
+        const withLabel = Math.max(x2, x1 + textW);
+
+        // Prefer a lane where the label also fits; else open a new lane; else
+        // drop the label and slot the bare mark into the first lane it fits.
+        let li = lanes.findIndex((edge) => x1 > edge + 10);
+        let labeled = true;
+        if (li === -1) {
+          if (lanes.length < MAX_LANES) { lanes.push(0); li = lanes.length - 1; }
+          else {
+            labeled = false;
+            li = lanes.findIndex((edge) => x1 > edge + 3);
+            if (li === -1) li = lanes.reduce((b, edge, i) => (edge < lanes[b] ? i : b), 0);
+          }
+        }
+        lanes[li] = labeled ? withLabel : Math.max(lanes[li], barOnly);
+        placed.push({ e, x1, x2, lane: li, labeled });
+      }
+      const h = Math.max(1, lanes.length) * LANE_H + ROW_PAD * 2;
+      out.push({ cat, y, h, laneH: LANE_H, pad: ROW_PAD, placed, count: inCat.length });
+      y += h;
+    }
+    return { list: out, total: y };
+  }, [view, xOf, hidden]);
+
+  /* --- geological bands visible in window --------------------------- */
+  const bandRows = useMemo(() => {
+    const ranks = ["eon", "era", "period", "epoch"];
+    return ranks.map((rank) => ({
+      rank,
+      bands: SCALE.filter(
+        (b) => b.rank === rank && b.startYbp > view.end && b.endYbp < view.start
+      ),
+    }));
+  }, [view]);
+
+  const toggleCat = (cat) =>
+    setHidden((prev) => {
+      const n = new Set(prev);
+      n.has(cat) ? n.delete(cat) : n.add(cat);
+      return n;
+    });
+
+  const visibleCount = rows.list.reduce((s, r) => s + r.count, 0);
+
+  return (
+    <div style={{ height:"100vh", display:"flex", flexDirection:"column",
+      background:C.bg, color:C.ink, fontFamily:"'Nunito',system-ui,sans-serif", overflow:"hidden" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+        *{box-sizing:border-box;}
+        .disp{font-family:'Baloo 2',cursive;}
+        .mono{font-family:'Space Mono',monospace;}
+        .btn{cursor:pointer;background:${C.panel2};border:1px solid ${C.border};color:${C.ink};
+          border-radius:7px;padding:5px 11px;font:inherit;font-size:12px;font-weight:700;
+          transition:background .12s,border-color .12s;white-space:nowrap;}
+        .btn:hover{background:${C.border};border-color:${C.sub};}
+        .btn[aria-pressed="true"]{background:${C.border};border-color:${C.accent};color:${C.accent};}
+        .btn.off{opacity:.42;}
+        .plot{cursor:grab;touch-action:none;}
+        .plot:active{cursor:grabbing;}
+        .ev{cursor:pointer;}
+        .ev:hover .evlabel{fill:${C.accent};}
+        .scrollArea{overflow-y:auto;overflow-x:hidden;flex:1;display:flex;}
+        .scrollArea::-webkit-scrollbar{width:10px;}
+        .scrollArea::-webkit-scrollbar-thumb{background:${C.border};border-radius:5px;}
+        input{font-family:inherit;}
+        table{border-collapse:collapse;width:100%;font-size:13px;}
+        th,td{text-align:left;padding:7px 10px;border-bottom:1px solid ${C.border};vertical-align:top;}
+        th{color:${C.sub};font-size:11px;text-transform:uppercase;letter-spacing:.08em;position:sticky;top:0;background:${C.panel2};}
+        tr:hover td{background:${C.panel};}
+      `}</style>
+
+      {/* ---------- header ---------- */}
+      <div style={{ padding:"10px 14px", background:C.panel, borderBottom:`1px solid ${C.border}`,
+        display:"flex", gap:12, alignItems:"center", flexWrap:"wrap", flex:"none" }}>
+        <div style={{ marginRight:"auto" }}>
+          <h1 className="disp" style={{ fontSize:21, margin:0, lineHeight:1.1 }}>⏳ Deep Time</h1>
+          <div style={{ color:C.sub, fontSize:11.5 }}>
+            Scroll to zoom · drag to pan · click anything for detail
+          </div>
+        </div>
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search events…"
+          style={{ width:180, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:7,
+            padding:"6px 10px", color:C.ink, fontSize:12.5, outline:"none" }} />
+        <button className="btn" aria-pressed={listMode} onClick={() => setListMode((v) => !v)}>
+          {listMode ? "◧ Timeline" : "☰ List"}
+        </button>
+      </div>
+
+      {/* ---------- presets ---------- */}
+      {!listMode && (
+        <div style={{ padding:"7px 14px", background:C.panel2, borderBottom:`1px solid ${C.border}`,
+          display:"flex", gap:6, flexWrap:"wrap", alignItems:"center", flex:"none" }}>
+          <span style={{ fontSize:10.5, color:C.faint, fontWeight:800, letterSpacing:".09em" }}>JUMP TO</span>
+          {PRESETS.map((p) => (
+            <button key={p.label} className="btn" onClick={() => applyView(p.start, p.end)}>{p.label}</button>
+          ))}
+        </div>
+      )}
+
+      {listMode ? (
+        <ListView query={query} onPick={(e) => { setListMode(false); setSelected(e); zoomTo(evStart(e), evEnd(e), 1.4); }} />
+      ) : (
+        <>
+          {/* ---------- overview (log scale) ---------- */}
+          <Overview view={view} onNavigate={applyView} gut={gut} narrow={narrow} />
+
+          {/* ---------- axis + geological bands ---------- */}
+          <div style={{ display:"flex", flex:"none", background:C.panel2, borderBottom:`1px solid ${C.border}` }}>
+            <div style={{ width:gut, flex:"none", borderRight:`1px solid ${C.border}`,
+              display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:"0 9px 5px" }}>
+              <div style={{ fontSize:narrow ? 8.5 : 10, color:C.faint, fontWeight:800, letterSpacing:".08em" }}>
+                {narrow ? "GEO TIME" : "GEOLOGICAL TIME"}
+              </div>
+            </div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <AxisAndBands width={width} ticks={ticks} bandRows={bandRows} xOf={xOf}
+                view={view} onZoomBand={(b) => zoomTo(b.startYbp, b.endYbp)} />
+            </div>
+          </div>
+
+          {/* ---------- main scrollable plot ---------- */}
+          <div className="scrollArea">
+            {/* gutter */}
+            <div style={{ width:gut, flex:"none", borderRight:`1px solid ${C.border}`, background:C.panel2 }}>
+              {rows.list.map((r) => {
+                const cat = CATEGORIES[r.cat];
+                const g = GROUPS[cat.group];
+                return (
+                  <div key={r.cat} title={cat.name} style={{ height:r.h, borderBottom:`1px solid ${C.grid}`,
+                    padding:narrow ? "6px 6px" : "6px 9px", display:"flex", flexDirection:"column",
+                    justifyContent:"center", gap:2, overflow:"hidden" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:5 }}>
+                      <span style={{ width:8, height:8, borderRadius:2, background:g.color, flex:"none" }} />
+                      <span style={{ fontSize:narrow ? 15 : 12.5, fontWeight:700, lineHeight:1.15 }}>
+                        {narrow ? cat.emoji : `${cat.emoji} ${cat.name}`}
+                      </span>
+                    </div>
+                    <div className="mono" style={{ fontSize:10, color:C.faint, paddingLeft:narrow ? 0 : 14 }}>
+                      {r.count}{narrow ? "" : " shown"}
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{ height:20 }} />
+            </div>
+
+            {/* plot */}
+            <div ref={plotRef} className="plot" style={{ flex:1, minWidth:0, position:"relative" }}
+              onPointerDown={onPointerDown} onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
+              onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+              <svg width={width} height={rows.total + 20} style={{ display:"block" }}>
+                {/* vertical gridlines */}
+                {ticks.map((t, i) => (
+                  <line key={i} x1={xOf(t.v)} y1={0} x2={xOf(t.v)} y2={rows.total}
+                    stroke={C.grid} strokeWidth="1" />
+                ))}
+                {/* "now" marker */}
+                {view.end <= 0 && (
+                  <line x1={xOf(0)} y1={0} x2={xOf(0)} y2={rows.total}
+                    stroke={C.accent} strokeWidth="1.5" strokeDasharray="3 4" opacity="0.55" />
+                )}
+
+                {rows.list.map((r) => (
+                  <g key={r.cat} transform={`translate(0,${r.y})`}>
+                    <line x1="0" y1={r.h - 0.5} x2={width} y2={r.h - 0.5} stroke={C.grid} strokeWidth="1" />
+                    {r.placed.map((p) => (
+                      <EventMark key={p.e.id} p={p} row={r} width={width}
+                        dim={matchIds ? !matchIds.has(p.e.id) : false}
+                        isSelected={selected && selected.id === p.e.id}
+                        onPick={() => { if (!drag.current || !drag.current.moved) setSelected(p.e); }} />
+                    ))}
+                  </g>
+                ))}
+              </svg>
+            </div>
+          </div>
+
+          {/* ---------- footer: legend + filters + status ---------- */}
+          <div style={{ padding:"7px 14px", background:C.panel, borderTop:`1px solid ${C.border}`,
+            display:"flex", gap:14, alignItems:"center", flexWrap:"wrap", flex:"none", fontSize:11.5 }}>
+            <div style={{ display:"flex", gap:10, alignItems:"center" }}>
+              {Object.entries(GROUPS).map(([k, g]) => (
+                <span key={k} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                  <span style={{ width:10, height:10, borderRadius:3, background:g.color }} />
+                  <span style={{ color:C.sub }}>{g.name}</span>
+                </span>
+              ))}
+            </div>
+            <span style={{ color:C.faint }}>|</span>
+            <div style={{ display:"flex", gap:10, alignItems:"center", color:C.sub }}>
+              <span style={{ display:"flex", alignItems:"center", gap:5 }}>
+                <svg width="14" height="14"><circle cx="7" cy="7" r="4.5" fill={C.sub} /></svg> certain
+              </span>
+              <span style={{ display:"flex", alignItems:"center", gap:5 }}>
+                <svg width="14" height="14"><circle cx="7" cy="7" r="4.5" fill="none" stroke={C.sub} strokeWidth="1.6" strokeDasharray="2 1.6" /></svg> debated
+              </span>
+            </div>
+            <div style={{ marginLeft:"auto", display:"flex", gap:5, flexWrap:"wrap" }}>
+              {CAT_ORDER.map((cat) => (
+                <button key={cat} className={"btn" + (hidden.has(cat) ? " off" : "")}
+                  onClick={() => toggleCat(cat)} title={`Show / hide ${CATEGORIES[cat].name}`}
+                  style={{ padding:"3px 7px", fontSize:11 }}>
+                  {CATEGORIES[cat].emoji}
+                </button>
+              ))}
+            </div>
+            <span className="mono" style={{ color:C.faint, fontSize:10.5 }}>
+              window {fmtSpan(span)} · {visibleCount} events
+            </span>
+          </div>
+        </>
+      )}
+
+      {selected && (
+        <DetailPanel e={selected} onClose={() => setSelected(null)}
+          onZoom={() => zoomTo(evStart(selected), evEnd(selected), 1.4)} />
+      )}
+    </div>
+  );
+}
+
+/* ==================================================================== *
+ * EVENT MARK
+ * ==================================================================== */
+
+function EventMark({ p, row, width, dim, isSelected, onPick }) {
+  const { e, x1, x2, lane, labeled } = p;
+  const cat = CATEGORIES[e.category];
+  const color = GROUPS[cat.group].color;
+  const cy = row.pad + lane * row.laneH + row.laneH / 2;
+  const range = isRange(e);
+  const debated = e.certainty === "debated";
+  const approx = e.certainty === "approximate";
+
+  // Keep the label on screen when the mark itself has scrolled off the left edge.
+  const labelX = Math.max(4, x1 + (range ? 0 : 9));
+  const opacity = dim ? 0.2 : 1;
+
+  return (
+    <g className="ev" opacity={opacity} onClick={(ev) => { ev.stopPropagation(); onPick(); }}>
+      <title>{e.emoji + " " + e.label}</title>
+      {range ? (
+        <rect x={x1} y={cy - 6} width={Math.max(2.5, x2 - x1)} height={12} rx={4}
+          fill={color} fillOpacity={debated ? 0.16 : approx ? 0.42 : 0.72}
+          stroke={color} strokeWidth={isSelected ? 2 : 1.4}
+          strokeDasharray={debated ? "3 2.5" : "none"} />
+      ) : (
+        <circle cx={x1} cy={cy} r={isSelected ? 6.5 : 5}
+          fill={debated ? C.bg : color}
+          stroke={debated || approx ? color : "none"} strokeWidth={1.8}
+          strokeDasharray={debated ? "2.4 1.9" : "none"} />
+      )}
+      {isSelected && (
+        <circle cx={range ? (x1 + x2) / 2 : x1} cy={cy} r={11}
+          fill="none" stroke={C.accent} strokeWidth="1.5" opacity="0.8" />
+      )}
+      {labeled && (
+        <text className="evlabel" x={labelX + (range ? 7 : 0)} y={cy + 4}
+          fontSize="11.5" fill={isSelected ? C.accent : C.ink}
+          fontWeight={isSelected ? 800 : 600} style={{ pointerEvents:"none" }}>
+          {e.emoji} {e.label}
+        </text>
+      )}
+    </g>
+  );
+}
+
+/* ==================================================================== *
+ * AXIS + GEOLOGICAL BANDS
+ * ==================================================================== */
+
+function AxisAndBands({ width, ticks, bandRows, xOf, view, onZoomBand }) {
+  const BAND_H = 19, AXIS_H = 20;
+  const totalH = AXIS_H + bandRows.length * BAND_H + 3;
+
+  return (
+    <svg width={width} height={totalH} style={{ display:"block" }}>
+      {/* axis */}
+      {ticks.map((t, i) => {
+        const x = xOf(t.v);
+        // Anchor edge labels inward so they are never clipped by the viewport.
+        const anchor = x < 26 ? "start" : x > width - 26 ? "end" : "middle";
+        const tx = anchor === "start" ? 1 : anchor === "end" ? width - 1 : x;
+        return (
+          <g key={i}>
+            <line x1={x} y1={AXIS_H - 5} x2={x} y2={AXIS_H} stroke={C.faint} strokeWidth="1" />
+            <text x={tx} y={AXIS_H - 8} textAnchor={anchor} fontSize="10"
+              fill={C.sub} className="mono">{t.label}</text>
+          </g>
+        );
+      })}
+
+      {/* bands */}
+      {bandRows.map((br, ri) => (
+        <g key={br.rank} transform={`translate(0,${AXIS_H + ri * BAND_H})`}>
+          {br.bands.map((b) => {
+            const bx1 = Math.max(-2, xOf(b.startYbp));
+            const bx2 = Math.min(width + 2, xOf(b.endYbp));
+            const w = bx2 - bx1;
+            if (w < 1.5) return null;
+            const label = b.name;
+            const fits = w > label.length * 5.6 + 10;
+            // Sticky label: keep it inside the visible slice of a band that
+            // extends past the viewport, so you always know where you are.
+            const cx = Math.min(Math.max((bx1 + bx2) / 2, bx1 + 4), bx2 - 4);
+            return (
+              <g key={b.id} onClick={() => onZoomBand(b)} style={{ cursor:"zoom-in" }}>
+                <title>{b.name}{b.blurb ? " — " + b.blurb : ""}</title>
+                <rect x={bx1 + 0.5} y={1} width={Math.max(1, w - 1)} height={BAND_H - 3} rx={3}
+                  fill={C.panel} stroke={C.border} strokeWidth="1" />
+                {fits && (
+                  <text x={cx} y={BAND_H - 7} textAnchor="middle" fontSize="10"
+                    fill={C.sub} fontWeight="700" style={{ pointerEvents:"none" }}>{label}</text>
+                )}
+              </g>
+            );
+          })}
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+/* ==================================================================== *
+ * OVERVIEW STRIP (log scale — the whole 4.5 Ga at once)
+ * ==================================================================== */
+
+const LOG_MIN = 10;
+const logX = (v, w) => {
+  const hi = Math.log10(MAX_YBP), lo = Math.log10(LOG_MIN);
+  const c = Math.log10(Math.max(LOG_MIN, Math.min(MAX_YBP, v)));
+  return ((hi - c) / (hi - lo)) * w;
+};
+
+function Overview({ view, onNavigate, gut = GUTTER, narrow = false }) {
+  const ref = useRef(null);
+  const [w, setW] = useState(900);
+  const drag = useRef(false);
+  const H = 40;
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setW(Math.max(200, el.clientWidth)));
+    ro.observe(el);
+    setW(Math.max(200, el.clientWidth));
+    return () => ro.disconnect();
+  }, []);
+
+  const jump = useCallback((clientX) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const frac = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    const hi = Math.log10(MAX_YBP), lo = Math.log10(LOG_MIN);
+    const center = Math.pow(10, hi - frac * (hi - lo));
+    const span = view.start - view.end;
+    onNavigate(center + span / 2, center - span / 2);
+  }, [view, onNavigate]);
+
+  const x1 = logX(view.start, w), x2 = logX(view.end, w);
+  // Spread on the log axis — "life" (3.8 Ga) sits ~12px from "Earth" and is dropped.
+  // Narrow screens keep only the widely-separated landmarks.
+  const marks = narrow
+    ? [{ v: 4540e6, t: "Earth" }, { v: 66e6, t: "asteroid" }, { v: LOG_MIN, t: "now" }]
+    : [
+        { v: 4540e6, t: "Earth" }, { v: 538.8e6, t: "animals" },
+        { v: 66e6, t: "asteroid" }, { v: 300000, t: "us" }, { v: 5226, t: "writing" },
+        { v: LOG_MIN, t: "now" },
+      ];
+
+  return (
+    <div style={{ display:"flex", flex:"none", background:C.bg, borderBottom:`1px solid ${C.border}` }}>
+      <div style={{ width:gut, flex:"none", borderRight:`1px solid ${C.border}`,
+        padding:"0 9px", display:"flex", alignItems:"center" }}>
+        <span style={{ fontSize:narrow ? 8.5 : 10, color:C.faint, fontWeight:800, letterSpacing:".08em" }}>
+          ALL OF TIME
+        </span>
+      </div>
+      <div ref={ref} style={{ flex:1, minWidth:0, cursor:"crosshair" }}
+        onPointerDown={(e) => { drag.current = true; jump(e.clientX); }}
+        onPointerMove={(e) => { if (drag.current) jump(e.clientX); }}
+        onPointerUp={() => { drag.current = false; }}
+        onPointerLeave={() => { drag.current = false; }}>
+        <svg width={w} height={H} style={{ display:"block" }}>
+          <rect x="0" y="13" width={w} height="14" rx="4" fill={C.panel2} stroke={C.border} />
+          {/* every event as a faint tick, coloured by group */}
+          {EVENTS.map((e) => {
+            const x = logX(evStart(e), w);
+            return <line key={e.id} x1={x} y1="15" x2={x} y2="25" strokeWidth="1.4"
+              stroke={GROUPS[CATEGORIES[e.category].group].color} opacity="0.5" />;
+          })}
+          {/* current window */}
+          <rect x={Math.min(x1, x2)} y="10" width={Math.max(3, Math.abs(x2 - x1))} height="20"
+            rx="4" fill={C.accent} fillOpacity="0.2" stroke={C.accent} strokeWidth="1.5" />
+          {marks.map((m) => {
+            const mx = logX(m.v, w);
+            const anchor = mx < 18 ? "start" : mx > w - 18 ? "end" : "middle";
+            return (
+              <text key={m.t} x={anchor === "end" ? w - 1 : anchor === "start" ? 1 : mx}
+                y="38" textAnchor={anchor} fontSize="9" fill={C.faint} className="mono">{m.t}</text>
+            );
+          })}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+/* ==================================================================== *
+ * DETAIL PANEL
+ * ==================================================================== */
+
+const CERTAINTY_TEXT = {
+  firm: "Well constrained — dated directly and widely agreed.",
+  approximate: "Good consensus on the ballpark; the exact figure moves with new finds.",
+  debated: "Actively argued over. One plausible estimate, not a settled fact.",
+};
+
+function DetailPanel({ e, onClose, onZoom }) {
+  const cat = CATEGORIES[e.category];
+  const g = GROUPS[cat.group];
+  const range = isRange(e);
+
+  return (
+    <div style={{ position:"fixed", right:14, bottom:14, width:340, maxWidth:"calc(100vw - 28px)",
+      background:C.panel, border:`1px solid ${C.border}`, borderLeft:`3px solid ${g.color}`,
+      borderRadius:12, padding:"14px 16px", boxShadow:"0 12px 40px rgba(0,0,0,.55)", zIndex:50 }}>
+      <button className="btn" onClick={onClose}
+        style={{ position:"absolute", top:10, right:10, padding:"2px 7px", fontSize:12 }}>✕</button>
+
+      <div style={{ fontSize:11, color:g.color, fontWeight:800, letterSpacing:".07em",
+        textTransform:"uppercase", marginBottom:3 }}>
+        {cat.emoji} {cat.name}
+      </div>
+      <div className="disp" style={{ fontSize:19, lineHeight:1.2, marginBottom:6, paddingRight:22 }}>
+        {e.emoji} {e.label}
+      </div>
+
+      <div className="mono" style={{ fontSize:12.5, color:C.accent, marginBottom:2 }}>
+        {range ? `${fmtFull(e.startYbp)} → ${fmtFull(e.endYbp)}` : fmtFull(e.ybp)}
+      </div>
+      {range && (
+        <div className="mono" style={{ fontSize:11, color:C.sub, marginBottom:8 }}>
+          lasting {fmtDuration(e.startYbp, e.endYbp)}
+        </div>
+      )}
+
+      <p style={{ margin:"8px 0 10px", fontSize:13.5, lineHeight:1.5, color:C.ink }}>{e.blurb}</p>
+
+      <div style={{ fontSize:11, color:C.sub, borderTop:`1px solid ${C.border}`, paddingTop:8,
+        display:"flex", gap:8, alignItems:"flex-start" }}>
+        <span style={{ flex:"none", fontWeight:800, color:e.certainty === "debated" ? C.accent : C.sub }}>
+          {e.certainty.toUpperCase()}
+        </span>
+        <span style={{ lineHeight:1.4 }}>{CERTAINTY_TEXT[e.certainty]}</span>
+      </div>
+
+      <button className="btn" onClick={onZoom} style={{ marginTop:10, width:"100%" }}>
+        ⤢ Zoom to this
+      </button>
+    </div>
+  );
+}
+
+/* ==================================================================== *
+ * LIST VIEW — the accessible, non-visual path to the same data
+ * ==================================================================== */
+
+function ListView({ query, onPick }) {
+  const q = query.trim().toLowerCase();
+  const rows = EVENTS
+    .filter((e) => !q || e.label.toLowerCase().includes(q) || e.blurb.toLowerCase().includes(q))
+    .sort((a, b) => evStart(b) - evStart(a));
+
+  return (
+    <div style={{ flex:1, overflow:"auto", padding:"0 14px 20px" }}>
+      <table>
+        <thead>
+          <tr>
+            <th style={{ width:150 }}>When</th>
+            <th style={{ width:150 }}>Category</th>
+            <th>Event</th>
+            <th style={{ width:96 }}>Certainty</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((e) => {
+            const cat = CATEGORIES[e.category];
+            const g = GROUPS[cat.group];
+            return (
+              <tr key={e.id} style={{ cursor:"pointer" }} onClick={() => onPick(e)}>
+                <td className="mono" style={{ color:C.accent, fontSize:11.5, whiteSpace:"nowrap" }}>
+                  {isRange(e) ? fmtFull(e.startYbp) : fmtFull(e.ybp)}
+                </td>
+                <td style={{ color:C.sub, fontSize:12 }}>
+                  <span style={{ display:"inline-block", width:8, height:8, borderRadius:2,
+                    background:g.color, marginRight:6 }} />
+                  {cat.emoji} {cat.name}
+                </td>
+                <td>
+                  <div style={{ fontWeight:700 }}>{e.emoji} {e.label}</div>
+                  <div style={{ color:C.sub, fontSize:12, marginTop:2, lineHeight:1.45 }}>{e.blurb}</div>
+                </td>
+                <td style={{ color:e.certainty === "debated" ? C.accent : C.sub, fontSize:11 }}>
+                  {e.certainty}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      {rows.length === 0 && (
+        <p style={{ color:C.sub, textAlign:"center", padding:"40px 0" }}>Nothing matches that search.</p>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<TimelineExplorer />);
+</script>
+</body>
+</html>
