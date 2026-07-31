@@ -30,55 +30,336 @@
     ],
     "caveat": "Deep dates carry real uncertainty — often tens of millions of years for early life. Every entry carries a certainty field; respect it rather than presenting these as exact."
   },
-
   "scale": [
-    { "id": "hadean", "name": "Hadean", "rank": "eon", "parent": null, "startYbp": 4567000000, "endYbp": 4031000000, "color": "#6b2737", "blurb": "A molten, hellish world under constant bombardment. Named for Hades." },
-    { "id": "archean", "name": "Archean", "rank": "eon", "parent": null, "startYbp": 4031000000, "endYbp": 2500000000, "color": "#8c3f5d", "blurb": "Oceans form, the first life appears, and the sky has no oxygen." },
-    { "id": "proterozoic", "name": "Proterozoic", "rank": "eon", "parent": null, "startYbp": 2500000000, "endYbp": 538800000, "color": "#3f6d8c", "blurb": "Oxygen floods the air, complex cells evolve, and the planet freezes over twice." },
-    { "id": "phanerozoic", "name": "Phanerozoic", "rank": "eon", "parent": null, "startYbp": 538800000, "endYbp": 0, "color": "#2f7d68", "blurb": "The age of visible life — everything with shells, bones, leaves, and legs." },
-
-    { "id": "eoarchean", "name": "Eoarchean", "rank": "era", "parent": "archean", "startYbp": 4031000000, "endYbp": 3600000000 },
-    { "id": "paleoarchean", "name": "Paleoarchean", "rank": "era", "parent": "archean", "startYbp": 3600000000, "endYbp": 3200000000 },
-    { "id": "mesoarchean", "name": "Mesoarchean", "rank": "era", "parent": "archean", "startYbp": 3200000000, "endYbp": 2800000000 },
-    { "id": "neoarchean", "name": "Neoarchean", "rank": "era", "parent": "archean", "startYbp": 2800000000, "endYbp": 2500000000 },
-
-    { "id": "paleoproterozoic", "name": "Paleoproterozoic", "rank": "era", "parent": "proterozoic", "startYbp": 2500000000, "endYbp": 1600000000 },
-    { "id": "mesoproterozoic", "name": "Mesoproterozoic", "rank": "era", "parent": "proterozoic", "startYbp": 1600000000, "endYbp": 1000000000 },
-    { "id": "neoproterozoic", "name": "Neoproterozoic", "rank": "era", "parent": "proterozoic", "startYbp": 1000000000, "endYbp": 538800000 },
-
-    { "id": "paleozoic", "name": "Paleozoic", "rank": "era", "parent": "phanerozoic", "startYbp": 538800000, "endYbp": 251902000, "color": "#4a8f7b", "blurb": "Life conquers the sea, then the land. Ends in the worst catastrophe ever." },
-    { "id": "mesozoic", "name": "Mesozoic", "rank": "era", "parent": "phanerozoic", "startYbp": 251902000, "endYbp": 66000000, "color": "#7ba05b", "blurb": "The age of dinosaurs, from the Great Dying to the asteroid." },
-    { "id": "cenozoic", "name": "Cenozoic", "rank": "era", "parent": "phanerozoic", "startYbp": 66000000, "endYbp": 0, "color": "#c9a227", "blurb": "The age of mammals, grass, and eventually us." },
-
-    { "id": "tonian", "name": "Tonian", "rank": "period", "parent": "neoproterozoic", "startYbp": 1000000000, "endYbp": 720000000 },
-    { "id": "cryogenian", "name": "Cryogenian", "rank": "period", "parent": "neoproterozoic", "startYbp": 720000000, "endYbp": 635000000, "blurb": "Snowball Earth — glaciers reach the equator, twice." },
-    { "id": "ediacaran", "name": "Ediacaran", "rank": "period", "parent": "neoproterozoic", "startYbp": 635000000, "endYbp": 538800000, "blurb": "The first large, soft-bodied animals — unlike anything alive today." },
-
-    { "id": "cambrian", "name": "Cambrian", "rank": "period", "parent": "paleozoic", "startYbp": 538800000, "endYbp": 486850000, "blurb": "Almost every animal body plan appears in a geological instant." },
-    { "id": "ordovician", "name": "Ordovician", "rank": "period", "parent": "paleozoic", "startYbp": 486850000, "endYbp": 443800000, "blurb": "Sea life diversifies wildly; the first plants creep onto land." },
-    { "id": "silurian", "name": "Silurian", "rank": "period", "parent": "paleozoic", "startYbp": 443800000, "endYbp": 419200000, "blurb": "Jawed fish, and the first animals to walk on dry land." },
-    { "id": "devonian", "name": "Devonian", "rank": "period", "parent": "paleozoic", "startYbp": 419200000, "endYbp": 358900000, "blurb": "The Age of Fishes. Forests appear, and fins become feet." },
-    { "id": "carboniferous", "name": "Carboniferous", "rank": "period", "parent": "paleozoic", "startYbp": 358900000, "endYbp": 298900000, "blurb": "Vast coal swamps, 35% oxygen, and dragonflies the size of hawks." },
-    { "id": "permian", "name": "Permian", "rank": "period", "parent": "paleozoic", "startYbp": 298900000, "endYbp": 251902000, "blurb": "One giant continent, sprawling deserts, and the rise of reptiles." },
-
-    { "id": "triassic", "name": "Triassic", "rank": "period", "parent": "mesozoic", "startYbp": 251902000, "endYbp": 201400000, "blurb": "Recovery from the Great Dying. The first dinosaurs and first mammals." },
-    { "id": "jurassic", "name": "Jurassic", "rank": "period", "parent": "mesozoic", "startYbp": 201400000, "endYbp": 145000000, "blurb": "Giant sauropods, the first birds, and Pangaea tearing apart." },
-    { "id": "cretaceous", "name": "Cretaceous", "rank": "period", "parent": "mesozoic", "startYbp": 145000000, "endYbp": 66000000, "blurb": "Flowers bloom, T. rex hunts, and it ends with a bang." },
-
-    { "id": "paleogene", "name": "Paleogene", "rank": "period", "parent": "cenozoic", "startYbp": 66000000, "endYbp": 23030000, "blurb": "Mammals inherit an empty world and get big fast." },
-    { "id": "neogene", "name": "Neogene", "rank": "period", "parent": "cenozoic", "startYbp": 23030000, "endYbp": 2580000, "blurb": "Grasslands spread, apes diversify, and our lineage splits off." },
-    { "id": "quaternary", "name": "Quaternary", "rank": "period", "parent": "cenozoic", "startYbp": 2580000, "endYbp": 0, "blurb": "Repeating ice ages — and the whole human story." },
-
-    { "id": "paleocene", "name": "Paleocene", "rank": "epoch", "parent": "paleogene", "startYbp": 66000000, "endYbp": 56000000 },
-    { "id": "eocene", "name": "Eocene", "rank": "epoch", "parent": "paleogene", "startYbp": 56000000, "endYbp": 33900000 },
-    { "id": "oligocene", "name": "Oligocene", "rank": "epoch", "parent": "paleogene", "startYbp": 33900000, "endYbp": 23030000 },
-    { "id": "miocene", "name": "Miocene", "rank": "epoch", "parent": "neogene", "startYbp": 23030000, "endYbp": 5333000 },
-    { "id": "pliocene", "name": "Pliocene", "rank": "epoch", "parent": "neogene", "startYbp": 5333000, "endYbp": 2580000 },
-    { "id": "pleistocene", "name": "Pleistocene", "rank": "epoch", "parent": "quaternary", "startYbp": 2580000, "endYbp": 11700, "blurb": "The Ice Age proper — mammoths, cave lions, and glaciers to Ohio." },
-    { "id": "holocene", "name": "Holocene", "rank": "epoch", "parent": "quaternary", "startYbp": 11700, "endYbp": 0, "blurb": "The warm window in which every civilization has existed." }
+    {
+      "id": "hadean",
+      "name": "Hadean",
+      "rank": "eon",
+      "parent": null,
+      "startYbp": 4567000000,
+      "endYbp": 4031000000,
+      "color": "#6b2737",
+      "blurb": "A molten, hellish world under constant bombardment. Named for Hades."
+    },
+    {
+      "id": "archean",
+      "name": "Archean",
+      "rank": "eon",
+      "parent": null,
+      "startYbp": 4031000000,
+      "endYbp": 2500000000,
+      "color": "#8c3f5d",
+      "blurb": "Oceans form, the first life appears, and the sky has no oxygen."
+    },
+    {
+      "id": "proterozoic",
+      "name": "Proterozoic",
+      "rank": "eon",
+      "parent": null,
+      "startYbp": 2500000000,
+      "endYbp": 538800000,
+      "color": "#3f6d8c",
+      "blurb": "Oxygen floods the air, complex cells evolve, and the planet freezes over twice."
+    },
+    {
+      "id": "phanerozoic",
+      "name": "Phanerozoic",
+      "rank": "eon",
+      "parent": null,
+      "startYbp": 538800000,
+      "endYbp": 0,
+      "color": "#2f7d68",
+      "blurb": "The age of visible life — everything with shells, bones, leaves, and legs."
+    },
+    {
+      "id": "eoarchean",
+      "name": "Eoarchean",
+      "rank": "era",
+      "parent": "archean",
+      "startYbp": 4031000000,
+      "endYbp": 3600000000
+    },
+    {
+      "id": "paleoarchean",
+      "name": "Paleoarchean",
+      "rank": "era",
+      "parent": "archean",
+      "startYbp": 3600000000,
+      "endYbp": 3200000000
+    },
+    {
+      "id": "mesoarchean",
+      "name": "Mesoarchean",
+      "rank": "era",
+      "parent": "archean",
+      "startYbp": 3200000000,
+      "endYbp": 2800000000
+    },
+    {
+      "id": "neoarchean",
+      "name": "Neoarchean",
+      "rank": "era",
+      "parent": "archean",
+      "startYbp": 2800000000,
+      "endYbp": 2500000000
+    },
+    {
+      "id": "paleoproterozoic",
+      "name": "Paleoproterozoic",
+      "rank": "era",
+      "parent": "proterozoic",
+      "startYbp": 2500000000,
+      "endYbp": 1600000000
+    },
+    {
+      "id": "mesoproterozoic",
+      "name": "Mesoproterozoic",
+      "rank": "era",
+      "parent": "proterozoic",
+      "startYbp": 1600000000,
+      "endYbp": 1000000000
+    },
+    {
+      "id": "neoproterozoic",
+      "name": "Neoproterozoic",
+      "rank": "era",
+      "parent": "proterozoic",
+      "startYbp": 1000000000,
+      "endYbp": 538800000
+    },
+    {
+      "id": "paleozoic",
+      "name": "Paleozoic",
+      "rank": "era",
+      "parent": "phanerozoic",
+      "startYbp": 538800000,
+      "endYbp": 251902000,
+      "color": "#4a8f7b",
+      "blurb": "Life conquers the sea, then the land. Ends in the worst catastrophe ever."
+    },
+    {
+      "id": "mesozoic",
+      "name": "Mesozoic",
+      "rank": "era",
+      "parent": "phanerozoic",
+      "startYbp": 251902000,
+      "endYbp": 66000000,
+      "color": "#7ba05b",
+      "blurb": "The age of dinosaurs, from the Great Dying to the asteroid."
+    },
+    {
+      "id": "cenozoic",
+      "name": "Cenozoic",
+      "rank": "era",
+      "parent": "phanerozoic",
+      "startYbp": 66000000,
+      "endYbp": 0,
+      "color": "#c9a227",
+      "blurb": "The age of mammals, grass, and eventually us."
+    },
+    {
+      "id": "tonian",
+      "name": "Tonian",
+      "rank": "period",
+      "parent": "neoproterozoic",
+      "startYbp": 1000000000,
+      "endYbp": 720000000
+    },
+    {
+      "id": "cryogenian",
+      "name": "Cryogenian",
+      "rank": "period",
+      "parent": "neoproterozoic",
+      "startYbp": 720000000,
+      "endYbp": 635000000,
+      "blurb": "Snowball Earth — glaciers reach the equator, twice."
+    },
+    {
+      "id": "ediacaran",
+      "name": "Ediacaran",
+      "rank": "period",
+      "parent": "neoproterozoic",
+      "startYbp": 635000000,
+      "endYbp": 538800000,
+      "blurb": "The first large, soft-bodied animals — unlike anything alive today."
+    },
+    {
+      "id": "cambrian",
+      "name": "Cambrian",
+      "rank": "period",
+      "parent": "paleozoic",
+      "startYbp": 538800000,
+      "endYbp": 486850000,
+      "blurb": "Almost every animal body plan appears in a geological instant."
+    },
+    {
+      "id": "ordovician",
+      "name": "Ordovician",
+      "rank": "period",
+      "parent": "paleozoic",
+      "startYbp": 486850000,
+      "endYbp": 443800000,
+      "blurb": "Sea life diversifies wildly; the first plants creep onto land."
+    },
+    {
+      "id": "silurian",
+      "name": "Silurian",
+      "rank": "period",
+      "parent": "paleozoic",
+      "startYbp": 443800000,
+      "endYbp": 419200000,
+      "blurb": "Jawed fish, and the first animals to walk on dry land."
+    },
+    {
+      "id": "devonian",
+      "name": "Devonian",
+      "rank": "period",
+      "parent": "paleozoic",
+      "startYbp": 419200000,
+      "endYbp": 358900000,
+      "blurb": "The Age of Fishes. Forests appear, and fins become feet."
+    },
+    {
+      "id": "carboniferous",
+      "name": "Carboniferous",
+      "rank": "period",
+      "parent": "paleozoic",
+      "startYbp": 358900000,
+      "endYbp": 298900000,
+      "blurb": "Vast coal swamps, 35% oxygen, and dragonflies the size of hawks."
+    },
+    {
+      "id": "permian",
+      "name": "Permian",
+      "rank": "period",
+      "parent": "paleozoic",
+      "startYbp": 298900000,
+      "endYbp": 251902000,
+      "blurb": "One giant continent, sprawling deserts, and the rise of reptiles."
+    },
+    {
+      "id": "triassic",
+      "name": "Triassic",
+      "rank": "period",
+      "parent": "mesozoic",
+      "startYbp": 251902000,
+      "endYbp": 201400000,
+      "blurb": "Recovery from the Great Dying. The first dinosaurs and first mammals."
+    },
+    {
+      "id": "jurassic",
+      "name": "Jurassic",
+      "rank": "period",
+      "parent": "mesozoic",
+      "startYbp": 201400000,
+      "endYbp": 145000000,
+      "blurb": "Giant sauropods, the first birds, and Pangaea tearing apart."
+    },
+    {
+      "id": "cretaceous",
+      "name": "Cretaceous",
+      "rank": "period",
+      "parent": "mesozoic",
+      "startYbp": 145000000,
+      "endYbp": 66000000,
+      "blurb": "Flowers bloom, T. rex hunts, and it ends with a bang."
+    },
+    {
+      "id": "paleogene",
+      "name": "Paleogene",
+      "rank": "period",
+      "parent": "cenozoic",
+      "startYbp": 66000000,
+      "endYbp": 23030000,
+      "blurb": "Mammals inherit an empty world and get big fast."
+    },
+    {
+      "id": "neogene",
+      "name": "Neogene",
+      "rank": "period",
+      "parent": "cenozoic",
+      "startYbp": 23030000,
+      "endYbp": 2580000,
+      "blurb": "Grasslands spread, apes diversify, and our lineage splits off."
+    },
+    {
+      "id": "quaternary",
+      "name": "Quaternary",
+      "rank": "period",
+      "parent": "cenozoic",
+      "startYbp": 2580000,
+      "endYbp": 0,
+      "blurb": "Repeating ice ages — and the whole human story."
+    },
+    {
+      "id": "paleocene",
+      "name": "Paleocene",
+      "rank": "epoch",
+      "parent": "paleogene",
+      "startYbp": 66000000,
+      "endYbp": 56000000
+    },
+    {
+      "id": "eocene",
+      "name": "Eocene",
+      "rank": "epoch",
+      "parent": "paleogene",
+      "startYbp": 56000000,
+      "endYbp": 33900000
+    },
+    {
+      "id": "oligocene",
+      "name": "Oligocene",
+      "rank": "epoch",
+      "parent": "paleogene",
+      "startYbp": 33900000,
+      "endYbp": 23030000
+    },
+    {
+      "id": "miocene",
+      "name": "Miocene",
+      "rank": "epoch",
+      "parent": "neogene",
+      "startYbp": 23030000,
+      "endYbp": 5333000
+    },
+    {
+      "id": "pliocene",
+      "name": "Pliocene",
+      "rank": "epoch",
+      "parent": "neogene",
+      "startYbp": 5333000,
+      "endYbp": 2580000
+    },
+    {
+      "id": "pleistocene",
+      "name": "Pleistocene",
+      "rank": "epoch",
+      "parent": "quaternary",
+      "startYbp": 2580000,
+      "endYbp": 11700,
+      "blurb": "The Ice Age proper — mammoths, cave lions, and glaciers to Ohio."
+    },
+    {
+      "id": "holocene",
+      "name": "Holocene",
+      "rank": "epoch",
+      "parent": "quaternary",
+      "startYbp": 11700,
+      "endYbp": 0,
+      "blurb": "The warm window in which every civilization has existed."
+    }
   ],
-
   "events": [
+    {
+      "id": "sun-ignites",
+      "label": "The Sun ignites",
+      "emoji": "☀️",
+      "category": "geology",
+      "ybp": 4570000000.0,
+      "certainty": "firm",
+      "blurb": "A collapsing cloud of gas and dust lights up as a star. The leftover debris disk becomes the planets, including ours."
+    },
     {
       "id": "earth-formation",
       "label": "Earth forms",
@@ -117,6 +398,15 @@
       "blurb": "A proposed storm of asteroids batters the inner planets — the source of most large lunar craters. Whether it was a distinct spike is still argued."
     },
     {
+      "id": "oldest-rocks",
+      "label": "Oldest surviving rocks",
+      "emoji": "🪨",
+      "category": "geology",
+      "ybp": 4030000000.0,
+      "certainty": "firm",
+      "blurb": "The Acasta Gneiss in Canada is the oldest intact rock we can still put our hands on. Everything older has been recycled by the planet."
+    },
+    {
       "id": "first-life",
       "label": "Life begins",
       "emoji": "🦠",
@@ -124,6 +414,15 @@
       "ybp": 3800000000,
       "certainty": "debated",
       "blurb": "Chemical signatures in ancient rocks suggest single-celled life already existed. Everything alive today descends from one of these populations."
+    },
+    {
+      "id": "archaea-bacteria",
+      "label": "Bacteria and Archaea split",
+      "emoji": "🔬",
+      "category": "origin",
+      "ybp": 3500000000.0,
+      "certainty": "debated",
+      "blurb": "Life's deepest fork. Archaea look like bacteria but are biochemically alien — and one of them eventually became the ancestor of you."
     },
     {
       "id": "stromatolites",
@@ -142,6 +441,15 @@
       "ybp": 3400000000,
       "certainty": "debated",
       "blurb": "Early microbes learn to run on sunlight. The first versions produce no oxygen at all."
+    },
+    {
+      "id": "plate-tectonics",
+      "label": "Plate tectonics begins",
+      "emoji": "🌐",
+      "category": "geology",
+      "ybp": 3200000000.0,
+      "certainty": "debated",
+      "blurb": "Earth's crust breaks into drifting plates — the engine behind every mountain range, earthquake, and ocean. When it started is genuinely contested."
     },
     {
       "id": "cyanobacteria",
@@ -173,6 +481,15 @@
       "blurb": "Rising oxygen destroys atmospheric methane, and the planet plunges into a 300-million-year freeze."
     },
     {
+      "id": "vredefort",
+      "label": "Vredefort impact — the largest known crater",
+      "emoji": "💥",
+      "category": "impact",
+      "ybp": 2023000000.0,
+      "certainty": "firm",
+      "blurb": "An asteroid perhaps 20 km across leaves a scar over 300 km wide in what is now South Africa. Life at the time was still entirely single-celled."
+    },
+    {
       "id": "eukaryotes",
       "label": "Complex cells (eukaryotes) evolve",
       "emoji": "🧬",
@@ -180,6 +497,25 @@
       "ybp": 1900000000,
       "certainty": "debated",
       "blurb": "One cell swallows another and keeps it. That captive becomes the mitochondrion — the power plant in every cell of your body."
+    },
+    {
+      "id": "boring-billion",
+      "label": "The Boring Billion",
+      "emoji": "😴",
+      "category": "geology",
+      "startYbp": 1800000000.0,
+      "endYbp": 800000000.0,
+      "certainty": "approximate",
+      "blurb": "A billion years of remarkably little change: stable climate, stable chemistry, almost no evolutionary drama. Life spent it quietly getting ready."
+    },
+    {
+      "id": "chloroplasts",
+      "label": "Plants capture chloroplasts",
+      "emoji": "🍃",
+      "category": "origin",
+      "ybp": 1600000000.0,
+      "certainty": "approximate",
+      "blurb": "A cell swallows a cyanobacterium and keeps it as a solar panel. Every leaf, blade of grass, and alga runs on that captive to this day."
     },
     {
       "id": "sexual-reproduction",
@@ -191,6 +527,16 @@
       "blurb": "Shuffling genes between two parents massively speeds up evolution. Fossil red algae show the earliest good evidence."
     },
     {
+      "id": "rodinia",
+      "label": "Rodinia, an earlier supercontinent",
+      "emoji": "🧩",
+      "category": "geology",
+      "startYbp": 1100000000.0,
+      "endYbp": 750000000.0,
+      "certainty": "approximate",
+      "blurb": "Long before Pangaea, the continents gathered into Rodinia. Its breakup may have helped trigger Snowball Earth."
+    },
+    {
       "id": "multicellular",
       "label": "First multicellular life",
       "emoji": "🪸",
@@ -198,6 +544,15 @@
       "ybp": 1050000000,
       "certainty": "debated",
       "blurb": "Bangiomorpha, a fossil red seaweed, is the oldest known organism made of specialized cells working as one body."
+    },
+    {
+      "id": "fungi",
+      "label": "First fungi",
+      "emoji": "🍄",
+      "category": "origin",
+      "ybp": 1000000000.0,
+      "certainty": "debated",
+      "blurb": "Fungi are closer relatives of animals than of plants. Later they become the partner that lets plants colonise land at all."
     },
     {
       "id": "snowball-earth",
@@ -248,6 +603,24 @@
       "blurb": "Small, finless swimmers like Haikouichthys have the first true backbones. This is the start of our own lineage."
     },
     {
+      "id": "trilobites",
+      "label": "Trilobites appear",
+      "emoji": "🦂",
+      "category": "origin",
+      "ybp": 521000000.0,
+      "certainty": "firm",
+      "blurb": "The signature fossil of the Paleozoic. They survive for 270 million years — longer than dinosaurs — in over 20,000 species."
+    },
+    {
+      "id": "anomalocaris",
+      "label": "The first great predators",
+      "emoji": "🦞",
+      "category": "origin",
+      "ybp": 518000000.0,
+      "certainty": "firm",
+      "blurb": "Anomalocaris, a metre-long hunter with grasping arms and compound eyes, sits atop the Cambrian food chain. Being eaten becomes an evolutionary force."
+    },
+    {
       "id": "first-land-plants",
       "label": "Plants move onto land",
       "emoji": "🌱",
@@ -282,6 +655,15 @@
       "ybp": 423000000,
       "certainty": "approximate",
       "blurb": "Hinged jaws turn fish from filter-feeders into hunters. Your own jaw is a direct descendant of this innovation."
+    },
+    {
+      "id": "sharks",
+      "label": "Sharks appear",
+      "emoji": "🦈",
+      "category": "origin",
+      "ybp": 420000000.0,
+      "certainty": "firm",
+      "blurb": "Sharks are older than trees, older than Saturn's rings, and have outlasted all five mass extinctions since."
     },
     {
       "id": "first-insects",
@@ -321,6 +703,15 @@
       "blurb": "A drawn-out series of pulses wipes out roughly 75% of species, hitting reef ecosystems especially hard."
     },
     {
+      "id": "seeds",
+      "label": "Seeds evolve",
+      "emoji": "🌰",
+      "category": "origin",
+      "ybp": 360000000.0,
+      "certainty": "firm",
+      "blurb": "A packaged embryo with its own lunchbox. Seeds let plants finally spread into dry ground far from water."
+    },
+    {
       "id": "coal-forests",
       "label": "Coal swamps and giant insects",
       "emoji": "🪲",
@@ -358,6 +749,25 @@
       "blurb": "Nearly all land on Earth is welded into one supercontinent, surrounded by a single global ocean. You could walk from the South Pole to the Arctic."
     },
     {
+      "id": "capitanian",
+      "label": "Capitanian extinction",
+      "emoji": "💀",
+      "category": "extinction",
+      "ybp": 259000000.0,
+      "certainty": "approximate",
+      "blurb": "A serious extinction only recognised recently, striking eight million years before the Great Dying finished the job."
+    },
+    {
+      "id": "siberian-traps",
+      "label": "Siberian Traps erupt",
+      "emoji": "🌋",
+      "category": "geology",
+      "startYbp": 252000000.0,
+      "endYbp": 251000000.0,
+      "certainty": "firm",
+      "blurb": "Lava floods an area the size of Europe for a million years, belching CO2 and sulphur. This is the murder weapon behind the Great Dying."
+    },
+    {
       "id": "permian-extinction",
       "label": "The Great Dying",
       "emoji": "☠️",
@@ -367,6 +777,24 @@
       "blurb": "The worst extinction ever: up to 90% of marine species die as Siberian volcanoes erupt for a million years, acidifying and cooking the oceans. Life takes 10 million years to recover."
     },
     {
+      "id": "trilobites-die",
+      "label": "Trilobites vanish",
+      "emoji": "🦂",
+      "category": "extinction",
+      "ybp": 251902000,
+      "certainty": "firm",
+      "blurb": "After 270 million years and tens of thousands of species, trilobites are wiped out completely in the Great Dying."
+    },
+    {
+      "id": "ichthyosaurs",
+      "label": "Reptiles return to the sea",
+      "emoji": "🐬",
+      "category": "origin",
+      "ybp": 250000000.0,
+      "certainty": "firm",
+      "blurb": "Ichthyosaurs re-enter the ocean and converge on a dolphin shape. Some give birth to live young, tail-first, underwater."
+    },
+    {
       "id": "first-dinosaurs",
       "label": "First dinosaurs",
       "emoji": "🦕",
@@ -374,6 +802,24 @@
       "ybp": 231000000,
       "certainty": "approximate",
       "blurb": "The earliest unambiguous dinosaurs are small, fast bipeds a couple of meters long — nothing like the giants to come."
+    },
+    {
+      "id": "turtles",
+      "label": "First turtles",
+      "emoji": "🐢",
+      "category": "origin",
+      "ybp": 230000000.0,
+      "certainty": "approximate",
+      "blurb": "The shell is a rebuilt ribcage — an anatomy so odd that its origin puzzled biologists for a century."
+    },
+    {
+      "id": "pterosaurs",
+      "label": "Pterosaurs take flight",
+      "emoji": "🦇",
+      "category": "origin",
+      "ybp": 228000000.0,
+      "certainty": "firm",
+      "blurb": "The first vertebrates to truly fly, tens of millions of years before birds. The largest had the wingspan of a small aircraft."
     },
     {
       "id": "first-mammals",
@@ -392,6 +838,24 @@
       "ybp": 201400000,
       "certainty": "firm",
       "blurb": "Massive volcanism as Pangaea begins to rift kills off about 75% of species — and clears the field for dinosaurs to dominate."
+    },
+    {
+      "id": "crocodilians",
+      "label": "First crocodilians",
+      "emoji": "🐊",
+      "category": "origin",
+      "ybp": 200000000.0,
+      "certainty": "approximate",
+      "blurb": "Crocodiles arrive before the first birds and change remarkably little afterwards. They watched the dinosaurs come and go."
+    },
+    {
+      "id": "frogs",
+      "label": "First frogs",
+      "emoji": "🐸",
+      "category": "origin",
+      "ybp": 200000000.0,
+      "certainty": "approximate",
+      "blurb": "Frogs work out the jump-and-croak formula early and stick with it through two mass extinctions."
     },
     {
       "id": "pangaea-breakup",
@@ -414,6 +878,16 @@
       "blurb": "Brachiosaurus and kin become the largest land animals ever — some over 30 meters long and 50 tonnes."
     },
     {
+      "id": "stegosaurus",
+      "label": "Stegosaurus",
+      "emoji": "🦕",
+      "category": "origin",
+      "startYbp": 155000000.0,
+      "endYbp": 145000000.0,
+      "certainty": "firm",
+      "blurb": "Plates along the back, spikes on the tail, and a brain the size of a lime. It died out 80 million years before T. rex appeared."
+    },
+    {
       "id": "first-birds",
       "label": "First birds",
       "emoji": "🪶",
@@ -421,6 +895,15 @@
       "ybp": 150000000,
       "certainty": "firm",
       "blurb": "Archaeopteryx has feathers and wings but also teeth and a long bony tail. Birds are dinosaurs — the only lineage that survived."
+    },
+    {
+      "id": "ants",
+      "label": "Ants and the social insects",
+      "emoji": "🐜",
+      "category": "origin",
+      "ybp": 140000000.0,
+      "certainty": "approximate",
+      "blurb": "Colonies behave like a single organism. Today ants alone weigh roughly as much as all wild birds and mammals combined."
     },
     {
       "id": "flowering-plants",
@@ -432,6 +915,62 @@
       "blurb": "Flowers strike a deal with insects: pollen delivery in exchange for nectar. Angiosperms now make up about 90% of all plant species."
     },
     {
+      "id": "snakes",
+      "label": "First snakes",
+      "emoji": "🐍",
+      "category": "origin",
+      "ybp": 128000000.0,
+      "certainty": "approximate",
+      "blurb": "Lizards that gave up their legs. Some snakes still carry tiny vestigial hip bones as a souvenir."
+    },
+    {
+      "id": "marsupials",
+      "label": "Pouched mammals split off",
+      "emoji": "🦘",
+      "category": "origin",
+      "ybp": 125000000.0,
+      "certainty": "approximate",
+      "blurb": "Marsupials give birth to tiny, half-formed young that finish developing in a pouch — a different bet from the placental one."
+    },
+    {
+      "id": "bees",
+      "label": "Bees evolve alongside flowers",
+      "emoji": "🐝",
+      "category": "origin",
+      "ybp": 120000000.0,
+      "certainty": "approximate",
+      "blurb": "Wasps go vegetarian and start trading pollination for nectar. Flowering plants explode in diversity as a result."
+    },
+    {
+      "id": "cretaceous-hothouse",
+      "label": "Peak Cretaceous hothouse",
+      "emoji": "🥵",
+      "category": "climate",
+      "ybp": 92000000.0,
+      "certainty": "firm",
+      "blurb": "No ice anywhere on Earth. Forests grow inside the Antarctic Circle and shallow seas split continents in half."
+    },
+    {
+      "id": "mosasaurs",
+      "label": "Mosasaurs rule the seas",
+      "emoji": "🐋",
+      "category": "origin",
+      "startYbp": 82000000.0,
+      "endYbp": 66000000.0,
+      "certainty": "firm",
+      "blurb": "Giant marine lizards, closer kin to monitor lizards and snakes than to dinosaurs. They died with the dinosaurs at the same instant."
+    },
+    {
+      "id": "velociraptor",
+      "label": "Velociraptor",
+      "emoji": "🦖",
+      "category": "origin",
+      "startYbp": 75000000.0,
+      "endYbp": 71000000.0,
+      "certainty": "firm",
+      "blurb": "The real animal was turkey-sized and covered in feathers — a long way from the scaly film version."
+    },
+    {
       "id": "trex",
       "label": "Tyrannosaurus rex",
       "emoji": "🦖",
@@ -440,6 +979,26 @@
       "endYbp": 66000000,
       "certainty": "firm",
       "blurb": "T. rex lives only in the final 2 million years of the dinosaur age — closer in time to us than to Stegosaurus, which died out 80 million years earlier."
+    },
+    {
+      "id": "triceratops",
+      "label": "Triceratops",
+      "emoji": "🦏",
+      "category": "origin",
+      "startYbp": 68000000.0,
+      "endYbp": 66000000.0,
+      "certainty": "firm",
+      "blurb": "Three horns and one of the largest skulls of any land animal ever. It lived alongside T. rex right up to the final day."
+    },
+    {
+      "id": "deccan-traps",
+      "label": "Deccan Traps erupt",
+      "emoji": "🌋",
+      "category": "geology",
+      "startYbp": 66300000.0,
+      "endYbp": 65500000.0,
+      "certainty": "firm",
+      "blurb": "Enormous volcanism in India brackets the asteroid impact. Scientists still argue how much of the dinosaur extinction each one caused."
     },
     {
       "id": "chicxulub",
@@ -460,6 +1019,52 @@
       "blurb": "Small, tree-dwelling insect-eaters with grasping hands and forward-facing eyes appear almost immediately after the asteroid."
     },
     {
+      "id": "placentals",
+      "label": "Placental mammals radiate",
+      "emoji": "🐘",
+      "category": "origin",
+      "ybp": 66000000.0,
+      "certainty": "approximate",
+      "blurb": "With the dinosaurs gone, placental mammals explode into every vacant role in a few million years. Most mammals alive today are on this branch."
+    },
+    {
+      "id": "terror-birds",
+      "label": "Terror birds",
+      "emoji": "🦤",
+      "category": "origin",
+      "startYbp": 60000000.0,
+      "endYbp": 2000000.0,
+      "certainty": "firm",
+      "blurb": "Flightless predatory birds up to three metres tall, with axe-shaped beaks. For millions of years South America's top predator was a bird."
+    },
+    {
+      "id": "elephants",
+      "label": "First elephant relatives",
+      "emoji": "🐘",
+      "category": "origin",
+      "ybp": 60000000.0,
+      "certainty": "approximate",
+      "blurb": "The earliest proboscideans are pig-sized and tuskless. The trunk and tusks come much later."
+    },
+    {
+      "id": "penguins",
+      "label": "First penguins",
+      "emoji": "🐧",
+      "category": "origin",
+      "ybp": 60000000.0,
+      "certainty": "approximate",
+      "blurb": "Penguins give up flight almost immediately after the asteroid. Some early species stood as tall as a person."
+    },
+    {
+      "id": "titanoboa",
+      "label": "Titanoboa, the largest snake ever",
+      "emoji": "🐍",
+      "category": "origin",
+      "ybp": 58000000.0,
+      "certainty": "firm",
+      "blurb": "Thirteen metres long and over a tonne. It could only exist because the tropics after the asteroid were so persistently hot."
+    },
+    {
       "id": "petm",
       "label": "Paleocene-Eocene Thermal Maximum",
       "emoji": "🌡️",
@@ -469,6 +1074,43 @@
       "blurb": "A colossal carbon release warms the planet 5-8°C in a few thousand years. Crocodiles live in the Arctic. It is the closest natural analogue to modern warming."
     },
     {
+      "id": "horses",
+      "label": "First horses",
+      "emoji": "🐎",
+      "category": "origin",
+      "ybp": 55000000.0,
+      "certainty": "firm",
+      "blurb": "Eohippus is the size of a small dog with four toes on each front foot. The horse lineage is one of the best-documented in all of palaeontology."
+    },
+    {
+      "id": "grasses",
+      "label": "Grasses appear",
+      "emoji": "🌾",
+      "category": "origin",
+      "ybp": 55000000.0,
+      "certainty": "approximate",
+      "blurb": "Grass grows from the base, not the tip, so it survives being eaten and burned. That one trick eventually reshapes whole continents."
+    },
+    {
+      "id": "eocene-optimum",
+      "label": "Early Eocene Climatic Optimum",
+      "emoji": "🌴",
+      "category": "climate",
+      "startYbp": 53000000.0,
+      "endYbp": 50000000.0,
+      "certainty": "firm",
+      "blurb": "The warmest sustained stretch of the last 66 million years. Palms grow in Alaska and the poles are ice-free."
+    },
+    {
+      "id": "bats",
+      "label": "Bats take flight",
+      "emoji": "🦇",
+      "category": "origin",
+      "ybp": 52000000.0,
+      "certainty": "firm",
+      "blurb": "The only mammals with powered flight. Fossils show flight evolved before echolocation, not the other way round."
+    },
+    {
       "id": "whales-to-sea",
       "label": "Whales return to the sea",
       "emoji": "🐋",
@@ -476,6 +1118,42 @@
       "ybp": 50000000,
       "certainty": "firm",
       "blurb": "Hoofed land mammals related to hippos go back into the water. Fossils track the whole transition — Pakicetus walked, Basilosaurus swam."
+    },
+    {
+      "id": "himalayas",
+      "label": "India hits Asia; the Himalayas rise",
+      "emoji": "🏔️",
+      "category": "geology",
+      "ybp": 50000000.0,
+      "certainty": "firm",
+      "blurb": "India slams north after a 6,000 km solo voyage. The collision is still happening, and Everest still grows a few millimetres a year."
+    },
+    {
+      "id": "azolla",
+      "label": "The Azolla event",
+      "emoji": "🌿",
+      "category": "climate",
+      "ybp": 49000000.0,
+      "certainty": "debated",
+      "blurb": "A freshwater fern may have blanketed the Arctic Ocean and drawn down so much CO2 that it helped tip Earth into the current icehouse."
+    },
+    {
+      "id": "monkeys-split",
+      "label": "New and Old World monkeys split",
+      "emoji": "🐒",
+      "category": "origin",
+      "ybp": 40000000.0,
+      "certainty": "approximate",
+      "blurb": "Monkeys reach South America, most likely rafting across a narrower Atlantic on floating vegetation."
+    },
+    {
+      "id": "canids",
+      "label": "First dogs and wolves",
+      "emoji": "🐺",
+      "category": "origin",
+      "ybp": 40000000.0,
+      "certainty": "approximate",
+      "blurb": "The dog family emerges in North America and eventually spreads worldwide — the ancestors of every wolf, fox, and household dog."
     },
     {
       "id": "antarctic-glaciation",
@@ -497,6 +1175,43 @@
       "blurb": "Grasses take over drying continents, driving the evolution of grazers with high-crowned teeth — horses, antelope, cattle."
     },
     {
+      "id": "grande-coupure",
+      "label": "Eocene-Oligocene extinction",
+      "emoji": "💀",
+      "category": "extinction",
+      "ybp": 34000000.0,
+      "certainty": "firm",
+      "blurb": "Called the Grande Coupure — the great cut. As Antarctica freezes, tropical forests retreat and their inhabitants go with them."
+    },
+    {
+      "id": "felids",
+      "label": "First cats",
+      "emoji": "🐈",
+      "category": "origin",
+      "ybp": 25000000.0,
+      "certainty": "approximate",
+      "blurb": "The cat family appears and changes very little afterwards — the basic ambush-predator design was right the first time."
+    },
+    {
+      "id": "megalodon",
+      "label": "Megalodon",
+      "emoji": "🦈",
+      "category": "origin",
+      "startYbp": 23000000.0,
+      "endYbp": 3600000,
+      "certainty": "firm",
+      "blurb": "A shark up to 18 metres long with teeth the size of a hand. It hunted whales and vanished as the oceans cooled."
+    },
+    {
+      "id": "gibbons",
+      "label": "Gibbons split off",
+      "emoji": "🦧",
+      "category": "origin",
+      "ybp": 20000000.0,
+      "certainty": "approximate",
+      "blurb": "The lesser apes take to swinging beneath branches, and evolve arms long enough to make it look effortless."
+    },
+    {
       "id": "great-apes",
       "label": "Great apes diverge",
       "emoji": "🦍",
@@ -513,6 +1228,35 @@
       "ybp": 6400000,
       "certainty": "approximate",
       "blurb": "Our last common ancestor with chimpanzees lives around here. Neither species existed yet — both descend from it."
+    },
+    {
+      "id": "grand-canyon",
+      "label": "The Grand Canyon is carved",
+      "emoji": "🏜️",
+      "category": "geology",
+      "startYbp": 6000000.0,
+      "endYbp": 0,
+      "certainty": "approximate",
+      "blurb": "The Colorado River cuts down through two billion years of rock — a cross-section of nearly half of Earth's history in one gorge."
+    },
+    {
+      "id": "messinian",
+      "label": "The Mediterranean dries up",
+      "emoji": "🏖️",
+      "category": "geology",
+      "startYbp": 5960000,
+      "endYbp": 5330000,
+      "certainty": "firm",
+      "blurb": "Cut off from the Atlantic, the entire Mediterranean evaporates into a deep salt desert, kilometres below sea level."
+    },
+    {
+      "id": "zanclean",
+      "label": "The Zanclean flood refills it",
+      "emoji": "🌊",
+      "category": "geology",
+      "ybp": 5330000,
+      "certainty": "approximate",
+      "blurb": "The Atlantic breaks back through Gibraltar and refills the Mediterranean, possibly in as little as a couple of years. Likely the largest flood in Earth's history."
     },
     {
       "id": "bipedalism",
@@ -533,14 +1277,13 @@
       "blurb": "Sharp flakes from Lomekwi, Kenya, predate our own genus. Somebody in our family tree was making cutting edges before Homo existed."
     },
     {
-      "id": "ice-ages-begin",
-      "label": "The Ice Ages begin",
-      "emoji": "🧊",
-      "category": "climate",
-      "startYbp": 2580000,
-      "endYbp": 11700,
+      "id": "lucy",
+      "label": "Lucy walks in Ethiopia",
+      "emoji": "🦴",
+      "category": "human",
+      "ybp": 3200000,
       "certainty": "firm",
-      "blurb": "Not one ice age but dozens, cycling roughly every 100,000 years as Earth's orbit wobbles. Ice sheets repeatedly bury Canada and northern Europe."
+      "blurb": "Forty percent of one Australopithecus skeleton, showing beyond doubt that our ancestors walked upright while still having ape-sized brains."
     },
     {
       "id": "genus-homo",
@@ -552,6 +1295,45 @@
       "blurb": "Smaller faces, bigger brains, and a committed reliance on tools and meat. The earliest fossils assigned to our genus are frustratingly fragmentary."
     },
     {
+      "id": "panama",
+      "label": "The Isthmus of Panama closes",
+      "emoji": "🌉",
+      "category": "geology",
+      "ybp": 2800000,
+      "certainty": "approximate",
+      "blurb": "North and South America join. Animals swap continents, Atlantic and Pacific waters are separated, and global ocean currents reorganise."
+    },
+    {
+      "id": "ice-ages-begin",
+      "label": "The Ice Ages begin",
+      "emoji": "🧊",
+      "category": "climate",
+      "startYbp": 2580000,
+      "endYbp": 11700,
+      "certainty": "firm",
+      "blurb": "Not one ice age but dozens, cycling roughly every 100,000 years as Earth's orbit wobbles. Ice sheets repeatedly bury Canada and northern Europe."
+    },
+    {
+      "id": "sabertooth",
+      "label": "Sabertooth cats",
+      "emoji": "🐆",
+      "category": "origin",
+      "startYbp": 2500000,
+      "endYbp": 11000,
+      "certainty": "firm",
+      "blurb": "Smilodon's canines reached 28 cm. It survived until the end of the last ice age and overlapped with people for thousands of years."
+    },
+    {
+      "id": "homo-habilis",
+      "label": "Homo habilis",
+      "emoji": "🪨",
+      "category": "human",
+      "startYbp": 2300000,
+      "endYbp": 1650000,
+      "certainty": "approximate",
+      "blurb": "The 'handy man' — small-brained by our standards but a consistent toolmaker, and long treated as the first true member of our genus."
+    },
+    {
       "id": "homo-erectus",
       "label": "Homo erectus — the first great traveler",
       "emoji": "🚶",
@@ -560,6 +1342,25 @@
       "endYbp": 110000,
       "certainty": "firm",
       "blurb": "Body proportions much like ours, and the first hominin to leave Africa — reaching China and Indonesia. It survives nearly 2 million years, ten times longer than us so far."
+    },
+    {
+      "id": "acheulean",
+      "label": "The hand axe — the first standard design",
+      "emoji": "⚒️",
+      "category": "human",
+      "ybp": 1760000,
+      "certainty": "firm",
+      "blurb": "A teardrop-shaped tool made to the same template across Africa, Europe, and Asia for over a million years. The longest-running design in human history."
+    },
+    {
+      "id": "mid-pleistocene",
+      "label": "Mid-Pleistocene Transition",
+      "emoji": "🔄",
+      "category": "climate",
+      "startYbp": 1250000,
+      "endYbp": 700000,
+      "certainty": "approximate",
+      "blurb": "The ice-age rhythm shifts from a 41,000-year beat to a 100,000-year one, with deeper, longer glaciations. Why is still unresolved."
     },
     {
       "id": "fire",
@@ -581,6 +1382,26 @@
       "blurb": "Cold-adapted, big-brained, and skilled toolmakers who buried their dead. They interbred with us — most people outside Africa carry 1-2% Neanderthal DNA."
     },
     {
+      "id": "mammoths",
+      "label": "Woolly mammoths",
+      "emoji": "🦣",
+      "category": "origin",
+      "startYbp": 400000,
+      "endYbp": 4000,
+      "certainty": "firm",
+      "blurb": "The last mammoths were still alive on Wrangel Island in the Arctic while the Egyptians were building pyramids."
+    },
+    {
+      "id": "denisovans",
+      "label": "Denisovans",
+      "emoji": "🧬",
+      "category": "human",
+      "startYbp": 400000,
+      "endYbp": 50000,
+      "certainty": "approximate",
+      "blurb": "An entire human species identified mainly from DNA in a finger bone. Their genes survive in people across Asia and the Pacific today."
+    },
+    {
       "id": "homo-sapiens",
       "label": "Homo sapiens appears",
       "emoji": "🧍",
@@ -588,6 +1409,52 @@
       "ybp": 300000,
       "certainty": "approximate",
       "blurb": "Anatomically modern humans emerge in Africa. Fossils from Jebel Irhoud, Morocco, push our origin far earlier than once thought."
+    },
+    {
+      "id": "mito-eve",
+      "label": "Mitochondrial Eve",
+      "emoji": "👩",
+      "category": "human",
+      "ybp": 150000,
+      "certainty": "approximate",
+      "blurb": "The woman from whom every living person inherits their mitochondrial DNA. She was not the only woman alive — just the one whose line never broke."
+    },
+    {
+      "id": "ochre-symbolism",
+      "label": "Symbols and ornament appear",
+      "emoji": "🎨",
+      "category": "human",
+      "ybp": 100000,
+      "certainty": "approximate",
+      "blurb": "Deliberate ochre engravings and pierced shell beads at Blombos Cave in South Africa — the earliest firm evidence of minds that deal in symbols."
+    },
+    {
+      "id": "floresiensis",
+      "label": "Homo floresiensis, the 'hobbit'",
+      "emoji": "🧍",
+      "category": "human",
+      "startYbp": 100000,
+      "endYbp": 50000,
+      "certainty": "firm",
+      "blurb": "A metre-tall human species isolated on the Indonesian island of Flores, living alongside dwarf elephants and giant rats."
+    },
+    {
+      "id": "toba",
+      "label": "Toba supervolcano erupts",
+      "emoji": "🌋",
+      "category": "climate",
+      "ybp": 74000,
+      "certainty": "firm",
+      "blurb": "The largest eruption in two million years blankets South Asia in ash and may have cooled the planet for years."
+    },
+    {
+      "id": "toba-bottleneck",
+      "label": "A possible human bottleneck",
+      "emoji": "🍾",
+      "category": "human",
+      "ybp": 74000,
+      "certainty": "debated",
+      "blurb": "One reading of our genetics suggests humanity crashed to a few thousand individuals around the Toba eruption. The evidence is heavily disputed."
     },
     {
       "id": "out-of-africa",
@@ -609,13 +1476,13 @@
       "blurb": "Crossing open ocean to Sahul requires real boats — the earliest strong evidence of deliberate sea voyaging."
     },
     {
-      "id": "cave-art",
-      "label": "Cave art",
-      "emoji": "🎨",
+      "id": "bow-arrow",
+      "label": "The bow and arrow",
+      "emoji": "🏹",
       "category": "human",
-      "ybp": 45500,
-      "certainty": "firm",
-      "blurb": "A warty pig painted on a wall in Sulawesi is the oldest known figurative art. Chauvet and Lascaux follow thousands of years later."
+      "ybp": 64000,
+      "certainty": "debated",
+      "blurb": "Stone points from Sibudu, South Africa, look like arrowheads. Killing at a distance changes hunting and, eventually, warfare."
     },
     {
       "id": "megafauna-extinction",
@@ -628,13 +1495,22 @@
       "blurb": "Mammoths, giant sloths, sabertooths, and moa disappear continent by continent, closely tracking the arrival of humans. Climate change and hunting both played a part."
     },
     {
-      "id": "dog-domestication",
-      "label": "Dogs domesticated",
-      "emoji": "🐕",
+      "id": "cave-art",
+      "label": "Cave art",
+      "emoji": "🎨",
       "category": "human",
-      "ybp": 20000,
-      "certainty": "debated",
-      "blurb": "Wolves become companions — the first domesticated animal, thousands of years before any crop or livestock."
+      "ybp": 45500,
+      "certainty": "firm",
+      "blurb": "A warty pig painted on a wall in Sulawesi is the oldest known figurative art. Chauvet and Lascaux follow thousands of years later."
+    },
+    {
+      "id": "flutes",
+      "label": "Oldest musical instruments",
+      "emoji": "🎶",
+      "category": "human",
+      "ybp": 42000,
+      "certainty": "firm",
+      "blurb": "Flutes carved from bird bone and mammoth ivory, found in German caves. They play a recognisable scale."
     },
     {
       "id": "last-glacial-maximum",
@@ -647,6 +1523,24 @@
       "blurb": "Ice sheets reach their peak. Sea level sits about 125 m lower, exposing land bridges — including the one from Siberia to Alaska."
     },
     {
+      "id": "dog-domestication",
+      "label": "Dogs domesticated",
+      "emoji": "🐕",
+      "category": "human",
+      "ybp": 20000,
+      "certainty": "debated",
+      "blurb": "Wolves become companions — the first domesticated animal, thousands of years before any crop or livestock."
+    },
+    {
+      "id": "pottery",
+      "label": "Pottery invented",
+      "emoji": "🏺",
+      "category": "human",
+      "ybp": 20000,
+      "certainty": "firm",
+      "blurb": "Fired clay pots appear in China during the ice age — thousands of years before farming, made by hunter-gatherers."
+    },
+    {
       "id": "americas-settled",
       "label": "People reach the Americas",
       "emoji": "🧭",
@@ -654,6 +1548,15 @@
       "ybp": 16000,
       "certainty": "debated",
       "blurb": "Migration from Siberia into a continent with no humans in it. Some sites, like White Sands footprints, may push this back to 23,000 years."
+    },
+    {
+      "id": "beer",
+      "label": "Fermentation and beer",
+      "emoji": "🍺",
+      "category": "human",
+      "ybp": 13000,
+      "certainty": "approximate",
+      "blurb": "Residues in stone vessels in Israel suggest brewing predates bread and farming. Some archaeologists think beer helped motivate agriculture."
     },
     {
       "id": "younger-dryas",
@@ -685,6 +1588,15 @@
       "blurb": "The current interglacial starts. Every city, empire, and written word in human history fits inside it."
     },
     {
+      "id": "gobekli",
+      "label": "Göbekli Tepe",
+      "emoji": "🗿",
+      "category": "civilization",
+      "ybp": 11600,
+      "certainty": "firm",
+      "blurb": "Massive carved stone pillars raised by hunter-gatherers — before pottery, metal, writing, or farming. It overturned the assumption that farming had to come first."
+    },
+    {
       "id": "jericho",
       "label": "First walled towns",
       "emoji": "🏘️",
@@ -694,44 +1606,50 @@
       "blurb": "Jericho and Çatalhöyük hold thousands of people — permanent settlement on a scale never seen before."
     },
     {
-      "id": "chicken-domestication",
-      "label": "Chickens domesticated",
-      "emoji": "🐔",
+      "id": "green-sahara",
+      "label": "The Green Sahara",
+      "emoji": "🐪",
+      "category": "climate",
+      "startYbp": 11000,
+      "endYbp": 5000,
+      "certainty": "firm",
+      "blurb": "The Sahara is grassland and lakes, full of hippos, crocodiles, and cattle herders. Rock art there still shows people swimming."
+    },
+    {
+      "id": "cats-domesticated",
+      "label": "Cats domesticate themselves",
+      "emoji": "🐈",
       "category": "human",
-      "ybp": 3526,
-      "year": -1500,
+      "ybp": 9500,
       "certainty": "approximate",
-      "blurb": "Red junglefowl in Southeast Asia become chickens, probably drawn in by rice farming. There are now about 26 billion of them — the most numerous bird on Earth, and the closest living relative you can eat to a tyrannosaur."
+      "blurb": "Grain stores drew mice, and mice drew wildcats. A cat was buried with a human on Cyprus 9,500 years ago."
     },
     {
-      "id": "writing",
-      "label": "Writing invented",
-      "emoji": "📜",
-      "category": "civilization",
-      "ybp": 5226,
-      "year": -3200,
-      "certainty": "firm",
-      "blurb": "Sumerian cuneiform starts as accounting marks on clay. History, in the literal sense of written record, begins here."
+      "id": "doggerland",
+      "label": "Doggerland drowns",
+      "emoji": "🌊",
+      "category": "geology",
+      "ybp": 8200,
+      "certainty": "approximate",
+      "blurb": "The rich lowland connecting Britain to Europe is swallowed by rising seas. Trawlers still dredge up its mammoth bones and stone tools."
     },
     {
-      "id": "bronze-age",
-      "label": "Bronze Age",
-      "emoji": "⚔️",
-      "category": "civilization",
-      "startYbp": 5300,
-      "endYbp": 3200,
+      "id": "event-8200",
+      "label": "The 8.2 kiloyear cooling event",
+      "emoji": "🥶",
+      "category": "climate",
+      "ybp": 8200,
       "certainty": "firm",
-      "blurb": "Alloying copper with tin makes the first hard metal tools, and the first long-distance trade networks to supply them."
+      "blurb": "A glacial lake bursts into the North Atlantic and shuts down ocean circulation. The northern hemisphere cools sharply for about 150 years."
     },
     {
-      "id": "great-pyramid",
-      "label": "Great Pyramid of Giza built",
-      "emoji": "🗼",
-      "category": "civilization",
-      "ybp": 4586,
-      "year": -2560,
-      "certainty": "firm",
-      "blurb": "It stayed the tallest structure humans had ever built for about 3,800 years. Cleopatra lived closer to us in time than to its construction."
+      "id": "lactose",
+      "label": "Lactose tolerance spreads",
+      "emoji": "🥛",
+      "category": "human",
+      "ybp": 7500,
+      "certainty": "approximate",
+      "blurb": "A mutation lets adults digest milk. It sweeps through herding populations — one of the fastest known cases of recent human evolution."
     },
     {
       "id": "wheel",
@@ -744,6 +1662,113 @@
       "blurb": "First used for pottery, then carts. Notably, it was never adopted for transport in the pre-Columbian Americas — there were no draft animals to pull it."
     },
     {
+      "id": "horses-domesticated",
+      "label": "Horses domesticated",
+      "emoji": "🐴",
+      "category": "human",
+      "ybp": 5500,
+      "certainty": "approximate",
+      "blurb": "On the steppe, horses become transport. Speed reshapes trade, migration, and warfare for the next 5,000 years."
+    },
+    {
+      "id": "uruk",
+      "label": "Uruk, the first city",
+      "emoji": "🏙️",
+      "category": "civilization",
+      "ybp": 5400,
+      "certainty": "approximate",
+      "blurb": "Tens of thousands of people living together in Mesopotamia, requiring the invention of administration, accounting, and eventually writing."
+    },
+    {
+      "id": "bronze-age",
+      "label": "Bronze Age",
+      "emoji": "⚔️",
+      "category": "civilization",
+      "startYbp": 5300,
+      "endYbp": 3200,
+      "certainty": "firm",
+      "blurb": "Alloying copper with tin makes the first hard metal tools, and the first long-distance trade networks to supply them."
+    },
+    {
+      "id": "writing",
+      "label": "Writing invented",
+      "emoji": "📜",
+      "category": "civilization",
+      "ybp": 5226,
+      "year": -3200,
+      "certainty": "firm",
+      "blurb": "Sumerian cuneiform starts as accounting marks on clay. History, in the literal sense of written record, begins here."
+    },
+    {
+      "id": "stonehenge",
+      "label": "Stonehenge raised",
+      "emoji": "🗿",
+      "category": "civilization",
+      "startYbp": 5100,
+      "endYbp": 3500,
+      "certainty": "firm",
+      "blurb": "Built in stages over 1,500 years, aligned to the solstices, with some stones hauled 250 km from Wales."
+    },
+    {
+      "id": "indus",
+      "label": "The Indus Valley civilization",
+      "emoji": "🧱",
+      "category": "civilization",
+      "startYbp": 4600,
+      "endYbp": 3900,
+      "certainty": "firm",
+      "blurb": "Gridded streets, standardised bricks, and covered drains across a vast area — with no clear palaces or royal tombs. Its script remains undeciphered."
+    },
+    {
+      "id": "great-pyramid",
+      "label": "Great Pyramid of Giza built",
+      "emoji": "🗼",
+      "category": "civilization",
+      "ybp": 4586,
+      "year": -2560,
+      "certainty": "firm",
+      "blurb": "It stayed the tallest structure humans had ever built for about 3,800 years. Cleopatra lived closer to us in time than to its construction."
+    },
+    {
+      "id": "event-4200",
+      "label": "The 4.2 kiloyear drought",
+      "emoji": "🏜️",
+      "category": "climate",
+      "ybp": 4200,
+      "certainty": "debated",
+      "blurb": "A severe, widespread drought coincides with the collapse of the Akkadian Empire and upheaval in Egypt and the Indus Valley."
+    },
+    {
+      "id": "hammurabi",
+      "label": "The Code of Hammurabi",
+      "emoji": "⚖️",
+      "category": "civilization",
+      "ybp": 3780,
+      "year": -1754,
+      "certainty": "firm",
+      "blurb": "Laws carved on a public stone pillar so that everyone could see them. The idea that rules should be written down and fixed in advance starts here."
+    },
+    {
+      "id": "chicken-domestication",
+      "label": "Chickens domesticated",
+      "emoji": "🐔",
+      "category": "human",
+      "ybp": 3526,
+      "year": -1500,
+      "certainty": "approximate",
+      "blurb": "Red junglefowl in Southeast Asia become chickens, probably drawn in by rice farming. There are now about 26 billion of them — the most numerous bird on Earth, and the closest living relative you can eat to a tyrannosaur."
+    },
+    {
+      "id": "bronze-collapse",
+      "label": "The Bronze Age Collapse",
+      "emoji": "🔥",
+      "category": "civilization",
+      "ybp": 3203,
+      "year": -1177,
+      "certainty": "firm",
+      "blurb": "Within decades, nearly every eastern Mediterranean civilization falls. Cities burn, trade networks vanish, and writing is lost in Greece for 400 years."
+    },
+    {
       "id": "iron-age",
       "label": "Iron Age",
       "emoji": "🔨",
@@ -754,6 +1779,26 @@
       "blurb": "Iron is far more common than tin, so good tools and weapons stop being a luxury of the elite."
     },
     {
+      "id": "alphabet",
+      "label": "The alphabet",
+      "emoji": "🔤",
+      "category": "civilization",
+      "ybp": 3076,
+      "year": -1050,
+      "certainty": "approximate",
+      "blurb": "Phoenician traders reduce writing to about 22 signs for sounds. Literacy stops being a specialist profession."
+    },
+    {
+      "id": "polynesia",
+      "label": "Polynesians settle the Pacific",
+      "emoji": "🛶",
+      "category": "human",
+      "startYbp": 3000,
+      "endYbp": 800,
+      "certainty": "firm",
+      "blurb": "Voyagers cross thousands of kilometres of open ocean by stars, swell, and birds, finding specks of land in the largest empty space on Earth."
+    },
+    {
       "id": "classical-antiquity",
       "label": "Classical Greece, Persia, and the Warring States",
       "emoji": "🏛️",
@@ -762,6 +1807,26 @@
       "endYbp": 2200,
       "certainty": "firm",
       "blurb": "A remarkable few centuries: Athenian democracy, Greek philosophy, the Achaemenid Empire, Confucius, the Buddha, and the first Chinese unification all fall close together."
+    },
+    {
+      "id": "qin",
+      "label": "China unified; the Great Wall begun",
+      "emoji": "🧱",
+      "category": "civilization",
+      "ybp": 2247,
+      "year": -221,
+      "certainty": "firm",
+      "blurb": "Qin Shi Huang standardises script, weights, currency, and even axle widths — and is buried with an army of 8,000 terracotta soldiers."
+    },
+    {
+      "id": "silk-road",
+      "label": "The Silk Road opens",
+      "emoji": "🐫",
+      "category": "civilization",
+      "ybp": 2156,
+      "year": -130,
+      "certainty": "firm",
+      "blurb": "Regular trade links China to the Mediterranean. Silk, paper, and gunpowder travel west; so, later, does the Black Death."
     },
     {
       "id": "roman-empire",
@@ -775,6 +1840,36 @@
       "blurb": "From Augustus to the fall of the West in 476 CE. At its height it governed roughly a quarter of humanity."
     },
     {
+      "id": "paper",
+      "label": "Paper invented",
+      "emoji": "📄",
+      "category": "tech",
+      "ybp": 1921,
+      "year": 105,
+      "certainty": "firm",
+      "blurb": "Cai Lun refines papermaking in Han China. Cheap writing material spreads west over the next thousand years and eventually makes printing worthwhile."
+    },
+    {
+      "id": "maya",
+      "label": "The Maya Classic period",
+      "emoji": "🏛️",
+      "category": "civilization",
+      "startYbp": 1776,
+      "endYbp": 1126,
+      "certainty": "firm",
+      "blurb": "Mesoamerican city-states with full writing, a place-value number system including zero, and astronomy accurate to minutes per century."
+    },
+    {
+      "id": "zero",
+      "label": "Zero becomes a number",
+      "emoji": "0️⃣",
+      "category": "tech",
+      "ybp": 1398,
+      "year": 628,
+      "certainty": "approximate",
+      "blurb": "Brahmagupta writes rules for calculating with zero and negative numbers. Modern mathematics, and every computer, rests on this."
+    },
+    {
       "id": "islamic-golden-age",
       "label": "Islamic Golden Age",
       "emoji": "📖",
@@ -783,6 +1878,96 @@
       "endYbp": 750,
       "certainty": "firm",
       "blurb": "Baghdad, Córdoba, and Cairo lead the world in mathematics, astronomy, medicine, and optics. Algebra and our numerals come through this era."
+    },
+    {
+      "id": "gunpowder",
+      "label": "Gunpowder",
+      "emoji": "🧨",
+      "category": "tech",
+      "ybp": 1176,
+      "year": 850,
+      "certainty": "approximate",
+      "blurb": "Chinese alchemists looking for an elixir of immortality find an explosive instead. It ends the era of castle walls."
+    },
+    {
+      "id": "medieval-warm",
+      "label": "Medieval Warm Period",
+      "emoji": "🌾",
+      "category": "climate",
+      "startYbp": 1076,
+      "endYbp": 776,
+      "certainty": "firm",
+      "blurb": "A warm spell in the North Atlantic. Norse farmers settle Greenland — and abandon it when the warmth fades."
+    },
+    {
+      "id": "compass",
+      "label": "The magnetic compass",
+      "emoji": "🧭",
+      "category": "tech",
+      "ybp": 976,
+      "year": 1050,
+      "certainty": "approximate",
+      "blurb": "Navigation stops depending on clear skies and a visible coastline. Open-ocean voyaging becomes practical."
+    },
+    {
+      "id": "angkor",
+      "label": "Angkor Wat built",
+      "emoji": "🛕",
+      "category": "civilization",
+      "ybp": 913,
+      "year": 1113,
+      "certainty": "firm",
+      "blurb": "The largest religious structure ever built, at the heart of a city of perhaps 750,000 people — the largest in the pre-industrial world."
+    },
+    {
+      "id": "mongol",
+      "label": "The Mongol Empire",
+      "emoji": "🐎",
+      "category": "civilization",
+      "startYbp": 820,
+      "endYbp": 658,
+      "certainty": "firm",
+      "blurb": "The largest contiguous land empire in history, assembled in a single lifetime and held together by horses and an early postal relay system."
+    },
+    {
+      "id": "little-ice-age",
+      "label": "The Little Ice Age",
+      "emoji": "⛄",
+      "category": "climate",
+      "startYbp": 726,
+      "endYbp": 176,
+      "certainty": "firm",
+      "blurb": "Alpine glaciers advance over villages and the Thames freezes hard enough to hold fairs on the ice."
+    },
+    {
+      "id": "black-death",
+      "label": "The Black Death",
+      "emoji": "☠️",
+      "category": "civilization",
+      "ybp": 679,
+      "year": 1347,
+      "certainty": "firm",
+      "blurb": "Plague kills perhaps half of Europe in six years. The resulting labour shortage raises wages and helps unravel serfdom."
+    },
+    {
+      "id": "renaissance",
+      "label": "The Renaissance",
+      "emoji": "🎨",
+      "category": "civilization",
+      "startYbp": 626,
+      "endYbp": 426,
+      "certainty": "firm",
+      "blurb": "Rediscovered classical learning, linear perspective, anatomy, and a new confidence that the world could be measured and depicted accurately."
+    },
+    {
+      "id": "aztec-inca",
+      "label": "The Aztec and Inca empires",
+      "emoji": "🌄",
+      "category": "civilization",
+      "startYbp": 598,
+      "endYbp": 493,
+      "certainty": "firm",
+      "blurb": "Millions of people, vast road networks, and cities larger than any in Europe — brought down within years by steel, horses, and above all smallpox."
     },
     {
       "id": "printing-press",
@@ -805,6 +1990,16 @@
       "blurb": "Two biological worlds separated for 12,000 years collide. Crops, animals, and — devastatingly — diseases move both ways, killing perhaps 90% of the Americas' population."
     },
     {
+      "id": "circumnavigation",
+      "label": "The world sailed round",
+      "emoji": "🧭",
+      "category": "civilization",
+      "ybp": 504,
+      "year": 1522,
+      "certainty": "firm",
+      "blurb": "Magellan's expedition returns with 18 of its original 270 men. The Earth is confirmed, in practice, to be a globe you can go all the way around."
+    },
+    {
       "id": "scientific-revolution",
       "label": "Scientific Revolution",
       "emoji": "🔭",
@@ -813,6 +2008,36 @@
       "endYbp": 299,
       "certainty": "firm",
       "blurb": "Copernicus to Newton. Explaining nature by testable mathematical law rather than authority turns out to be the most productive idea humans have ever had."
+    },
+    {
+      "id": "telescope",
+      "label": "The telescope",
+      "emoji": "🔭",
+      "category": "tech",
+      "ybp": 418,
+      "year": 1608,
+      "certainty": "firm",
+      "blurb": "Within two years Galileo sees moons orbiting Jupiter — plain evidence that not everything goes around the Earth."
+    },
+    {
+      "id": "dodo",
+      "label": "The dodo goes extinct",
+      "emoji": "🦤",
+      "category": "extinction",
+      "ybp": 364,
+      "year": 1662,
+      "certainty": "firm",
+      "blurb": "Flightless and unafraid of people, the dodo lasts under a century after sailors reach Mauritius. It becomes the emblem of human-caused extinction."
+    },
+    {
+      "id": "principia",
+      "label": "Newton's Principia",
+      "emoji": "🍎",
+      "category": "tech",
+      "ybp": 339,
+      "year": 1687,
+      "certainty": "firm",
+      "blurb": "One set of equations governs both a falling apple and an orbiting moon. The idea that the universe follows universal, discoverable law is established."
     },
     {
       "id": "industrial-revolution",
@@ -826,6 +2051,16 @@
       "blurb": "Coal-fired steam power ends the age of muscle and water. Human population and atmospheric CO2 both start climbing steeply from here."
     },
     {
+      "id": "revolutions",
+      "label": "The American and French Revolutions",
+      "emoji": "🗽",
+      "category": "civilization",
+      "startYbp": 250,
+      "endYbp": 231,
+      "certainty": "firm",
+      "blurb": "Government by consent rather than birth moves from philosophy to practice, and the idea proves impossible to contain."
+    },
+    {
       "id": "deep-time-discovered",
       "label": "Deep time discovered",
       "emoji": "🪨",
@@ -834,6 +2069,76 @@
       "year": 1788,
       "certainty": "firm",
       "blurb": "James Hutton looks at Siccar Point and realizes Earth is unimaginably older than a few thousand years. Everything on this timeline before written history is a consequence of that insight."
+    },
+    {
+      "id": "vaccination",
+      "label": "The first vaccine",
+      "emoji": "💉",
+      "category": "tech",
+      "ybp": 230,
+      "year": 1796,
+      "certainty": "firm",
+      "blurb": "Edward Jenner uses cowpox to protect against smallpox — the first deliberate immunisation, and eventually the tool that eradicates the disease entirely."
+    },
+    {
+      "id": "one-billion",
+      "label": "One billion humans",
+      "emoji": "👥",
+      "category": "civilization",
+      "ybp": 222,
+      "year": 1804,
+      "certainty": "approximate",
+      "blurb": "It took all of human history to reach the first billion. The eighth arrived in about twelve years."
+    },
+    {
+      "id": "tambora",
+      "label": "Tambora and the year without a summer",
+      "emoji": "🌋",
+      "category": "climate",
+      "ybp": 211,
+      "year": 1815,
+      "certainty": "firm",
+      "blurb": "The largest eruption in recorded history causes crop failures worldwide. Snow falls in New England in June, and a rainy Swiss holiday produces Frankenstein."
+    },
+    {
+      "id": "photography",
+      "label": "Photography",
+      "emoji": "📷",
+      "category": "tech",
+      "ybp": 200,
+      "year": 1826,
+      "certainty": "firm",
+      "blurb": "For the first time, a moment can be recorded exactly rather than remembered or drawn."
+    },
+    {
+      "id": "abolition",
+      "label": "Abolition of slavery",
+      "emoji": "⛓️",
+      "category": "civilization",
+      "startYbp": 193,
+      "endYbp": 138,
+      "certainty": "firm",
+      "blurb": "From the British Empire in 1833 to Brazil in 1888, legal slavery is dismantled across the Atlantic world after millennia as a near-universal institution."
+    },
+    {
+      "id": "telegraph",
+      "label": "The telegraph",
+      "emoji": "⚡",
+      "category": "tech",
+      "ybp": 182,
+      "year": 1844,
+      "certainty": "firm",
+      "blurb": "Messages outrun horses and ships for the first time in history. Distance stops being the same thing as delay."
+    },
+    {
+      "id": "anesthesia",
+      "label": "Anaesthesia",
+      "emoji": "😴",
+      "category": "tech",
+      "ybp": 180,
+      "year": 1846,
+      "certainty": "firm",
+      "blurb": "Surgery stops being torture. Operations can finally take as long as they need to."
     },
     {
       "id": "origin-of-species",
@@ -856,6 +2161,86 @@
       "blurb": "Pasteur and Koch show that microbes cause disease. Average human life expectancy roughly doubles over the following century."
     },
     {
+      "id": "periodic-table",
+      "label": "The periodic table",
+      "emoji": "⚛️",
+      "category": "tech",
+      "ybp": 157,
+      "year": 1869,
+      "certainty": "firm",
+      "blurb": "Mendeleev arranges the elements by their properties and leaves gaps — then the missing elements are found, exactly as predicted."
+    },
+    {
+      "id": "telephone",
+      "label": "The telephone",
+      "emoji": "☎️",
+      "category": "tech",
+      "ybp": 150,
+      "year": 1876,
+      "certainty": "firm",
+      "blurb": "The human voice travels down a wire. Real-time conversation across distance becomes ordinary."
+    },
+    {
+      "id": "electric-light",
+      "label": "Electric light and the power grid",
+      "emoji": "💡",
+      "category": "tech",
+      "ybp": 147,
+      "year": 1879,
+      "certainty": "firm",
+      "blurb": "Cheap indoor light detaches human activity from the sun, restructuring work, cities, and sleep itself."
+    },
+    {
+      "id": "xrays",
+      "label": "X-rays",
+      "emoji": "🩻",
+      "category": "tech",
+      "ybp": 131,
+      "year": 1895,
+      "certainty": "firm",
+      "blurb": "Röntgen photographs the bones of his wife's hand. Medicine can see inside a living body without opening it."
+    },
+    {
+      "id": "radio",
+      "label": "Radio",
+      "emoji": "📡",
+      "category": "tech",
+      "ybp": 131,
+      "year": 1895,
+      "certainty": "firm",
+      "blurb": "Information travels without any wire at all — the beginning of broadcasting, and eventually of every wireless device you own."
+    },
+    {
+      "id": "flight",
+      "label": "Powered flight",
+      "emoji": "✈️",
+      "category": "tech",
+      "ybp": 123,
+      "year": 1903,
+      "certainty": "firm",
+      "blurb": "Twelve seconds at Kitty Hawk. Sixty-six years later, people walked on the Moon."
+    },
+    {
+      "id": "relativity",
+      "label": "Relativity",
+      "emoji": "🌌",
+      "category": "tech",
+      "ybp": 121,
+      "year": 1905,
+      "certainty": "firm",
+      "blurb": "Einstein shows that space and time bend, and that gravity is geometry. Without the correction, GPS would drift kilometres off within a day."
+    },
+    {
+      "id": "tunguska",
+      "label": "The Tunguska airburst",
+      "emoji": "💥",
+      "category": "impact",
+      "ybp": 118,
+      "year": 1908,
+      "certainty": "firm",
+      "blurb": "An object explodes above Siberia and flattens 80 million trees across 2,000 square kilometres. Nobody is recorded as killed, and no crater was ever found."
+    },
+    {
       "id": "world-wars",
       "label": "The World Wars",
       "emoji": "🕊️",
@@ -865,6 +2250,117 @@
       "year": 1914,
       "certainty": "firm",
       "blurb": "Industrial-scale warfare kills perhaps 100 million people across two conflicts and reshapes the political map of the entire world."
+    },
+    {
+      "id": "passenger-pigeon",
+      "label": "The passenger pigeon goes extinct",
+      "emoji": "🕊️",
+      "category": "extinction",
+      "ybp": 112,
+      "year": 1914,
+      "certainty": "firm",
+      "blurb": "Flocks once darkened the sky for days and numbered in the billions. Martha, the last one, died in a zoo in 1914. Abundance is no protection."
+    },
+    {
+      "id": "quantum",
+      "label": "Quantum mechanics",
+      "emoji": "⚛️",
+      "category": "tech",
+      "ybp": 101,
+      "year": 1925,
+      "certainty": "firm",
+      "blurb": "Matter turns out to be probabilistic and granular at small scales. Strange as it is, it underpins every transistor, laser, and LED."
+    },
+    {
+      "id": "penicillin",
+      "label": "Penicillin",
+      "emoji": "💊",
+      "category": "tech",
+      "ybp": 98,
+      "year": 1928,
+      "certainty": "firm",
+      "blurb": "Fleming notices mould killing bacteria on a contaminated dish. Infections that routinely killed people become treatable."
+    },
+    {
+      "id": "expanding-universe",
+      "label": "The universe is expanding",
+      "emoji": "🌠",
+      "category": "tech",
+      "ybp": 97,
+      "year": 1929,
+      "certainty": "firm",
+      "blurb": "Hubble finds that distant galaxies are all receding. The universe has a history and a beginning — which is how we know it is 13.8 billion years old."
+    },
+    {
+      "id": "thylacine",
+      "label": "The thylacine goes extinct",
+      "emoji": "🐅",
+      "category": "extinction",
+      "ybp": 90,
+      "year": 1936,
+      "certainty": "firm",
+      "blurb": "The last known Tasmanian tiger died in a Hobart zoo, two months after the species was finally granted legal protection."
+    },
+    {
+      "id": "nuclear",
+      "label": "Nuclear fission unleashed",
+      "emoji": "☢️",
+      "category": "tech",
+      "ybp": 81,
+      "year": 1945,
+      "certainty": "firm",
+      "blurb": "Humans gain the ability to release the energy binding atoms together, and simultaneously the ability to end their own civilization."
+    },
+    {
+      "id": "computer",
+      "label": "The programmable computer",
+      "emoji": "💻",
+      "category": "tech",
+      "ybp": 81,
+      "year": 1945,
+      "certainty": "firm",
+      "blurb": "Machines that can be told what to do rather than rebuilt for each task. Turing had worked out what such a machine could do a decade earlier."
+    },
+    {
+      "id": "transistor",
+      "label": "The transistor",
+      "emoji": "🔌",
+      "category": "tech",
+      "ybp": 79,
+      "year": 1947,
+      "certainty": "firm",
+      "blurb": "A switch with no moving parts that can shrink almost indefinitely. There are now more transistors on Earth than grains of sand."
+    },
+    {
+      "id": "human-rights",
+      "label": "Universal Declaration of Human Rights",
+      "emoji": "📜",
+      "category": "civilization",
+      "ybp": 78,
+      "year": 1948,
+      "certainty": "firm",
+      "blurb": "In the wake of the Second World War, 48 nations agree in writing that some rights belong to everyone simply for being human."
+    },
+    {
+      "id": "anthropocene",
+      "label": "Human-driven change becomes global",
+      "emoji": "🌡️",
+      "category": "climate",
+      "startYbp": 76,
+      "endYbp": 0,
+      "year": 1950,
+      "certainty": "debated",
+      "blurb": "CO2 climbs past any level in 3 million years, species are lost at hundreds of times the background rate, and human-made mass now outweighs all living biomass. Whether to formally name this the Anthropocene epoch is still contested."
+    },
+    {
+      "id": "sixth-extinction",
+      "label": "The sixth mass extinction",
+      "emoji": "📉",
+      "category": "extinction",
+      "startYbp": 76,
+      "endYbp": 0,
+      "certainty": "debated",
+      "blurb": "Species are being lost at perhaps hundreds of times the natural background rate. Whether this yet qualifies as a true mass extinction is argued — the trend is not."
     },
     {
       "id": "dna-structure",
@@ -877,6 +2373,46 @@
       "blurb": "Watson, Crick, Franklin, and Wilkins reveal the double helix — the molecule that connects every organism on this timeline to every other."
     },
     {
+      "id": "sputnik",
+      "label": "The space age begins",
+      "emoji": "🛰️",
+      "category": "tech",
+      "ybp": 69,
+      "year": 1957,
+      "certainty": "firm",
+      "blurb": "A polished metal sphere beeping overhead every 96 minutes. Humanity has put something into orbit and kept it there."
+    },
+    {
+      "id": "keeling",
+      "label": "The Keeling Curve begins",
+      "emoji": "📈",
+      "category": "climate",
+      "ybp": 68,
+      "year": 1958,
+      "certainty": "firm",
+      "blurb": "Charles Keeling starts measuring CO2 on Mauna Loa. The resulting sawtooth graph — the planet breathing, on a rising trend — becomes the defining chart of climate science."
+    },
+    {
+      "id": "cmb",
+      "label": "The echo of the Big Bang is found",
+      "emoji": "📻",
+      "category": "tech",
+      "ybp": 62,
+      "year": 1964,
+      "certainty": "firm",
+      "blurb": "Two radio astronomers track a persistent hiss they assume is pigeon droppings. It turns out to be the afterglow of the universe's beginning."
+    },
+    {
+      "id": "plate-tectonics-accepted",
+      "label": "Plate tectonics accepted",
+      "emoji": "🌏",
+      "category": "tech",
+      "ybp": 61,
+      "year": 1965,
+      "certainty": "firm",
+      "blurb": "Fifty years after Wegener was mocked for it, seafloor evidence confirms continents move. Geology gets its unifying theory."
+    },
+    {
       "id": "moon-landing",
       "label": "Humans walk on the Moon",
       "emoji": "🚀",
@@ -885,6 +2421,26 @@
       "year": 1969,
       "certainty": "firm",
       "blurb": "About 66 million years after the asteroid, and 3.8 billion years after life began, a descendant of those first cells stands on another world."
+    },
+    {
+      "id": "smallpox",
+      "label": "Smallpox eradicated",
+      "emoji": "🦠",
+      "category": "tech",
+      "ybp": 46,
+      "year": 1980,
+      "certainty": "firm",
+      "blurb": "A disease that killed perhaps 300 million people in the twentieth century alone is deliberately driven to extinction. It has never come back."
+    },
+    {
+      "id": "ozone-hole",
+      "label": "The ozone hole, found and fixed",
+      "emoji": "🕳️",
+      "category": "climate",
+      "ybp": 41,
+      "year": 1985,
+      "certainty": "firm",
+      "blurb": "A hole in the ozone layer is discovered over Antarctica. The world bans CFCs within two years, and it is now slowly closing — proof the thing can be done."
     },
     {
       "id": "internet",
@@ -897,6 +2453,16 @@
       "blurb": "The World Wide Web is released to everyone. Within 30 years most of humanity is connected to it."
     },
     {
+      "id": "exoplanets",
+      "label": "Planets found around other stars",
+      "emoji": "🪐",
+      "category": "tech",
+      "ybp": 34,
+      "year": 1992,
+      "certainty": "firm",
+      "blurb": "The first confirmed exoplanets. Thousands are now known, and most stars appear to have planets."
+    },
+    {
       "id": "human-genome",
       "label": "Human genome sequenced",
       "emoji": "🧫",
@@ -907,15 +2473,74 @@
       "blurb": "All 3 billion letters read. It confirms in detail what the fossils already suggested about our place on the tree of life."
     },
     {
-      "id": "anthropocene",
-      "label": "Human-driven change becomes global",
-      "emoji": "🌡️",
-      "category": "climate",
-      "startYbp": 76,
-      "endYbp": 0,
-      "year": 1950,
-      "certainty": "debated",
-      "blurb": "CO2 climbs past any level in 3 million years, species are lost at hundreds of times the background rate, and human-made mass now outweighs all living biomass. Whether to formally name this the Anthropocene epoch is still contested."
+      "id": "higgs",
+      "label": "The Higgs boson found",
+      "emoji": "⚛️",
+      "category": "tech",
+      "ybp": 14,
+      "year": 2012,
+      "certainty": "firm",
+      "blurb": "The particle explaining why matter has mass at all is detected, 48 years after it was predicted on paper."
+    },
+    {
+      "id": "crispr",
+      "label": "CRISPR gene editing",
+      "emoji": "✂️",
+      "category": "tech",
+      "ybp": 14,
+      "year": 2012,
+      "certainty": "firm",
+      "blurb": "A bacterial immune system is repurposed into precise, cheap genetic editing. For the first time we can rewrite the code this timeline is built from."
+    },
+    {
+      "id": "chelyabinsk",
+      "label": "The Chelyabinsk meteor",
+      "emoji": "💥",
+      "category": "impact",
+      "ybp": 13,
+      "year": 2013,
+      "certainty": "firm",
+      "blurb": "A 20-metre rock explodes over Russia, injuring 1,500 people mostly through shattered glass. Nobody saw it coming — it arrived out of the Sun's glare."
+    },
+    {
+      "id": "gravitational-waves",
+      "label": "Gravitational waves detected",
+      "emoji": "〰️",
+      "category": "tech",
+      "ybp": 11,
+      "year": 2015,
+      "certainty": "firm",
+      "blurb": "Two black holes collide 1.3 billion light years away, and the ripple stretches a 4 km detector by less than the width of a proton."
+    },
+    {
+      "id": "mrna",
+      "label": "mRNA vaccines",
+      "emoji": "💉",
+      "category": "tech",
+      "ybp": 6,
+      "year": 2020,
+      "certainty": "firm",
+      "blurb": "Vaccines designed in days rather than years, deployed to billions of people during a pandemic."
+    },
+    {
+      "id": "eight-billion",
+      "label": "Eight billion humans",
+      "emoji": "👥",
+      "category": "civilization",
+      "ybp": 4,
+      "year": 2022,
+      "certainty": "firm",
+      "blurb": "World population passes eight billion, with growth now slowing sharply as birth rates fall almost everywhere."
+    },
+    {
+      "id": "jwst",
+      "label": "The James Webb Space Telescope",
+      "emoji": "🔭",
+      "category": "tech",
+      "ybp": 4,
+      "year": 2022,
+      "certainty": "firm",
+      "blurb": "A telescope tuned to infrared light, seeing galaxies as they were within a few hundred million years of the Big Bang."
     }
   ]
 }
