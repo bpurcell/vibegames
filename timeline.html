@@ -460,6 +460,24 @@ function TimelineExplorer() {
   const [width, setWidth] = useState(900);
   const [winW, setWinW] = useState(() => (typeof window !== "undefined" ? window.innerWidth : 1200));
 
+  // Orientation is sticky across visits: whichever one you chose is the one you
+  // meant. Defaults to vertical on narrow screens, where horizontal panning of a
+  // wide plot is genuinely awkward.
+  const [orientation, setOrientation] = useState(() => {
+    try {
+      const saved = localStorage.getItem("deeptime-orientation");
+      if (saved === "v" || saved === "h") return saved;
+    } catch (err) { /* private mode */ }
+    // Guard against a 0 width: an unlaid-out or hidden document reports 0, and
+    // treating that as "narrow" would default desktop visitors to vertical.
+    const w = typeof window !== "undefined" ? window.innerWidth : 0;
+    return w > 0 && w < NARROW_AT ? "v" : "h";
+  });
+  useEffect(() => {
+    try { localStorage.setItem("deeptime-orientation", orientation); } catch (err) { /* private mode */ }
+  }, [orientation]);
+  const vertical = orientation === "v";
+
   useEffect(() => {
     const onResize = () => setWinW(window.innerWidth);
     window.addEventListener("resize", onResize);
@@ -713,6 +731,12 @@ function TimelineExplorer() {
         .scrollArea{overflow-y:auto;overflow-x:hidden;flex:1;display:flex;}
         .scrollArea::-webkit-scrollbar{width:10px;}
         .scrollArea::-webkit-scrollbar-thumb{background:${C.border};border-radius:5px;}
+        /* Vertical mode deliberately leaves touch-action alone so the browser
+           keeps its own momentum scrolling — that is the point of this view. */
+        .vscroll{-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+        .vscroll::-webkit-scrollbar{width:10px;}
+        .vscroll::-webkit-scrollbar-thumb{background:${C.border};border-radius:5px;}
+        .vrow:hover{background:${C.panel};border-radius:6px;}
         input{font-family:inherit;}
         table{border-collapse:collapse;width:100%;font-size:13px;}
         th,td{text-align:left;padding:7px 10px;border-bottom:1px solid ${C.border};vertical-align:top;}
@@ -726,12 +750,20 @@ function TimelineExplorer() {
         <div style={{ marginRight:"auto" }}>
           <h1 className="disp" style={{ fontSize:21, margin:0, lineHeight:1.1 }}>⏳ Deep Time</h1>
           <div style={{ color:C.sub, fontSize:11.5 }}>
-            Scroll to zoom · drag to pan · click anything for detail
+            {vertical
+              ? "Scroll to travel through time · pinch or ⌘-scroll to zoom"
+              : "Scroll to zoom · drag to pan · click anything for detail"}
           </div>
         </div>
         <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search events…"
-          style={{ width:180, background:C.panel2, border:`1px solid ${C.border}`, borderRadius:7,
-            padding:"6px 10px", color:C.ink, fontSize:12.5, outline:"none" }} />
+          style={{ width:narrow ? 130 : 180, background:C.panel2, border:`1px solid ${C.border}`,
+            borderRadius:7, padding:"6px 10px", color:C.ink, fontSize:12.5, outline:"none" }} />
+        {!listMode && (
+          <button className="btn" onClick={() => setOrientation(vertical ? "h" : "v")}
+            title={vertical ? "Switch to the horizontal timeline" : "Switch to the vertical timeline (better on phones)"}>
+            {vertical ? "↔ Horizontal" : "↕ Vertical"}
+          </button>
+        )}
         <button className="btn" aria-pressed={listMode} onClick={() => setListMode((v) => !v)}>
           {listMode ? "◧ Timeline" : "☰ List"}
         </button>
@@ -750,6 +782,11 @@ function TimelineExplorer() {
 
       {listMode ? (
         <ListView query={query} onPick={(e) => { setListMode(false); setSelected(e); zoomTo(evStart(e), evEnd(e), 1.4); }} />
+      ) : vertical ? (
+        <VerticalView view={view} applyView={applyView} span={span} narrow={narrow}
+          hidden={hidden} matchIds={matchIds}
+          selected={selected} setSelected={setSelected}
+          onZoomBand={(b) => zoomTo(b.startYbp, b.endYbp)} />
       ) : (
         <>
           {/* ---------- overview (log scale) ---------- */}
@@ -827,18 +864,23 @@ function TimelineExplorer() {
             </div>
           </div>
 
-          {/* ---------- footer: legend + filters + status ---------- */}
-          <div style={{ padding:"7px 14px", background:C.panel, borderTop:`1px solid ${C.border}`,
-            display:"flex", gap:14, alignItems:"center", flexWrap:"wrap", flex:"none", fontSize:11.5 }}>
-            <div style={{ display:"flex", gap:10, alignItems:"center" }}>
-              {Object.entries(GROUPS).map(([k, g]) => (
-                <span key={k} style={{ display:"flex", alignItems:"center", gap:5 }}>
-                  <span style={{ width:10, height:10, borderRadius:3, background:g.color }} />
-                  <span style={{ color:C.sub }}>{g.name}</span>
-                </span>
-              ))}
-            </div>
-            <span style={{ color:C.faint }}>|</span>
+        </>
+      )}
+
+      {/* ---------- footer: legend + filters + status (shared) ---------- */}
+      {!listMode && (
+        <div style={{ padding:"7px 14px", background:C.panel, borderTop:`1px solid ${C.border}`,
+          display:"flex", gap:14, alignItems:"center", flexWrap:"wrap", flex:"none", fontSize:11.5 }}>
+          <div style={{ display:"flex", gap:10, alignItems:"center" }}>
+            {Object.entries(GROUPS).map(([k, g]) => (
+              <span key={k} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                <span style={{ width:10, height:10, borderRadius:3, background:g.color }} />
+                <span style={{ color:C.sub }}>{g.name}</span>
+              </span>
+            ))}
+          </div>
+          {!narrow && <span style={{ color:C.faint }}>|</span>}
+          {!narrow && (
             <div style={{ display:"flex", gap:10, alignItems:"center", color:C.sub }}>
               <span style={{ display:"flex", alignItems:"center", gap:5 }}>
                 <svg width="14" height="14"><circle cx="7" cy="7" r="4.5" fill={C.sub} /></svg> certain
@@ -847,20 +889,20 @@ function TimelineExplorer() {
                 <svg width="14" height="14"><circle cx="7" cy="7" r="4.5" fill="none" stroke={C.sub} strokeWidth="1.6" strokeDasharray="2 1.6" /></svg> debated
               </span>
             </div>
-            <div style={{ marginLeft:"auto", display:"flex", gap:5, flexWrap:"wrap" }}>
-              {CAT_ORDER.map((cat) => (
-                <button key={cat} className={"btn" + (hidden.has(cat) ? " off" : "")}
-                  onClick={() => toggleCat(cat)} title={`Show / hide ${CATEGORIES[cat].name}`}
-                  style={{ padding:"3px 7px", fontSize:11 }}>
-                  {CATEGORIES[cat].emoji}
-                </button>
-              ))}
-            </div>
-            <span className="mono" style={{ color:C.faint, fontSize:10.5 }}>
-              window {fmtSpan(span)} · {visibleCount} events
-            </span>
+          )}
+          <div style={{ marginLeft:"auto", display:"flex", gap:5, flexWrap:"wrap" }}>
+            {CAT_ORDER.map((cat) => (
+              <button key={cat} className={"btn" + (hidden.has(cat) ? " off" : "")}
+                onClick={() => toggleCat(cat)} title={`Show / hide ${CATEGORIES[cat].name}`}
+                style={{ padding:"3px 7px", fontSize:11 }}>
+                {CATEGORIES[cat].emoji}
+              </button>
+            ))}
           </div>
-        </>
+          <span className="mono" style={{ color:C.faint, fontSize:10.5 }}>
+            window {fmtSpan(span)} · {visibleCount} events
+          </span>
+        </div>
       )}
 
       {selected && (
@@ -1055,6 +1097,383 @@ function Overview({ view, onNavigate, gut = GUTTER, narrow = false }) {
           })}
         </svg>
       </div>
+    </div>
+  );
+}
+
+/* ==================================================================== *
+ * VERTICAL VIEW
+ *
+ * Time runs top (oldest) -> bottom (now), and the browser's own vertical
+ * scroll is the only thing that pans. Nothing calls preventDefault on a plain
+ * wheel or a one-finger drag, which is the whole point: the horizontal view
+ * has to hijack both to work, and that is what makes it awkward on a trackpad
+ * or a phone. Zooming is therefore explicit — buttons, pinch, or the standard
+ * ctrl/cmd+wheel idiom — rather than stealing the scroll gesture.
+ *
+ * Events form one time-ordered stream instead of eight category rows: on a
+ * 375px screen eight columns would be unreadable. Category identity moves onto
+ * each event as an emoji plus a coloured group dot, and the rows stay wide
+ * enough to hold a real label.
+ * ==================================================================== */
+
+function fmtCompact(v) {
+  if (v <= 0.5) return "now";
+  if (v >= 1e9) return num(v / 1e9, 2) + " Ga";
+  if (v >= 1e6) return num(v / 1e6, 1) + " Ma";
+  if (v >= 10000) return num(v / 1000, 0) + " ka";
+  const y = Math.round(REF_YEAR - v);
+  return y > 0 ? y + " CE" : (1 - y) + " BCE";
+}
+
+function VerticalView({ view, applyView, span, narrow, hidden, matchIds, selected, setSelected, onZoomBand }) {
+  const scrollRef = useRef(null);
+  const [vh, setVh] = useState(600);
+  const [availW, setAvailW] = useState(700);
+  const [scrollTop, setScrollTop] = useState(0);
+  const pinch = useRef(null);
+  const anchor = useRef(null);
+  const raf = useRef(0);
+
+  // Scroll position is only needed to pin geological labels, so coalesce it to
+  // one update per frame rather than re-rendering on every scroll event.
+  const onScroll = useCallback((ev) => {
+    const t = ev.currentTarget.scrollTop;
+    cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => setScrollTop(t));
+  }, []);
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+
+  const AXIS_W = narrow ? 48 : 68;
+  const GEO_COL_W = narrow ? 26 : 30;
+  const RAIL_W = narrow ? 16 : 24;
+  // One lane on phones: two lanes fit more labels but truncate every one of
+  // them ("Ordovicia…"), which is worse than showing fewer in full. The
+  // range-blocking cap below is what actually frees up labels here.
+  const MAX_VLANES = narrow ? 1 : 3;
+
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const measure = () => { setVh(el.clientHeight); setAvailW(el.clientWidth); };
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    measure();
+    return () => ro.disconnect();
+  }, []);
+
+  const visible = useMemo(
+    () => EVENTS
+      .filter((e) => !hidden.has(e.category) && evStart(e) >= view.end && evEnd(e) <= view.start)
+      .sort((a, b) => evStart(b) - evStart(a)),
+    [view, hidden]
+  );
+
+  // Tall enough that dense windows get breathing room, but always at least a
+  // couple of screens so scrolling feels like travel rather than a nudge.
+  const contentH = Math.max(vh * 2.2, visible.length * 46 + 240);
+  const yOf = (v) => ((view.start - v) / span) * contentH;
+  const timeAtY = (y) => view.start - (y / contentH) * span;
+
+  const geoCols = useMemo(() => {
+    const ranks = narrow ? ["era", "period"] : ["eon", "era", "period", "epoch"];
+    return ranks
+      .map((rank) => ({
+        rank,
+        bands: SCALE.filter((b) => b.rank === rank && b.startYbp > view.end && b.endYbp < view.start),
+      }))
+      .filter((c) => c.bands.length > 0);
+  }, [view, narrow]);
+
+  const GEO_W = geoCols.length * GEO_COL_W;
+  const streamX = AXIS_W + GEO_W + 10;
+  const laneW = Math.max(narrow ? 116 : 190, (availW - streamX - 8) / MAX_VLANES);
+
+  const ticks = useMemo(() => {
+    const step = niceStep(span, Math.max(4, Math.min(80, Math.floor(contentH / 110))));
+    const out = [];
+    const first = Math.ceil(view.end / step) * step;
+    for (let v = first; v <= view.start + step * 0.5; v += step) {
+      if (v < view.end - step * 0.5) continue;
+      out.push({ v, label: fmtTick(v, step) });
+      if (out.length > 300) break;
+    }
+    return out;
+  }, [view, span, contentH]);
+
+  /* --- lane packing, transposed from the horizontal view --- */
+  const placed = useMemo(() => {
+    const laneBottom = [];
+    const out = [];
+    for (const e of visible) {
+      const y1 = yOf(evStart(e));
+      const y2 = yOf(evEnd(e));
+      // A range only reserves its label's worth of lane (plus a little), not
+      // its whole duration. Otherwise one long bar — the Ediacaran, the ice
+      // ages — silently strips the labels off everything inside it. The bar
+      // still draws full height and simply passes behind the later rows.
+      const needLabel = Math.max(Math.min(y2, y1 + 110), y1 + 34);
+      const needBare = Math.max(Math.min(y2, y1 + 60), y1 + 12);
+      let li = laneBottom.findIndex((b) => y1 > b + 4);
+      let labeled = true;
+      if (li === -1) {
+        if (laneBottom.length < MAX_VLANES) { laneBottom.push(0); li = laneBottom.length - 1; }
+        else {
+          labeled = false;
+          li = laneBottom.findIndex((b) => y1 > b + 2);
+          if (li === -1) li = laneBottom.reduce((best, b, i) => (b < laneBottom[best] ? i : best), 0);
+        }
+      }
+      laneBottom[li] = labeled ? needLabel : Math.max(laneBottom[li], needBare);
+      out.push({ e, y1, y2, lane: li, labeled });
+    }
+    return out;
+  }, [visible, contentH, view, MAX_VLANES]);
+
+  /* --- zoom keeps the middle of the screen pinned --- */
+  const zoomBy = useCallback((factor) => {
+    const el = scrollRef.current;
+    const centerT = timeAtY((el ? el.scrollTop : 0) + vh / 2);
+    anchor.current = centerT;
+    const ns = Math.min(MAX_YBP, Math.max(MIN_SPAN, span * factor));
+    applyView(centerT + ns / 2, centerT - ns / 2);
+  }, [span, vh, applyView, view, contentH]);
+
+  // Restore the anchored time after a zoom; a view change with no anchor (a
+  // preset) starts at the top, which is the oldest end.
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    if (anchor.current != null) {
+      el.scrollTop = Math.max(0, yOf(anchor.current) - vh / 2);
+      anchor.current = null;
+    } else {
+      el.scrollTop = 0;
+    }
+  }, [view]);
+
+  // Bring an off-screen selection into view without yanking a visible one.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !selected) return;
+    const y = yOf(evStart(selected));
+    if (y < el.scrollTop + 16 || y > el.scrollTop + vh - 16) {
+      el.scrollTo({ top: Math.max(0, y - vh * 0.35), behavior: "smooth" });
+    }
+  }, [selected]);
+
+  /* --- ctrl/cmd + wheel zooms; a plain wheel scrolls normally --- */
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onWheel = (ev) => {
+      if (!ev.ctrlKey && !ev.metaKey) return;   // leave native scrolling alone
+      ev.preventDefault();
+      zoomBy(Math.exp(ev.deltaY * 0.002));
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [zoomBy]);
+
+  /* --- two-finger pinch zooms; one finger is left to scroll --- */
+  const onTouchStart = (ev) => {
+    if (ev.touches.length === 2) {
+      const [a, b] = ev.touches;
+      pinch.current = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), start: view.start, end: view.end };
+    }
+  };
+  const onTouchMove = (ev) => {
+    if (ev.touches.length !== 2 || !pinch.current) return;
+    ev.preventDefault();
+    const [a, b] = ev.touches;
+    const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+    const p = pinch.current;
+    const pSpan = p.start - p.end;
+    const el = scrollRef.current;
+    const rect = el.getBoundingClientRect();
+    const midY = (a.clientY + b.clientY) / 2 - rect.top + el.scrollTop;
+    const anchorT = p.start - (midY / contentH) * pSpan;
+    const ns = Math.min(MAX_YBP, Math.max(MIN_SPAN, pSpan * Math.max(0.15, p.d / Math.max(dist, 1))));
+    anchor.current = anchorT;
+    applyView(anchorT + ns / 2, anchorT - ns / 2);
+  };
+  const onTouchEnd = () => { pinch.current = null; };
+
+  const nowY = view.end <= 0 ? yOf(0) : null;
+
+  return (
+    <div style={{ flex:1, display:"flex", minHeight:0, position:"relative" }}>
+      <div ref={scrollRef} className="vscroll" onScroll={onScroll}
+        style={{ flex:1, overflowY:"auto", overflowX:"hidden", minWidth:0 }}
+        onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+        <div style={{ position:"relative", height:contentH }}>
+
+          {/* time gridlines + axis labels */}
+          {ticks.map((t, i) => {
+            const y = yOf(t.v);
+            return (
+              <div key={i} style={{ position:"absolute", top:y, left:0, right:0, height:0 }}>
+                <div style={{ position:"absolute", left:AXIS_W, right:0, top:0,
+                  borderTop:`1px solid ${C.grid}` }} />
+                <div className="mono" style={{ position:"absolute", left:0, top:-7, width:AXIS_W - 8,
+                  textAlign:"right", fontSize:narrow ? 8.5 : 9.5, color:C.sub, whiteSpace:"nowrap" }}>
+                  {t.label}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* "now" line */}
+          {nowY !== null && (
+            <div style={{ position:"absolute", top:nowY, left:AXIS_W, right:0,
+              borderTop:`1.5px dashed ${C.accent}`, opacity:.55 }} />
+          )}
+
+          {/* geological column */}
+          {geoCols.map((col, ci) => (
+            <div key={col.rank}>
+              {col.bands.map((b) => {
+                const top = Math.max(0, yOf(b.startYbp));
+                const bottom = Math.min(contentH, yOf(b.endYbp));
+                const h = bottom - top;
+                if (h < 2) return null;
+                // Bands here run thousands of pixels tall, so a centred label is
+                // almost never on screen. Pin it inside the visible slice.
+                const labelLen = b.name.length * 6.3 + 10;
+                const off = Math.min(Math.max(scrollTop + 14 - top, 0), Math.max(0, h - labelLen));
+                return (
+                  <div key={b.id} title={b.name + (b.blurb ? " — " + b.blurb : "")}
+                    onClick={() => onZoomBand(b)}
+                    style={{ position:"absolute", top, height:h,
+                      left:AXIS_W + ci * GEO_COL_W + 1, width:GEO_COL_W - 2,
+                      background:C.panel, border:`1px solid ${C.border}`, borderRadius:4,
+                      cursor:"zoom-in", overflow:"hidden" }}>
+                    {h > 46 && (
+                      <span style={{ position:"absolute", top:off, left:0, right:0,
+                        display:"flex", justifyContent:"center" }}>
+                        <span style={{ writingMode:"vertical-rl", transform:"rotate(180deg)",
+                          fontSize:9.5, fontWeight:700, color:C.sub, whiteSpace:"nowrap",
+                          letterSpacing:".03em" }}>{b.name}</span>
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+
+          {/* events */}
+          {placed.map((p) => {
+            const e = p.e;
+            const cat = CATEGORIES[e.category];
+            const color = GROUPS[cat.group].color;
+            const dim = matchIds ? !matchIds.has(e.id) : false;
+            const sel = selected && selected.id === e.id;
+            const range = isRange(e);
+            const debated = e.certainty === "debated";
+            const approx = e.certainty === "approximate";
+            const barH = Math.max(4, p.y2 - p.y1);
+            return (
+              <div key={e.id} className="vrow" title={e.emoji + " " + e.label}
+                onClick={() => setSelected(e)}
+                style={{ position:"absolute", top:p.y1 - 7, left:streamX + p.lane * laneW,
+                  width:laneW - 10, cursor:"pointer", opacity:dim ? 0.22 : 1,
+                  transition:"opacity .2s", display:"flex", gap:8, alignItems:"flex-start" }}>
+                <span style={{ width:12, flex:"none", display:"flex", justifyContent:"center", paddingTop:5 }}>
+                  {range ? (
+                    <span style={{ width:6, height:barH, borderRadius:3, background:color,
+                      opacity:debated ? 0.3 : approx ? 0.62 : 1,
+                      border:debated ? `1px dashed ${color}` : "none",
+                      boxShadow:sel ? `0 0 0 2px ${C.accent}` : "none" }} />
+                  ) : (
+                    <span style={{ width:10, height:10, borderRadius:"50%",
+                      background:debated ? C.bg : color,
+                      border:`2px solid ${color}`,
+                      borderStyle:debated ? "dashed" : "solid",
+                      boxShadow:sel ? `0 0 0 3px ${C.accent}` : "none" }} />
+                  )}
+                </span>
+                {p.labeled && (
+                  <span style={{ minWidth:0, flex:1 }}>
+                    <span style={{ display:"block", fontSize:narrow ? 13 : 12.5,
+                      fontWeight:700, lineHeight:1.25, color:sel ? C.accent : C.ink,
+                      overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                      {e.emoji} {e.label}
+                    </span>
+                    <span className="mono" style={{ display:"block", fontSize:9.5, color:C.faint,
+                      marginTop:1, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
+                      {fmtCompact(evStart(e))}{range ? " → " + fmtCompact(e.endYbp) : ""}
+                    </span>
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <VRail view={view} applyView={applyView} w={RAIL_W} />
+
+      {/* zoom controls — vertical mode has no wheel-zoom to fall back on */}
+      <div style={{ position:"absolute", right:RAIL_W + 10, bottom:14, zIndex:20,
+        display:"flex", flexDirection:"column", gap:5 }}>
+        <button className="btn" title="Zoom in" onClick={() => zoomBy(0.55)}
+          style={{ width:32, height:32, padding:0, fontSize:16, lineHeight:1 }}>+</button>
+        <button className="btn" title="Zoom out" onClick={() => zoomBy(1.8)}
+          style={{ width:32, height:32, padding:0, fontSize:16, lineHeight:1 }}>−</button>
+      </div>
+    </div>
+  );
+}
+
+/* Vertical twin of the log-scale overview strip. */
+function VRail({ view, applyView, w }) {
+  const ref = useRef(null);
+  const [h, setH] = useState(400);
+  const drag = useRef(false);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setH(Math.max(80, el.clientHeight)));
+    ro.observe(el);
+    setH(Math.max(80, el.clientHeight));
+    return () => ro.disconnect();
+  }, []);
+
+  const logY = (v) => {
+    const hi = Math.log10(MAX_YBP), lo = Math.log10(LOG_MIN);
+    const c = Math.log10(Math.max(LOG_MIN, Math.min(MAX_YBP, v)));
+    return ((hi - c) / (hi - lo)) * h;
+  };
+
+  const jump = (clientY) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const frac = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
+    const hi = Math.log10(MAX_YBP), lo = Math.log10(LOG_MIN);
+    const center = Math.pow(10, hi - frac * (hi - lo));
+    const span = view.start - view.end;
+    applyView(center + span / 2, center - span / 2);
+  };
+
+  const y1 = logY(view.start), y2 = logY(view.end);
+
+  return (
+    <div ref={ref} style={{ width:w, flex:"none", borderLeft:`1px solid ${C.border}`,
+      background:C.panel2, position:"relative", cursor:"crosshair", touchAction:"none" }}
+      onPointerDown={(e) => { drag.current = true; e.currentTarget.setPointerCapture?.(e.pointerId); jump(e.clientY); }}
+      onPointerMove={(e) => { if (drag.current) jump(e.clientY); }}
+      onPointerUp={() => { drag.current = false; }}
+      onPointerCancel={() => { drag.current = false; }}>
+      {EVENTS.map((e) => (
+        <div key={e.id} style={{ position:"absolute", top:logY(evStart(e)), left:2, right:2, height:1.5,
+          background:GROUPS[CATEGORIES[e.category].group].color, opacity:.5 }} />
+      ))}
+      <div style={{ position:"absolute", top:Math.min(y1, y2), height:Math.max(4, Math.abs(y2 - y1)),
+        left:0, right:0, background:"rgba(242,166,90,.2)",
+        borderTop:`1.5px solid ${C.accent}`, borderBottom:`1.5px solid ${C.accent}` }} />
     </div>
   );
 }
