@@ -34,16 +34,17 @@ const HAND_POINTS = [
 const VISIBLE = 0.5; // minimum landmark visibility score
 
 // Average the visible landmarks of one hand into a center point
-// (normalized video space). Returns null if the hand isn't tracked.
+// (normalized video space; z more negative = closer to the camera).
+// Returns null if the hand isn't tracked.
 function getHandCenter(pose, handIndex) {
   const points = HAND_POINTS[handIndex]
     .map((i) => pose[i])
     .filter((lm) => lm && (lm.visibility ?? 1) > VISIBLE);
   if (points.length === 0) return null;
 
-  let x = 0, y = 0;
-  for (const lm of points) { x += lm.x; y += lm.y; }
-  return { x: x / points.length, y: y / points.length };
+  let x = 0, y = 0, z = 0;
+  for (const lm of points) { x += lm.x; y += lm.y; z += lm.z ?? 0; }
+  return { x: x / points.length, y: y / points.length, z: z / points.length };
 }
 
 // ---- Audio ----
@@ -175,15 +176,67 @@ function playPluck(midi) {
   osc.stop(t + 0.55);
 }
 
-// ---- Bounce mode: notes only play on the head bob ----
+// ---- Push mode: notes fire on a forward hand motion ----
 const bounceModeToggleEl = document.getElementById("bounceModeToggle");
-let bounceMode = false;
+let pushMode = false;
 
 bounceModeToggleEl.addEventListener("click", () => {
-  bounceMode = !bounceMode;
-  bounceModeToggleEl.textContent = bounceMode ? "🎵 On Bounce" : "🎵 Always On";
-  bounceModeToggleEl.classList.toggle("bounce", bounceMode);
+  pushMode = !pushMode;
+  bounceModeToggleEl.textContent = pushMode ? "🥊 Push to Play" : "🎵 Always On";
+  bounceModeToggleEl.classList.toggle("bounce", pushMode);
 });
+
+// Per-hand forward-push detector, same velocity + re-arm pattern as
+// the head bob but on the depth axis (z shrinks as the hand comes
+// toward the camera). Threshold scales with the sensitivity picker.
+const PUSH_COOLDOWN_MS = 250;
+const PUSH_REARM_VEL = -0.2;
+
+const pushStates = [
+  { prevZ: null, prevTime: null, smoothVel: 0, armed: true, lastHitTime: 0 },
+  { prevZ: null, prevTime: null, smoothVel: 0, armed: true, lastHitTime: 0 },
+];
+
+function detectPush(handIndex, z, now) {
+  if (!Number.isFinite(z)) return false;
+  const s = pushStates[handIndex];
+
+  if (s.prevZ === null) {
+    s.prevZ = z;
+    s.prevTime = now;
+    return false;
+  }
+
+  const dt = (now - s.prevTime) / 1000;
+  if (dt <= 0) return false;
+
+  const rawVel = (z - s.prevZ) / dt; // negative = pushing toward camera
+  s.smoothVel = s.smoothVel * (1 - VEL_SMOOTHING) + rawVel * VEL_SMOOTHING;
+  s.prevZ = z;
+  s.prevTime = now;
+
+  // Re-arm once the push stops or the hand pulls back
+  if (!s.armed && s.smoothVel > PUSH_REARM_VEL && now - s.lastHitTime > PUSH_COOLDOWN_MS) {
+    s.armed = true;
+  }
+
+  const pushThreshold = bobThreshold * 3; // z moves in bigger units than y
+  if (s.armed && s.smoothVel < -pushThreshold) {
+    s.armed = false;
+    s.lastHitTime = now;
+    return true;
+  }
+
+  return false;
+}
+
+function resetPush(handIndex) {
+  const s = pushStates[handIndex];
+  s.prevZ = null;
+  s.prevTime = null;
+  s.smoothVel = 0;
+  s.armed = true;
+}
 
 // ---- Head-bob detection ----
 // Nose y is tracked in normalized video space (0 top, 1 bottom).
@@ -558,7 +611,8 @@ async function main() {
 
   let lastVideoTime = -1;
   let cachedPose = null;
-  let bobFiredThisFrame = false;
+  const cachedHandCenters = [null, null];
+  const pushFired = [false, false];
 
   function loop() {
     const timestampNow = performance.now();
@@ -572,12 +626,24 @@ async function main() {
       if (cachedPose && (cachedPose[NOSE].visibility ?? 1) > VISIBLE) {
         if (detectBob(cachedPose[NOSE].y, timestampNow)) {
           playKick();
-          bobFiredThisFrame = true;
           const center = landmarkToCanvas(cachedPose[NOSE], canvasEl.width, canvasEl.height);
           spawnBoom(center.x, center.y, timestampNow);
         }
       } else {
         resetBobTracking();
+      }
+
+      // Hand centers + push detection run per camera frame so the
+      // depth velocity isn't diluted by render ticks between frames
+      for (let h = 0; h < 2; h++) {
+        cachedHandCenters[h] = cachedPose ? getHandCenter(cachedPose, h) : null;
+        if (cachedHandCenters[h]) {
+          if (detectPush(h, cachedHandCenters[h].z, timestampNow)) {
+            pushFired[h] = true;
+          }
+        } else {
+          resetPush(h);
+        }
       }
     }
 
@@ -590,7 +656,7 @@ async function main() {
 
     for (let h = 0; h < 2; h++) {
       const voiceObj = handVoices[h];
-      const center = cachedPose ? getHandCenter(cachedPose, h) : null;
+      const center = cachedHandCenters[h];
 
       const inPlay =
         center &&
@@ -599,25 +665,21 @@ async function main() {
       if (inPlay) {
         const pos = landmarkToCanvas(center, canvasEl.width, canvasEl.height);
         const frac = Math.max(0, Math.min(1, pos.y / canvasEl.height));
-        voiceObj.play(frac, !bounceMode);
+        voiceObj.play(frac, !pushMode);
         if (voiceObj.heldIndex !== null) {
           activeIndices.push(voiceObj.heldIndex);
           playingHands.push({ pos, noteIndex: voiceObj.heldIndex });
+
+          // Push mode: a forward punch fires this hand's aimed note
+          if (pushMode && pushFired[h]) {
+            playPluck(PENTA_MIDI[voiceObj.heldIndex]);
+            spawnBoom(pos.x, pos.y, timestampNow);
+          }
         }
       } else {
         voiceObj.stop();
       }
-    }
-
-    // Bounce mode: the bob strums whatever the hands are aiming at
-    if (bobFiredThisFrame) {
-      if (bounceMode) {
-        playingHands.forEach(({ pos, noteIndex }) => {
-          playPluck(PENTA_MIDI[noteIndex]);
-          spawnBoom(pos.x, pos.y, timestampNow);
-        });
-      }
-      bobFiredThisFrame = false;
+      pushFired[h] = false;
     }
 
     drawNoteStripes(activeIndices, canvasEl.width, canvasEl.height);
