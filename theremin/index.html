@@ -116,7 +116,7 @@ html, body {
   text-shadow: 0 0 12px rgba(126, 200, 227, 0.6);
   pointer-events: none;
 }
-#centsDisplay {
+#chordLabel {
   position: absolute;
   bottom: 12px;
   left: 50%;
@@ -259,7 +259,7 @@ html, body {
   <video id="webcam" autoplay playsinline muted></video>
   <canvas id="overlay" class="dimmed"></canvas>
   <div id="noteDisplay">--</div>
-  <div id="centsDisplay"></div>
+  <div id="chordLabel"></div>
   <div id="volumeMeter">
     <div class="vol-bar" data-index="7"></div>
     <div class="vol-bar" data-index="6"></div>
@@ -299,23 +299,31 @@ html, body {
 
       <h2>Theremin Guide</h2>
       <p>
-      A camera theremin: play continuous pitch with your hands, no touching required.
+      A camera theremin: play notes and chords with your hands, no touching required.
       Based on <a href="../gesturesynth/">Gesture Synth</a>.
       </p>
 
       <h3>Right Hand — Pitch</h3>
       <p>Move your hand left and right across the screen.
       Left → low notes, right → high notes.
-      The range covers three octaves (C3 to C6), and pitch glides
-      continuously — just like a real theremin.</p>
+      The range covers three octaves (C3 to C6), snapped to
+      standard tuning — every note lands in tune.</p>
 
-      <h3>Left Hand — Volume</h3>
-      <p>Raise your hand to play louder, lower it to fade out.
-      No left hand in view? The theremin plays at a fixed volume.</p>
+      <h3>Left Hand — Chord &amp; Volume</h3>
+      <p><b>Fingers (Chord Type)</b><br>
+      Fist / no hand → single note<br>
+      1 → major<br>
+      2 → minor<br>
+      3 → dominant 7th<br>
+      4 → diminished 7th</p>
+
+      <p><b>Height</b><br>
+      Higher → louder, lower → softer.
+      No left hand in view? Fixed volume.</p>
 
       <h3>Display</h3>
-      <p>The big readout shows the nearest note and how many cents
-      sharp or flat you are — use it to practice intonation.</p>
+      <p>The big readout shows the note your right hand is on,
+      with the chord type underneath.</p>
 
       <h3>Metronome</h3>
       <p>Use the 🕰 button (top right) to start a click track.

@@ -6,7 +6,7 @@ const canvasEl = document.getElementById("overlay");
 const ctx = canvasEl.getContext("2d");
 
 const noteDisplayEl = document.getElementById("noteDisplay");
-const centsDisplayEl = document.getElementById("centsDisplay");
+const chordLabelEl = document.getElementById("chordLabel");
 const volumeBarEls = Array.from(document.querySelectorAll(".vol-bar"));
 const startOverlayEl = document.getElementById("startOverlay");
 
@@ -14,25 +14,97 @@ const helpButton = document.getElementById("helpButton");
 const helpModal = document.getElementById("helpModal");
 const closeHelp = document.getElementById("closeHelp");
 
-// ---- Pitch mapping ----
-// Screen x position (mirrored, so moving your hand right raises pitch)
-// maps exponentially across three octaves, like a theremin's antenna field.
-const PITCH_MIN_HZ = 130.81; // C3
-const PITCH_OCTAVES = 3;     // up to C6
+// ---- Finger landmark indices ----
+const FINGERS = {
+  index:  { pip: 6, tip: 8 },
+  middle: { pip: 10, tip: 12 },
+  ring:   { pip: 14, tip: 16 },
+  pinky:  { pip: 18, tip: 20 },
+};
+
+function isFingerExtended(landmarks, name) {
+  const { pip, tip } = FINGERS[name];
+  return landmarks[tip].y < landmarks[pip].y;
+}
+
+function countExtendedFingers(landmarks) {
+  return ["index", "middle", "ring", "pinky"]
+    .filter((name) => isFingerExtended(landmarks, name))
+    .length;
+}
+
+// ---- Pitch mapping: screen x -> chromatic note (standard tuning) ----
+// Mirrored view: moving your hand right raises pitch. Range C3..C6.
+const MIDI_LOW = 48;   // C3
+const MIDI_RANGE = 36; // 3 octaves up to C6
 
 // Horizontal dead margins so the full range is reachable without
 // pushing your hand off camera.
 const X_MARGIN = 0.08;
 
-function getPitchFromScreenX(landmarks) {
+// Hysteresis: the held note only changes once the raw pitch drifts
+// more than this many semitones away, so hand jitter at a note
+// boundary doesn't cause trills.
+const NOTE_SWITCH_THRESHOLD = 0.6;
+
+let heldMidi = null;
+
+function getRawMidiFromScreenX(landmarks) {
   const wrist = landmarks[0];
-  // Landmark x is in unmirrored video space; the view is mirrored.
-  const screenX = 1 - wrist.x;
+  const screenX = 1 - wrist.x; // landmark x is unmirrored video space
   const t = Math.max(0, Math.min(1, (screenX - X_MARGIN) / (1 - 2 * X_MARGIN)));
-  return PITCH_MIN_HZ * Math.pow(2, PITCH_OCTAVES * t);
+  return MIDI_LOW + t * MIDI_RANGE;
 }
 
-// ---- Volume from height (same feel as Gesture Synth) ----
+function quantizePitch(rawMidi) {
+  if (heldMidi === null || Math.abs(rawMidi - heldMidi) > NOTE_SWITCH_THRESHOLD) {
+    heldMidi = Math.round(rawMidi);
+  }
+  return heldMidi;
+}
+
+function midiToFreq(midi) {
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
+
+const NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+
+function midiToName(midi) {
+  const name = NOTE_NAMES[((midi % 12) + 12) % 12];
+  const octave = Math.floor(midi / 12) - 1;
+  return `${name}${octave}`;
+}
+
+// ---- Left hand: chord type from finger count ----
+// Same finger vocabulary as Gesture Synth's right hand.
+const CHORD_TYPES = {
+  0: { label: "single note",    intervals: [0] },
+  1: { label: "major",          intervals: [0, 4, 7] },
+  2: { label: "minor",          intervals: [0, 3, 7] },
+  3: { label: "dominant 7th",   intervals: [0, 4, 7, 10] },
+  4: { label: "diminished 7th", intervals: [0, 3, 6, 9] },
+};
+
+// Chord changes need brief confidence so finger flicker doesn't
+// stutter the harmony.
+const CHORD_HOLD_TIME_MS = 120;
+
+let stableChordCount = 0;
+let candidateChordCount = 0;
+let candidateChordSince = 0;
+
+function stabilizeChordCount(rawCount, now) {
+  if (rawCount !== candidateChordCount) {
+    candidateChordCount = rawCount;
+    candidateChordSince = now;
+  }
+  if (now - candidateChordSince >= CHORD_HOLD_TIME_MS) {
+    stableChordCount = candidateChordCount;
+  }
+  return stableChordCount;
+}
+
+// ---- Volume from height ----
 function getVolumeFromHeight(landmarks) {
   const wrist = landmarks[0];
   const TOP = 0.05;
@@ -43,7 +115,7 @@ function getVolumeFromHeight(landmarks) {
   return 1 - t;
 }
 
-const DEFAULT_VOLUME = 0.75; // used when no volume hand is in view
+const DEFAULT_VOLUME = 0.75; // used when no left hand is in view
 
 function updateVolumeMeter(volume01) {
   const litCount = Math.round(volume01 * volumeBarEls.length);
@@ -53,27 +125,17 @@ function updateVolumeMeter(volume01) {
   });
 }
 
-// ---- Note name / cents readout ----
-const NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
-
-function describePitch(freq) {
-  const midi = 69 + 12 * Math.log2(freq / 440);
-  const nearest = Math.round(midi);
-  const cents = Math.round((midi - nearest) * 100);
-  const name = NOTE_NAMES[((nearest % 12) + 12) % 12];
-  const octave = Math.floor(nearest / 12) - 1;
-  return { label: `${name}${octave}`, cents };
-}
-
-// ---- Theremin voice: one always-running oscillator, gain-gated ----
+// ---- Chord voice: pool of 4 always-running oscillators ----
 const toneSelectEl = document.getElementById("toneSelect");
+const MAX_VOICES = 4;
 
-class ThereminVoice {
+class ChordVoice {
   constructor() {
     this.ctx = null;
-    this.osc = null;
+    this.oscs = [];
+    this.oscGains = [];
     this.filter = null;
-    this.gain = null;
+    this.masterGain = null;
   }
 
   ensureContext() {
@@ -85,37 +147,58 @@ class ThereminVoice {
     this.filter.frequency.value = 3000;
     this.filter.Q.value = 0.5;
 
-    this.gain = this.ctx.createGain();
-    this.gain.gain.value = 0;
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = 0;
 
-    this.osc = this.ctx.createOscillator();
-    this.osc.type = toneSelectEl.value;
-    this.osc.frequency.value = PITCH_MIN_HZ;
+    this.filter.connect(this.masterGain);
+    this.masterGain.connect(this.ctx.destination);
 
-    this.osc.connect(this.filter);
-    this.filter.connect(this.gain);
-    this.gain.connect(this.ctx.destination);
-    this.osc.start();
+    for (let i = 0; i < MAX_VOICES; i++) {
+      const gain = this.ctx.createGain();
+      gain.gain.value = 0;
+      gain.connect(this.filter);
+
+      const osc = this.ctx.createOscillator();
+      osc.type = toneSelectEl.value;
+      osc.frequency.value = 220;
+      osc.connect(gain);
+      osc.start();
+
+      this.oscs.push(osc);
+      this.oscGains.push(gain);
+    }
   }
 
-  setPitch(freq) {
+  // freqs: 1-4 chord tones; unused oscillators fade to silence.
+  setNotes(freqs) {
     if (!this.ctx) return;
-    // Short time constant = continuous glide without zipper noise
-    this.osc.frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.03);
+    const now = this.ctx.currentTime;
+    // Equal-power-ish share per sounding voice keeps chords from
+    // being 4x louder than single notes.
+    const share = 1 / Math.sqrt(freqs.length);
+
+    for (let i = 0; i < MAX_VOICES; i++) {
+      if (i < freqs.length) {
+        this.oscs[i].frequency.setTargetAtTime(freqs[i], now, 0.02);
+        this.oscGains[i].gain.setTargetAtTime(share, now, 0.03);
+      } else {
+        this.oscGains[i].gain.setTargetAtTime(0, now, 0.03);
+      }
+    }
   }
 
   setVolume(volume01) {
     if (!this.ctx) return;
     const clamped = Math.max(0, Math.min(1, volume01));
-    this.gain.gain.setTargetAtTime(clamped, this.ctx.currentTime, 0.05);
+    this.masterGain.gain.setTargetAtTime(clamped, this.ctx.currentTime, 0.05);
   }
 
   setWaveform(type) {
-    if (this.osc) this.osc.type = type;
+    this.oscs.forEach((osc) => { osc.type = type; });
   }
 }
 
-const voice = new ThereminVoice();
+const voice = new ChordVoice();
 
 toneSelectEl.addEventListener("change", () => {
   voice.setWaveform(toneSelectEl.value);
@@ -323,8 +406,9 @@ function drawFrame(results, canvasWidth, canvasHeight) {
   ctx.restore();
 }
 
-// Glowing vertical line at the pitch hand's position; thickness follows volume.
-function drawPitchLine(pitchLandmarks, volume01, canvasWidth, canvasHeight) {
+// Glowing vertical line at the pitch hand's position; one line per
+// chord tone, fanned slightly, thickness follows volume.
+function drawPitchLines(pitchLandmarks, volume01, noteCount, canvasWidth, canvasHeight) {
   if (!pitchLandmarks) return;
 
   const srcW = videoEl.videoWidth;
@@ -337,14 +421,17 @@ function drawPitchLine(pitchLandmarks, volume01, canvasWidth, canvasHeight) {
   const canvasX = canvasWidth - ((videoPx - sx) / sWidth) * canvasWidth; // mirrored
 
   ctx.save();
-  ctx.strokeStyle = `rgba(126, 200, 227, ${0.25 + volume01 * 0.6})`;
-  ctx.lineWidth = 1 + volume01 * 6;
   ctx.shadowBlur = 8 + volume01 * 18;
   ctx.shadowColor = "rgba(126, 200, 227, 0.8)";
-  ctx.beginPath();
-  ctx.moveTo(canvasX, 0);
-  ctx.lineTo(canvasX, canvasHeight);
-  ctx.stroke();
+  for (let i = 0; i < noteCount; i++) {
+    const offset = (i - (noteCount - 1) / 2) * 14;
+    ctx.strokeStyle = `rgba(126, 200, 227, ${(0.25 + volume01 * 0.6) * (1 - i * 0.15)})`;
+    ctx.lineWidth = Math.max(1, 1 + volume01 * 6 - i);
+    ctx.beginPath();
+    ctx.moveTo(canvasX + offset, 0);
+    ctx.lineTo(canvasX + offset, canvasHeight);
+    ctx.stroke();
+  }
   ctx.restore();
 }
 
@@ -385,31 +472,40 @@ async function main() {
       });
     }
 
-    // Right hand = pitch. If only the left hand is up, it plays pitch instead,
-    // so the theremin works one-handed either way.
-    const pitchLandmarks = cachedRightLandmarks || cachedLeftLandmarks;
-    const volumeLandmarks = cachedRightLandmarks ? cachedLeftLandmarks : null;
+    // RIGHT HAND = PITCH (snapped to standard tuning)
+    // LEFT HAND = CHORD TYPE (fingers) + VOLUME (height)
+    if (cachedRightLandmarks) {
+      const rawMidi = getRawMidiFromScreenX(cachedRightLandmarks);
+      const midi = quantizePitch(rawMidi);
+      const root = midiToFreq(midi);
 
-    if (pitchLandmarks) {
-      const freq = getPitchFromScreenX(pitchLandmarks);
-      const volume = volumeLandmarks
-        ? getVolumeFromHeight(volumeLandmarks)
+      const rawCount = cachedLeftLandmarks
+        ? countExtendedFingers(cachedLeftLandmarks)
+        : 0;
+      const chordCount = stabilizeChordCount(rawCount, timestampNow);
+      const chord = CHORD_TYPES[chordCount] || CHORD_TYPES[0];
+
+      const freqs = chord.intervals.map(
+        (semi) => root * Math.pow(2, semi / 12)
+      );
+
+      const volume = cachedLeftLandmarks
+        ? getVolumeFromHeight(cachedLeftLandmarks)
         : DEFAULT_VOLUME;
 
-      voice.setPitch(freq);
+      voice.setNotes(freqs);
       voice.setVolume(volume);
       updateVolumeMeter(volume);
-      drawPitchLine(pitchLandmarks, volume, canvasEl.width, canvasEl.height);
+      drawPitchLines(cachedRightLandmarks, volume, freqs.length, canvasEl.width, canvasEl.height);
 
-      const { label, cents } = describePitch(freq);
-      noteDisplayEl.textContent = label;
-      centsDisplayEl.textContent =
-        cents === 0 ? "in tune" : `${cents > 0 ? "+" : ""}${cents}¢`;
+      noteDisplayEl.textContent = midiToName(midi);
+      chordLabelEl.textContent = chord.label;
     } else {
+      heldMidi = null;
       voice.setVolume(0);
       updateVolumeMeter(0);
       noteDisplayEl.textContent = "--";
-      centsDisplayEl.textContent = "";
+      chordLabelEl.textContent = "";
     }
 
     requestAnimationFrame(loop);
