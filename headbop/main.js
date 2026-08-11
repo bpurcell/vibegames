@@ -1,4 +1,4 @@
-import { FaceDetector, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm";
+import { PoseLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm";
 
 // ---- DOM references ----
 const videoEl = document.getElementById("webcam");
@@ -12,7 +12,16 @@ const helpButton = document.getElementById("helpButton");
 const helpModal = document.getElementById("helpModal");
 const closeHelp = document.getElementById("closeHelp");
 
-// ---- Audio: synthesized bass drum ----
+// ---- Pose landmark indices ----
+const NOSE = 0;
+const LEFT_EAR = 7;
+const RIGHT_EAR = 8;
+const LEFT_WRIST = 15;
+const RIGHT_WRIST = 16;
+
+const VISIBLE = 0.5; // minimum landmark visibility score
+
+// ---- Audio ----
 let audioCtx = null;
 let masterGain = null;
 
@@ -22,8 +31,10 @@ function ensureAudio() {
   masterGain = audioCtx.createGain();
   masterGain.gain.value = 0.9;
   masterGain.connect(audioCtx.destination);
+  handVoices.forEach((v) => v.ensure());
 }
 
+// Synthesized bass drum for head bobs
 function playKick() {
   if (!audioCtx) return;
   const t = audioCtx.currentTime;
@@ -54,8 +65,74 @@ function playKick() {
   click.stop(t + 0.03);
 }
 
+// ---- Kid theremin: hands play a pentatonic scale ----
+// C major pentatonic, two octaves: no wrong notes, everything
+// sounds good over the drum.
+const PENTA_MIDI = [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84]; // C4..C6
+const NOTE_COUNT = PENTA_MIDI.length;
+
+function midiToFreq(midi) {
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
+
+// One rainbow hue per scale note (bottom red -> top violet)
+function noteHue(i) {
+  return (i / NOTE_COUNT) * 300;
+}
+
+// Hysteresis so a hand hovering between stripes doesn't trill
+const NOTE_SWITCH_THRESHOLD = 0.6;
+
+class HandVoice {
+  constructor() {
+    this.osc = null;
+    this.gain = null;
+    this.heldIndex = null;
+  }
+
+  ensure() {
+    if (this.osc || !audioCtx) return;
+    this.gain = audioCtx.createGain();
+    this.gain.gain.value = 0;
+    this.gain.connect(masterGain);
+
+    this.osc = audioCtx.createOscillator();
+    this.osc.type = "triangle";
+    this.osc.frequency.value = midiToFreq(PENTA_MIDI[0]);
+    this.osc.connect(this.gain);
+    this.osc.start();
+  }
+
+  // canvasFrac: 0 at top of screen, 1 at bottom
+  play(canvasFrac) {
+    if (!this.osc) return;
+    const rawIndex = (1 - canvasFrac) * NOTE_COUNT - 0.5;
+    if (
+      this.heldIndex === null ||
+      Math.abs(rawIndex - this.heldIndex) > NOTE_SWITCH_THRESHOLD
+    ) {
+      this.heldIndex = Math.round(rawIndex);
+    }
+    this.heldIndex = Math.max(0, Math.min(NOTE_COUNT - 1, this.heldIndex));
+
+    const now = audioCtx.currentTime;
+    this.osc.frequency.setTargetAtTime(
+      midiToFreq(PENTA_MIDI[this.heldIndex]), now, 0.03
+    );
+    this.gain.gain.setTargetAtTime(0.22, now, 0.05);
+  }
+
+  stop() {
+    if (!this.osc) return;
+    this.gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.08);
+    this.heldIndex = null;
+  }
+}
+
+const handVoices = [new HandVoice(), new HandVoice()]; // [left, right]
+
 // ---- Head-bob detection ----
-// Face center y is tracked in normalized video space (0 top, 1 bottom).
+// Nose y is tracked in normalized video space (0 top, 1 bottom).
 // A quick downward move past the velocity threshold fires a hit; the
 // trigger re-arms once the head starts moving back up.
 let bobThreshold = Number(sensitivitySelectEl.value); // normalized units/sec
@@ -167,6 +244,75 @@ function drawDrum(now, canvasWidth, canvasHeight) {
   ctx.restore();
 }
 
+// Rainbow note stripes: one translucent band per pentatonic note,
+// lighting up where hands are playing.
+function drawNoteStripes(activeIndices, canvasWidth, canvasHeight) {
+  const stripeH = canvasHeight / NOTE_COUNT;
+  ctx.save();
+  for (let i = 0; i < NOTE_COUNT; i++) {
+    const y = canvasHeight - (i + 1) * stripeH;
+    const active = activeIndices.includes(i);
+    ctx.fillStyle = `hsla(${noteHue(i)}, 85%, 60%, ${active ? 0.4 : 0.07})`;
+    ctx.fillRect(0, y, canvasWidth, stripeH);
+  }
+  ctx.restore();
+}
+
+// Glowing bubble at a playing hand
+function drawHandBubble(pos, noteIndex) {
+  ctx.save();
+  const hue = noteHue(noteIndex);
+  ctx.shadowBlur = 25;
+  ctx.shadowColor = `hsl(${hue}, 85%, 60%)`;
+  ctx.fillStyle = `hsla(${hue}, 85%, 65%, 0.9)`;
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y, 24, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.font = "20px monospace";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("🎵", pos.x, pos.y);
+  ctx.restore();
+}
+
+// Friendly ring around the tracked head
+function drawFaceRing(center, radius, now) {
+  const sinceHit = (now - lastBoomTime) / 1000;
+  const pulse = Math.max(0, 1 - sinceHit * 4);
+
+  ctx.save();
+  ctx.strokeStyle = pulse > 0 ? "#ffd23f" : "#ff6b35";
+  ctx.lineWidth = 4 + pulse * 6;
+  ctx.setLineDash([14, 10]);
+  ctx.beginPath();
+  ctx.arc(center.x, center.y, radius * (1 + pulse * 0.15), 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+// ---- UI events ----
+startOverlayEl.addEventListener("click", () => {
+  ensureAudio();
+  startOverlayEl.style.display = "none";
+  canvasEl.classList.remove("dimmed");
+});
+
+helpButton.addEventListener("click", () => {
+  helpModal.classList.remove("hidden");
+});
+
+closeHelp.addEventListener("click", (e) => {
+  e.stopPropagation();
+  helpModal.classList.add("hidden");
+});
+
+helpModal.addEventListener("click", (e) => {
+  if (e.target === helpModal) {
+    helpModal.classList.add("hidden");
+  }
+});
+
 // ---- Metronome: lookahead-scheduled click track ----
 const metronomeToggleEl = document.getElementById("metronomeToggle");
 const bpmInputEl = document.getElementById("bpmInput");
@@ -266,28 +412,6 @@ bpmInputEl.addEventListener("change", () => {
   bpmInputEl.value = clamped;
 });
 
-// ---- UI events ----
-startOverlayEl.addEventListener("click", () => {
-  ensureAudio();
-  startOverlayEl.style.display = "none";
-  canvasEl.classList.remove("dimmed");
-});
-
-helpButton.addEventListener("click", () => {
-  helpModal.classList.remove("hidden");
-});
-
-closeHelp.addEventListener("click", (e) => {
-  e.stopPropagation();
-  helpModal.classList.add("hidden");
-});
-
-helpModal.addEventListener("click", (e) => {
-  if (e.target === helpModal) {
-    helpModal.classList.add("hidden");
-  }
-});
-
 // ---- Camera setup ----
 async function setupCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
@@ -304,17 +428,20 @@ async function setupCamera() {
 }
 
 // ---- MediaPipe setup ----
-async function setupFaceDetector() {
+// One PoseLandmarker gives us the nose (drum) AND both wrists
+// (theremin) in a single inference pass.
+async function setupPoseLandmarker() {
   const vision = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
   );
-  return FaceDetector.createFromOptions(vision, {
+  return PoseLandmarker.createFromOptions(vision, {
     baseOptions: {
       modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+        "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
       delegate: "GPU",
     },
     runningMode: "VIDEO",
+    numPoses: 1,
   });
 }
 
@@ -336,14 +463,14 @@ function computeCoverRect(srcW, srcH, dstW, dstH) {
   }
 }
 
-// Map a point in source-video pixel space to (mirrored) canvas space.
-function videoToCanvas(px, py, canvasWidth, canvasHeight) {
+// Map a normalized video-space landmark to (mirrored) canvas space.
+function landmarkToCanvas(lm, canvasWidth, canvasHeight) {
   const srcW = videoEl.videoWidth;
   const srcH = videoEl.videoHeight;
   const { sx, sy, sWidth, sHeight } = computeCoverRect(srcW, srcH, canvasWidth, canvasHeight);
   return {
-    x: canvasWidth - ((px - sx) / sWidth) * canvasWidth, // mirrored
-    y: ((py - sy) / sHeight) * canvasHeight,
+    x: canvasWidth - ((lm.x * srcW - sx) / sWidth) * canvasWidth, // mirrored
+    y: ((lm.y * srcH - sy) / sHeight) * canvasHeight,
   };
 }
 
@@ -362,21 +489,6 @@ function drawVideo(canvasWidth, canvasHeight) {
   ctx.restore();
 }
 
-// Friendly ring around the tracked face
-function drawFaceRing(faceCanvas, radius, now) {
-  const sinceHit = (now - lastBoomTime) / 1000;
-  const pulse = Math.max(0, 1 - sinceHit * 4);
-
-  ctx.save();
-  ctx.strokeStyle = pulse > 0 ? "#ffd23f" : "#ff6b35";
-  ctx.lineWidth = 4 + pulse * 6;
-  ctx.setLineDash([14, 10]);
-  ctx.beginPath();
-  ctx.arc(faceCanvas.x, faceCanvas.y, radius * (1 + pulse * 0.15), 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.restore();
-}
-
 // ---- Main loop ----
 function resizeCanvas() {
   canvasEl.width = window.innerWidth;
@@ -388,10 +500,10 @@ async function main() {
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
 
-  const faceDetector = await setupFaceDetector();
+  const poseLandmarker = await setupPoseLandmarker();
 
   let lastVideoTime = -1;
-  let cachedFaceBox = null;
+  let cachedPose = null;
 
   function loop() {
     const timestampNow = performance.now();
@@ -399,23 +511,13 @@ async function main() {
     if (videoEl.currentTime !== lastVideoTime) {
       lastVideoTime = videoEl.currentTime;
 
-      const results = faceDetector.detectForVideo(videoEl, timestampNow);
-      cachedFaceBox = results.detections.length > 0
-        ? results.detections[0].boundingBox
-        : null;
+      const results = poseLandmarker.detectForVideo(videoEl, timestampNow);
+      cachedPose = results.landmarks.length > 0 ? results.landmarks[0] : null;
 
-      if (cachedFaceBox) {
-        const srcH = videoEl.videoHeight || 1;
-        const faceY = (cachedFaceBox.originY + cachedFaceBox.height / 2) / srcH;
-
-        if (detectBob(faceY, timestampNow)) {
+      if (cachedPose && (cachedPose[NOSE].visibility ?? 1) > VISIBLE) {
+        if (detectBob(cachedPose[NOSE].y, timestampNow)) {
           playKick();
-          const center = videoToCanvas(
-            cachedFaceBox.originX + cachedFaceBox.width / 2,
-            cachedFaceBox.originY + cachedFaceBox.height / 2,
-            canvasEl.width,
-            canvasEl.height
-          );
+          const center = landmarkToCanvas(cachedPose[NOSE], canvasEl.width, canvasEl.height);
           spawnBoom(center.x, center.y, timestampNow);
         }
       } else {
@@ -425,16 +527,45 @@ async function main() {
 
     drawVideo(canvasEl.width, canvasEl.height);
 
-    if (cachedFaceBox) {
-      const center = videoToCanvas(
-        cachedFaceBox.originX + cachedFaceBox.width / 2,
-        cachedFaceBox.originY + cachedFaceBox.height / 2,
-        canvasEl.width,
-        canvasEl.height
+    // Theremin hands: each visible wrist plays a note from its height
+    const activeIndices = [];
+    const playingHands = []; // { pos, noteIndex } for bubble drawing
+    const wristIndices = [LEFT_WRIST, RIGHT_WRIST];
+
+    for (let h = 0; h < 2; h++) {
+      const voiceObj = handVoices[h];
+      const lm = cachedPose ? cachedPose[wristIndices[h]] : null;
+
+      const inPlay =
+        lm &&
+        (lm.visibility ?? 1) > VISIBLE &&
+        lm.y > 0 && lm.y < 0.9; // near the bottom edge = "hand down", rests
+
+      if (inPlay) {
+        const pos = landmarkToCanvas(lm, canvasEl.width, canvasEl.height);
+        const frac = Math.max(0, Math.min(1, pos.y / canvasEl.height));
+        voiceObj.play(frac);
+        if (voiceObj.heldIndex !== null) {
+          activeIndices.push(voiceObj.heldIndex);
+          playingHands.push({ pos, noteIndex: voiceObj.heldIndex });
+        }
+      } else {
+        voiceObj.stop();
+      }
+    }
+
+    drawNoteStripes(activeIndices, canvasEl.width, canvasEl.height);
+    playingHands.forEach(({ pos, noteIndex }) => drawHandBubble(pos, noteIndex));
+
+    if (cachedPose && (cachedPose[NOSE].visibility ?? 1) > VISIBLE) {
+      const center = landmarkToCanvas(cachedPose[NOSE], canvasEl.width, canvasEl.height);
+      const leftEar = landmarkToCanvas(cachedPose[LEFT_EAR], canvasEl.width, canvasEl.height);
+      const rightEar = landmarkToCanvas(cachedPose[RIGHT_EAR], canvasEl.width, canvasEl.height);
+      const headRadius = Math.max(
+        40,
+        Math.hypot(leftEar.x - rightEar.x, leftEar.y - rightEar.y) * 0.9
       );
-      const srcW = videoEl.videoWidth || 1;
-      const scale = canvasEl.width / srcW;
-      drawFaceRing(center, (cachedFaceBox.width / 2) * scale * 1.25, timestampNow);
+      drawFaceRing(center, headRadius, timestampNow);
     }
 
     drawBooms(timestampNow);
