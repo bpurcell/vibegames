@@ -18,8 +18,33 @@ const LEFT_EAR = 7;
 const RIGHT_EAR = 8;
 const LEFT_WRIST = 15;
 const RIGHT_WRIST = 16;
+const LEFT_PINKY = 17;
+const RIGHT_PINKY = 18;
+const LEFT_INDEX = 19;
+const RIGHT_INDEX = 20;
+const LEFT_THUMB = 21;
+const RIGHT_THUMB = 22;
+
+// All tracked points of each hand, averaged into its center
+const HAND_POINTS = [
+  [LEFT_WRIST, LEFT_PINKY, LEFT_INDEX, LEFT_THUMB],
+  [RIGHT_WRIST, RIGHT_PINKY, RIGHT_INDEX, RIGHT_THUMB],
+];
 
 const VISIBLE = 0.5; // minimum landmark visibility score
+
+// Average the visible landmarks of one hand into a center point
+// (normalized video space). Returns null if the hand isn't tracked.
+function getHandCenter(pose, handIndex) {
+  const points = HAND_POINTS[handIndex]
+    .map((i) => pose[i])
+    .filter((lm) => lm && (lm.visibility ?? 1) > VISIBLE);
+  if (points.length === 0) return null;
+
+  let x = 0, y = 0;
+  for (const lm of points) { x += lm.x; y += lm.y; }
+  return { x: x / points.length, y: y / points.length };
+}
 
 // ---- Audio ----
 let audioCtx = null;
@@ -558,22 +583,21 @@ async function main() {
 
     drawVideo(canvasEl.width, canvasEl.height);
 
-    // Theremin hands: each visible wrist plays a note from its height
+    // Theremin hands: each visible hand plays a note from the height
+    // of its center (wrist + finger points averaged)
     const activeIndices = [];
     const playingHands = []; // { pos, noteIndex } for bubble drawing
-    const wristIndices = [LEFT_WRIST, RIGHT_WRIST];
 
     for (let h = 0; h < 2; h++) {
       const voiceObj = handVoices[h];
-      const lm = cachedPose ? cachedPose[wristIndices[h]] : null;
+      const center = cachedPose ? getHandCenter(cachedPose, h) : null;
 
       const inPlay =
-        lm &&
-        (lm.visibility ?? 1) > VISIBLE &&
-        lm.y > 0 && lm.y < 0.9; // near the bottom edge = "hand down", rests
+        center &&
+        center.y > 0 && center.y < 0.9; // near the bottom edge = "hand down", rests
 
       if (inPlay) {
-        const pos = landmarkToCanvas(lm, canvasEl.width, canvasEl.height);
+        const pos = landmarkToCanvas(center, canvasEl.width, canvasEl.height);
         const frac = Math.max(0, Math.min(1, pos.y / canvasEl.height));
         voiceObj.play(frac, !bounceMode);
         if (voiceObj.heldIndex !== null) {
