@@ -159,21 +159,25 @@ class HandVoice {
 
 const handVoices = [new HandVoice(), new HandVoice()]; // [left, right]
 
-// One-shot plucked note for bounce mode: fires on the head bob
-function playPluck(midi) {
+// One-shot plucked note for push mode. strength 0..1 (push velocity):
+// harder pushes ring louder and much longer.
+function playPluck(midi, strength = 0.3) {
   if (!audioCtx) return;
   const t = audioCtx.currentTime;
+  const duration = 0.4 + strength * 1.6; // 0.4s gentle -> 2s hard
+  const peak = 0.25 + strength * 0.2;
+
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   osc.type = "triangle";
   osc.frequency.value = midiToFreq(midi);
   gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.exponentialRampToValueAtTime(0.35, t + 0.008);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+  gain.gain.exponentialRampToValueAtTime(peak, t + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
   osc.connect(gain);
   gain.connect(masterGain);
   osc.start(t);
-  osc.stop(t + 0.55);
+  osc.stop(t + duration + 0.05);
 }
 
 // ---- Push mode: notes fire on a forward hand motion ----
@@ -197,18 +201,20 @@ const pushStates = [
   { prevZ: null, prevTime: null, smoothVel: 0, armed: true, lastHitTime: 0 },
 ];
 
+// Returns null when no push fired, otherwise a 0..1 strength from how
+// far past the threshold the push velocity was (drives note length).
 function detectPush(handIndex, z, now) {
-  if (!Number.isFinite(z)) return false;
+  if (!Number.isFinite(z)) return null;
   const s = pushStates[handIndex];
 
   if (s.prevZ === null) {
     s.prevZ = z;
     s.prevTime = now;
-    return false;
+    return null;
   }
 
   const dt = (now - s.prevTime) / 1000;
-  if (dt <= 0) return false;
+  if (dt <= 0) return null;
 
   const rawVel = (z - s.prevZ) / dt; // negative = pushing toward camera
   s.smoothVel = s.smoothVel * (1 - VEL_SMOOTHING) + rawVel * VEL_SMOOTHING;
@@ -224,10 +230,12 @@ function detectPush(handIndex, z, now) {
   if (s.armed && s.smoothVel < -pushThreshold) {
     s.armed = false;
     s.lastHitTime = now;
-    return true;
+    // At threshold -> 0; three times the threshold -> 1
+    const ratio = -s.smoothVel / pushThreshold;
+    return Math.min(1, Math.max(0, (ratio - 1) / 2));
   }
 
-  return false;
+  return null;
 }
 
 function resetPush(handIndex) {
@@ -297,8 +305,8 @@ function resetBobTracking() {
 const ripples = []; // { x, y, start }
 let lastBoomTime = -Infinity;
 
-function spawnBoom(x, y, now) {
-  ripples.push({ x, y, start: now });
+function spawnBoom(x, y, now, strength = 0.5) {
+  ripples.push({ x, y, start: now, strength });
   if (ripples.length > 8) ripples.shift();
   lastBoomTime = now;
 }
@@ -313,7 +321,8 @@ function drawBooms(now) {
       continue;
     }
     const progress = age / 0.6;
-    const radius = 40 + progress * 260;
+    const sizeScale = 0.6 + ripples[i].strength * 0.8; // gentle small, hard big
+    const radius = (40 + progress * 260) * sizeScale;
     const alpha = 1 - progress;
 
     ctx.save();
@@ -612,7 +621,7 @@ async function main() {
   let lastVideoTime = -1;
   let cachedPose = null;
   const cachedHandCenters = [null, null];
-  const pushFired = [false, false];
+  const pushFired = [null, null]; // strength 0..1 when a push fired
 
   function loop() {
     const timestampNow = performance.now();
@@ -638,8 +647,9 @@ async function main() {
       for (let h = 0; h < 2; h++) {
         cachedHandCenters[h] = cachedPose ? getHandCenter(cachedPose, h) : null;
         if (cachedHandCenters[h]) {
-          if (detectPush(h, cachedHandCenters[h].z, timestampNow)) {
-            pushFired[h] = true;
+          const strength = detectPush(h, cachedHandCenters[h].z, timestampNow);
+          if (strength !== null) {
+            pushFired[h] = strength;
           }
         } else {
           resetPush(h);
@@ -670,16 +680,17 @@ async function main() {
           activeIndices.push(voiceObj.heldIndex);
           playingHands.push({ pos, noteIndex: voiceObj.heldIndex });
 
-          // Push mode: a forward punch fires this hand's aimed note
-          if (pushMode && pushFired[h]) {
-            playPluck(PENTA_MIDI[voiceObj.heldIndex]);
-            spawnBoom(pos.x, pos.y, timestampNow);
+          // Push mode: a forward punch fires this hand's aimed note,
+          // harder push = longer note + bigger ripple
+          if (pushMode && pushFired[h] !== null) {
+            playPluck(PENTA_MIDI[voiceObj.heldIndex], pushFired[h]);
+            spawnBoom(pos.x, pos.y, timestampNow, pushFired[h]);
           }
         }
       } else {
         voiceObj.stop();
       }
-      pushFired[h] = false;
+      pushFired[h] = null;
     }
 
     drawNoteStripes(activeIndices, canvasEl.width, canvasEl.height);
