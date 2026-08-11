@@ -1,4 +1,4 @@
-import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm";
+import { HandLandmarker, FaceDetector, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm";
 
 // ---- DOM references ----
 const videoEl = document.getElementById("webcam");
@@ -8,6 +8,7 @@ const ctx = canvasEl.getContext("2d");
 const noteDisplayEl = document.getElementById("noteDisplay");
 const chordLabelEl = document.getElementById("chordLabel");
 const filterDisplayEl = document.getElementById("filterDisplay");
+const volumeDisplayEl = document.getElementById("volumeDisplay");
 const volumeBarEls = Array.from(document.querySelectorAll(".vol-bar"));
 const startOverlayEl = document.getElementById("startOverlay");
 
@@ -75,42 +76,31 @@ function handCanvasPos(landmarks, canvasWidth, canvasHeight) {
   return { x: canvasX, y: canvasY };
 }
 
-// ---- Right-hand tilt (from Gesture Synth): drives the filter sweep ----
-function getHandHorizontalTilt(landmarks, handedness) {
-  if (!landmarks || typeof landmarks.length === "undefined" || landmarks.length < 18) {
-    return 0;
-  }
+// ---- Head tilt drives the filter sweep ----
+// Roll angle of the line between the eyes (FaceDetector keypoints
+// 0 = right eye, 1 = left eye). +/-30 degrees maps to the full
+// -1..1 filter range, smoothed so tracking jitter doesn't wobble
+// the sound.
+const HEAD_TILT_MAX_DEG = 30;
+const HEAD_TILT_SMOOTHING = 0.3;
 
-  try {
-    const wrist = landmarks[0];
-    const middleMcp = landmarks[9];
-    const ringMcp = landmarks[13];
+let smoothHeadTilt = 0;
 
-    if (!wrist || !middleMcp || !ringMcp) return 0;
+function computeHeadTilt(keypoints) {
+  const rightEye = keypoints[0];
+  const leftEye = keypoints[1];
+  if (!rightEye || !leftEye) return smoothHeadTilt;
 
-    const minX = Math.min(middleMcp.x, ringMcp.x);
-    const maxX = Math.max(middleMcp.x, ringMcp.x);
+  const angleDeg =
+    (Math.atan2(leftEye.y - rightEye.y, leftEye.x - rightEye.x) * 180) / Math.PI;
+  const raw = Math.max(-1, Math.min(1, angleDeg / HEAD_TILT_MAX_DEG));
+  smoothHeadTilt += (raw - smoothHeadTilt) * HEAD_TILT_SMOOTHING;
+  return smoothHeadTilt;
+}
 
-    let tiltFactor = 0;
-    // Max travel distance past the boundaries before hitting 100%
-    const MAX_TRAVEL = 0.12;
-
-    if (wrist.x < minX) {
-      tiltFactor = (wrist.x - minX) / MAX_TRAVEL;
-    } else if (wrist.x > maxX) {
-      tiltFactor = (wrist.x - maxX) / MAX_TRAVEL;
-    }
-
-    tiltFactor = Math.max(-1, Math.min(1, tiltFactor));
-
-    if (handedness === "Right") {
-      tiltFactor = -tiltFactor;
-    }
-
-    return tiltFactor;
-  } catch {
-    return 0;
-  }
+function relaxHeadTilt() {
+  smoothHeadTilt *= 1 - HEAD_TILT_SMOOTHING; // ease back to neutral
+  return smoothHeadTilt;
 }
 
 function getRawMidiFromCanvasY(canvasY, canvasHeight) {
@@ -431,11 +421,11 @@ async function setupCamera() {
 }
 
 // ---- MediaPipe setup ----
-async function setupHandLandmarker() {
+async function setupTrackers() {
   const vision = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
   );
-  return HandLandmarker.createFromOptions(vision, {
+  const handLandmarker = await HandLandmarker.createFromOptions(vision, {
     baseOptions: {
       modelAssetPath:
         "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
@@ -444,6 +434,16 @@ async function setupHandLandmarker() {
     runningMode: "VIDEO",
     numHands: 2,
   });
+  // Light face model for head tilt -> filter
+  const faceDetector = await FaceDetector.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath:
+        "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+      delegate: "GPU",
+    },
+    runningMode: "VIDEO",
+  });
+  return { handLandmarker, faceDetector };
 }
 
 // Computes a "cover" crop rect in source-video pixel space: the largest
@@ -609,12 +609,13 @@ async function main() {
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
 
-  const handLandmarker = await setupHandLandmarker();
+  const { handLandmarker, faceDetector } = await setupTrackers();
 
   let lastVideoTime = -1;
   let lastResults = null;
   let cachedLeftLandmarks = null;
   let cachedRightLandmarks = null;
+  let cachedFaceKeypoints = null;
 
   function loop() {
     const timestampNow = performance.now();
@@ -632,6 +633,11 @@ async function main() {
         if (handedness === "Left") cachedLeftLandmarks = landmarks;
         if (handedness === "Right") cachedRightLandmarks = landmarks;
       });
+
+      const faceResults = faceDetector.detectForVideo(videoEl, timestampNow);
+      cachedFaceKeypoints = faceResults.detections.length > 0
+        ? faceResults.detections[0].keypoints
+        : null;
     }
 
     // Redraw video + overlays every tick so translucent overlays
@@ -641,15 +647,15 @@ async function main() {
     }
 
     // RIGHT HAND = PITCH from height (snapped to standard tuning)
-    //              + TILT modulates the filter
     // LEFT HAND = CHORD TYPE (fingers) + VOLUME (height)
+    // HEAD TILT = FILTER sweep
     const handPos = cachedRightLandmarks
       ? handCanvasPos(cachedRightLandmarks, canvasEl.width, canvasEl.height)
       : null;
 
-    const tilt = cachedRightLandmarks
-      ? getHandHorizontalTilt(cachedRightLandmarks, "Right")
-      : 0;
+    const tilt = cachedFaceKeypoints
+      ? computeHeadTilt(cachedFaceKeypoints)
+      : relaxHeadTilt();
     voice.updateFilterSweep(tilt);
     if (filterDisplayEl) {
       const pct = Math.round(tilt * 100);
@@ -679,6 +685,9 @@ async function main() {
       voice.setNotes(freqs);
       voice.setVolume(volume);
       updateVolumeMeter(volume);
+      if (volumeDisplayEl) {
+        volumeDisplayEl.textContent = `Volume: ${Math.round(volume * 100)}%`;
+      }
       drawEnergyWave(volume, tilt, freqs.length, canvasEl.width, canvasEl.height);
       drawKeyboard(midi, chordMidis, canvasEl.height);
       drawPitchLine(midi, volume, canvasEl.width, canvasEl.height);
@@ -689,6 +698,9 @@ async function main() {
       heldMidi = null;
       voice.setVolume(0);
       updateVolumeMeter(0);
+      if (volumeDisplayEl) {
+        volumeDisplayEl.textContent = "Volume: 0%";
+      }
       drawKeyboard(null, null, canvasEl.height);
       noteDisplayEl.textContent = "--";
       chordLabelEl.textContent = "";
