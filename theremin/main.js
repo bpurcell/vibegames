@@ -33,33 +33,45 @@ function countExtendedFingers(landmarks) {
     .length;
 }
 
-// ---- Pitch mapping: screen x -> chromatic note (standard tuning) ----
-// Mirrored view: moving your hand right raises pitch. Range C3..C6.
+// ---- Pitch mapping: hand HEIGHT -> chromatic note (standard tuning) ----
+// Higher hand = higher note. Range C3..C6, one key slot per semitone,
+// aligned with the on-screen keyboard strip.
 const MIDI_LOW = 48;   // C3
 const MIDI_RANGE = 36; // 3 octaves up to C6
-
-// Horizontal dead margins so the full range is reachable without
-// pushing your hand off camera.
-const X_MARGIN = 0.08;
+const NOTE_COUNT = MIDI_RANGE + 1;
 
 // Hysteresis: the held note only changes once the raw pitch drifts
-// more than this many semitones away, so hand jitter at a note
+// more than this many semitones away, so hand jitter at a key
 // boundary doesn't cause trills.
 const NOTE_SWITCH_THRESHOLD = 0.6;
 
 let heldMidi = null;
 
-function getRawMidiFromScreenX(landmarks) {
+// Wrist position in canvas space (same cover-crop mapping the video
+// drawing uses), so the pitch always matches the key under your hand.
+function wristCanvasPos(landmarks, canvasWidth, canvasHeight) {
+  const srcW = videoEl.videoWidth;
+  const srcH = videoEl.videoHeight;
+  if (!srcW || !srcH) return null;
+
+  const { sx, sy, sWidth, sHeight } = computeCoverRect(srcW, srcH, canvasWidth, canvasHeight);
   const wrist = landmarks[0];
-  const screenX = 1 - wrist.x; // landmark x is unmirrored video space
-  const t = Math.max(0, Math.min(1, (screenX - X_MARGIN) / (1 - 2 * X_MARGIN)));
-  return MIDI_LOW + t * MIDI_RANGE;
+  const canvasX = canvasWidth - ((wrist.x * srcW - sx) / sWidth) * canvasWidth; // mirrored
+  const canvasY = ((wrist.y * srcH - sy) / sHeight) * canvasHeight;
+  return { x: canvasX, y: canvasY };
+}
+
+function getRawMidiFromCanvasY(canvasY, canvasHeight) {
+  const frac = Math.max(0, Math.min(1, canvasY / canvasHeight));
+  // Key i's vertical center sits at frac = 1 - (i + 0.5) / NOTE_COUNT
+  return MIDI_LOW + (1 - frac) * NOTE_COUNT - 0.5;
 }
 
 function quantizePitch(rawMidi) {
   if (heldMidi === null || Math.abs(rawMidi - heldMidi) > NOTE_SWITCH_THRESHOLD) {
     heldMidi = Math.round(rawMidi);
   }
+  heldMidi = Math.max(MIDI_LOW, Math.min(MIDI_LOW + MIDI_RANGE, heldMidi));
   return heldMidi;
 }
 
@@ -406,32 +418,61 @@ function drawFrame(results, canvasWidth, canvasHeight) {
   ctx.restore();
 }
 
-// Glowing vertical line at the pitch hand's position; one line per
-// chord tone, fanned slightly, thickness follows volume.
-function drawPitchLines(pitchLandmarks, volume01, noteCount, canvasWidth, canvasHeight) {
-  if (!pitchLandmarks) return;
+// ---- Vertical keyboard strip along the left edge ----
+const KEYBOARD_WIDTH = 56;
+const BLACK_KEY_PCS = new Set([1, 3, 6, 8, 10]);
 
-  const srcW = videoEl.videoWidth;
-  const srcH = videoEl.videoHeight;
-  if (!srcW || !srcH) return;
+function keyCenterY(midi, canvasHeight) {
+  const keyH = canvasHeight / NOTE_COUNT;
+  return canvasHeight - (midi - MIDI_LOW + 0.5) * keyH;
+}
 
-  const { sx, sWidth } = computeCoverRect(srcW, srcH, canvasWidth, canvasHeight);
-  const wrist = pitchLandmarks[0];
-  const videoPx = wrist.x * srcW;
-  const canvasX = canvasWidth - ((videoPx - sx) / sWidth) * canvasWidth; // mirrored
+// rootMidi/chordMidis may be null (no pitch hand) -> plain strip.
+function drawKeyboard(rootMidi, chordMidis, canvasHeight) {
+  const keyH = canvasHeight / NOTE_COUNT;
 
   ctx.save();
+  for (let i = 0; i < NOTE_COUNT; i++) {
+    const midi = MIDI_LOW + i;
+    const y = canvasHeight - (i + 1) * keyH;
+    const isBlack = BLACK_KEY_PCS.has(midi % 12);
+
+    let fill = isBlack ? "rgba(8, 14, 18, 0.8)" : "rgba(255, 255, 255, 0.2)";
+    if (chordMidis && chordMidis.includes(midi)) {
+      fill = midi === rootMidi
+        ? "rgba(126, 200, 227, 0.95)"
+        : "rgba(126, 200, 227, 0.45)";
+    }
+
+    ctx.fillStyle = fill;
+    ctx.fillRect(0, y, KEYBOARD_WIDTH, keyH);
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.35)";
+    ctx.strokeRect(0, y, KEYBOARD_WIDTH, keyH);
+
+    // Label the C that starts each octave
+    if (midi % 12 === 0) {
+      ctx.fillStyle = midi === rootMidi ? "#08222c" : "rgba(255, 255, 255, 0.85)";
+      ctx.font = "bold 11px monospace";
+      ctx.fillText(midiToName(midi), 5, y + keyH - 4);
+    }
+  }
+  ctx.restore();
+}
+
+// Horizontal glow line snapped to the selected key's center,
+// thickness follows volume.
+function drawPitchLine(rootMidi, volume01, canvasWidth, canvasHeight) {
+  const y = keyCenterY(rootMidi, canvasHeight);
+
+  ctx.save();
+  ctx.strokeStyle = `rgba(126, 200, 227, ${0.25 + volume01 * 0.6})`;
+  ctx.lineWidth = 1 + volume01 * 5;
   ctx.shadowBlur = 8 + volume01 * 18;
   ctx.shadowColor = "rgba(126, 200, 227, 0.8)";
-  for (let i = 0; i < noteCount; i++) {
-    const offset = (i - (noteCount - 1) / 2) * 14;
-    ctx.strokeStyle = `rgba(126, 200, 227, ${(0.25 + volume01 * 0.6) * (1 - i * 0.15)})`;
-    ctx.lineWidth = Math.max(1, 1 + volume01 * 6 - i);
-    ctx.beginPath();
-    ctx.moveTo(canvasX + offset, 0);
-    ctx.lineTo(canvasX + offset, canvasHeight);
-    ctx.stroke();
-  }
+  ctx.beginPath();
+  ctx.moveTo(KEYBOARD_WIDTH, y);
+  ctx.lineTo(canvasWidth, y);
+  ctx.stroke();
   ctx.restore();
 }
 
@@ -449,6 +490,7 @@ async function main() {
   const handLandmarker = await setupHandLandmarker();
 
   let lastVideoTime = -1;
+  let lastResults = null;
   let cachedLeftLandmarks = null;
   let cachedRightLandmarks = null;
 
@@ -458,24 +500,32 @@ async function main() {
     if (videoEl.currentTime !== lastVideoTime) {
       lastVideoTime = videoEl.currentTime;
 
-      const results = handLandmarker.detectForVideo(videoEl, timestampNow);
-
-      drawFrame(results, canvasEl.width, canvasEl.height);
+      lastResults = handLandmarker.detectForVideo(videoEl, timestampNow);
 
       cachedLeftLandmarks = null;
       cachedRightLandmarks = null;
 
-      results.landmarks.forEach((landmarks, i) => {
-        const handedness = results.handedness[i][0].categoryName;
+      lastResults.landmarks.forEach((landmarks, i) => {
+        const handedness = lastResults.handedness[i][0].categoryName;
         if (handedness === "Left") cachedLeftLandmarks = landmarks;
         if (handedness === "Right") cachedRightLandmarks = landmarks;
       });
     }
 
-    // RIGHT HAND = PITCH (snapped to standard tuning)
+    // Redraw video + overlays every tick so translucent overlays
+    // never stack on an uncleared canvas.
+    if (lastResults) {
+      drawFrame(lastResults, canvasEl.width, canvasEl.height);
+    }
+
+    // RIGHT HAND = PITCH from height (snapped to standard tuning)
     // LEFT HAND = CHORD TYPE (fingers) + VOLUME (height)
-    if (cachedRightLandmarks) {
-      const rawMidi = getRawMidiFromScreenX(cachedRightLandmarks);
+    const wristPos = cachedRightLandmarks
+      ? wristCanvasPos(cachedRightLandmarks, canvasEl.width, canvasEl.height)
+      : null;
+
+    if (wristPos) {
+      const rawMidi = getRawMidiFromCanvasY(wristPos.y, canvasEl.height);
       const midi = quantizePitch(rawMidi);
       const root = midiToFreq(midi);
 
@@ -488,6 +538,7 @@ async function main() {
       const freqs = chord.intervals.map(
         (semi) => root * Math.pow(2, semi / 12)
       );
+      const chordMidis = chord.intervals.map((semi) => midi + semi);
 
       const volume = cachedLeftLandmarks
         ? getVolumeFromHeight(cachedLeftLandmarks)
@@ -496,7 +547,8 @@ async function main() {
       voice.setNotes(freqs);
       voice.setVolume(volume);
       updateVolumeMeter(volume);
-      drawPitchLines(cachedRightLandmarks, volume, freqs.length, canvasEl.width, canvasEl.height);
+      drawKeyboard(midi, chordMidis, canvasEl.height);
+      drawPitchLine(midi, volume, canvasEl.width, canvasEl.height);
 
       noteDisplayEl.textContent = midiToName(midi);
       chordLabelEl.textContent = chord.label;
@@ -504,6 +556,7 @@ async function main() {
       heldMidi = null;
       voice.setVolume(0);
       updateVolumeMeter(0);
+      drawKeyboard(null, null, canvasEl.height);
       noteDisplayEl.textContent = "--";
       chordLabelEl.textContent = "";
     }
