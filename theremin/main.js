@@ -535,6 +535,52 @@ function drawKeyboard(rootMidi, chordMidis, canvasHeight) {
   ctx.restore();
 }
 
+// ---- Energy wave (from Gesture Synth): flowing sine lines above the
+// note display. One line per chord tone; thickness follows volume and
+// the jitter/shakiness follows the filter tilt.
+function drawEnergyWave(volume01, tiltFactor, lineCount, canvasWidth, canvasHeight) {
+  if (lineCount === 0) return;
+
+  const centerY = canvasHeight - 56;
+  const maxThickness = 1 + volume01 * 8;
+
+  // Convert tiltFactor (-1..1) to a chaos scale (0..1)
+  const chaosScale = (tiltFactor + 1) / 2;
+  const shakinessAmp = chaosScale * 25;
+  const shakinessFreq = 0.05 + chaosScale * 0.15;
+
+  const time = performance.now() * 0.004;
+
+  ctx.save();
+  ctx.shadowBlur = 10 + volume01 * 20;
+  ctx.shadowColor = "rgba(126, 200, 227, 0.5)";
+
+  for (let l = 0; l < lineCount; l++) {
+    ctx.beginPath();
+    const lineYOffset = centerY + (l - (lineCount - 1) / 2) * 12;
+
+    for (let x = KEYBOARD_WIDTH; x <= canvasWidth; x += 10) {
+      const baseSine = Math.sin(x * 0.005 + time + l * 0.5) * 20;
+      const jitter = (Math.random() - 0.5) * shakinessAmp * Math.sin(x * shakinessFreq + time);
+      const y = lineYOffset + baseSine + jitter;
+
+      if (x === KEYBOARD_WIDTH) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+
+    ctx.strokeStyle = "rgba(126, 200, 227, 0.8)";
+    ctx.lineWidth = Math.max(1, maxThickness - l * 0.5);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
 // Horizontal glow line snapped to the selected key's center,
 // thickness follows volume.
 function drawPitchLine(rootMidi, volume01, canvasWidth, canvasHeight) {
@@ -633,6 +679,7 @@ async function main() {
       voice.setNotes(freqs);
       voice.setVolume(volume);
       updateVolumeMeter(volume);
+      drawEnergyWave(volume, tilt, freqs.length, canvasEl.width, canvasEl.height);
       drawKeyboard(midi, chordMidis, canvasEl.height);
       drawPitchLine(midi, volume, canvasEl.width, canvasEl.height);
 
