@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Head Bop</title>
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #1a0f2e;
+  overflow: hidden;
+}
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+}
+#webcam {
+  display: none;
+}
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#sensitivitySelect {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #2a1a44;
+  color: #ffd23f;
+  border: 2px solid #ff6b35;
+  border-radius: 12px;
+  font-family: monospace;
+  font-size: 16px;
+  padding: 6px 10px;
+  z-index: 5;
+}
+#helpButton {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #ff6b35;
+  background: #2a1a44;
+  color: #ffd23f;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 6;
+}
+
+#helpModal.hidden {
+  display: none;
+}
+
+#helpModal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.help-content {
+  background: #2a1a44;
+  color: white;
+  border: 2px solid #ff6b35;
+  border-radius: 16px;
+  width: min(500px, 90vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 24px;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+#closeHelp {
+  float: right;
+  background: none;
+  border: none;
+  color: #ffd23f;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.help-content h2,
+.help-content h3 {
+  color: #ffd23f;
+}
+
+.help-content a {
+  color: #ff6b35;
+  text-decoration: none;
+}
+#metronomePanel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  z-index: 5;
+  font-family: monospace;
+}
+
+.metronome-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#metronomeToggle {
+  background: #2a1a44;
+  color: #ffd23f;
+  border: 2px solid #ff6b35;
+  border-radius: 12px;
+  font-family: monospace;
+  font-size: 16px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+#metronomeToggle.running {
+  background: #ff6b35;
+  color: #1a0f2e;
+}
+
+#bpmInput {
+  width: 56px;
+  background: #2a1a44;
+  color: #ffd23f;
+  border: 2px solid #ff6b35;
+  border-radius: 12px;
+  font-family: monospace;
+  font-size: 16px;
+  padding: 6px 8px;
+}
+
+.bpm-label {
+  color: #ffd23f;
+  font-size: 13px;
+}
+
+#beatDots {
+  display: flex;
+  gap: 6px;
+}
+
+.beat-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #2a1a44;
+  border: 1px solid #ff6b35;
+}
+
+.beat-dot.active {
+  background: #ffd23f;
+}
+
+.beat-dot.accent {
+  background: #ff6b35;
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.9);
+}
+#startOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 15, 46, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  cursor: pointer;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+.start-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #ffd23f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+}
+
+.start-text {
+  color: #fff;
+  font-family: monospace;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1.6;
+}
+
+#overlay.dimmed {
+  filter: grayscale(1) brightness(0.6);
+}
+</style>
+</head>
+<body>
+<div id="stage">
+  <video id="webcam" autoplay playsinline muted></video>
+  <canvas id="overlay" class="dimmed"></canvas>
+
+  <select id="sensitivitySelect">
+    <option value="0.50">🐢 Gentle</option>
+    <option value="0.32" selected>🙂 Normal</option>
+    <option value="0.15">⚡ Bouncy</option>
+  </select>
+
+  <div id="metronomePanel">
+    <div class="metronome-row">
+      <button id="metronomeToggle">🕰 Off</button>
+      <input id="bpmInput" type="number" min="40" max="240" step="1" value="90">
+      <span class="bpm-label">BPM</span>
+    </div>
+    <div id="beatDots">
+      <span class="beat-dot" data-beat="0"></span>
+      <span class="beat-dot" data-beat="1"></span>
+      <span class="beat-dot" data-beat="2"></span>
+      <span class="beat-dot" data-beat="3"></span>
+    </div>
+  </div>
+
+  <button id="helpButton">?</button>
+
+  <div id="helpModal" class="hidden">
+    <div class="help-content">
+      <button id="closeHelp">✕</button>
+
+      <h2>Head Bop! 🥁</h2>
+      <p>Play the bass drum with your head — no hands needed!</p>
+
+      <h3>How to play</h3>
+      <p>Stand where the camera can see your face,
+      then <b>bounce your head down</b> like you're rocking out.
+      Every bounce goes <b>BOOM</b>. 💥</p>
+
+      <h3>Too easy? Too hard?</h3>
+      <p>Use the picker in the corner:<br>
+      🐢 Gentle → big bounces only<br>
+      🙂 Normal → regular bounces<br>
+      ⚡ Bouncy → tiny bounces count</p>
+
+      <h3>Keep the beat</h3>
+      <p>Turn on the 🕰 metronome and try to boom
+      right on the click!</p>
+
+      <p>Part of the camera-instrument family with
+      <a href="../gesturesynth/">Gesture Synth</a> and
+      <a href="../theremin/">Theremin</a>.</p>
+    </div>
+  </div>
+
+  <div id="startOverlay">
+    <div class="start-circle">🥁</div>
+    <div class="start-text">
+    tap to start drumming!
+    <br>
+    <small>bounce your head to play</small>
+  </div>
+  </div>
+</div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
