@@ -7,6 +7,7 @@ const ctx = canvasEl.getContext("2d");
 
 const noteDisplayEl = document.getElementById("noteDisplay");
 const chordLabelEl = document.getElementById("chordLabel");
+const filterDisplayEl = document.getElementById("filterDisplay");
 const volumeBarEls = Array.from(document.querySelectorAll(".vol-bar"));
 const startOverlayEl = document.getElementById("startOverlay");
 
@@ -47,18 +48,69 @@ const NOTE_SWITCH_THRESHOLD = 0.6;
 
 let heldMidi = null;
 
-// Wrist position in canvas space (same cover-crop mapping the video
+// Palm center: wrist + the four finger-base knuckles averaged. More
+// stable than the wrist alone and sits in the middle of the hand.
+const PALM_POINTS = [0, 5, 9, 13, 17];
+
+function getPalmCenter(landmarks) {
+  let x = 0, y = 0;
+  for (const i of PALM_POINTS) {
+    x += landmarks[i].x;
+    y += landmarks[i].y;
+  }
+  return { x: x / PALM_POINTS.length, y: y / PALM_POINTS.length };
+}
+
+// Palm center in canvas space (same cover-crop mapping the video
 // drawing uses), so the pitch always matches the key under your hand.
-function wristCanvasPos(landmarks, canvasWidth, canvasHeight) {
+function handCanvasPos(landmarks, canvasWidth, canvasHeight) {
   const srcW = videoEl.videoWidth;
   const srcH = videoEl.videoHeight;
   if (!srcW || !srcH) return null;
 
   const { sx, sy, sWidth, sHeight } = computeCoverRect(srcW, srcH, canvasWidth, canvasHeight);
-  const wrist = landmarks[0];
-  const canvasX = canvasWidth - ((wrist.x * srcW - sx) / sWidth) * canvasWidth; // mirrored
-  const canvasY = ((wrist.y * srcH - sy) / sHeight) * canvasHeight;
+  const palm = getPalmCenter(landmarks);
+  const canvasX = canvasWidth - ((palm.x * srcW - sx) / sWidth) * canvasWidth; // mirrored
+  const canvasY = ((palm.y * srcH - sy) / sHeight) * canvasHeight;
   return { x: canvasX, y: canvasY };
+}
+
+// ---- Right-hand tilt (from Gesture Synth): drives the filter sweep ----
+function getHandHorizontalTilt(landmarks, handedness) {
+  if (!landmarks || typeof landmarks.length === "undefined" || landmarks.length < 18) {
+    return 0;
+  }
+
+  try {
+    const wrist = landmarks[0];
+    const middleMcp = landmarks[9];
+    const ringMcp = landmarks[13];
+
+    if (!wrist || !middleMcp || !ringMcp) return 0;
+
+    const minX = Math.min(middleMcp.x, ringMcp.x);
+    const maxX = Math.max(middleMcp.x, ringMcp.x);
+
+    let tiltFactor = 0;
+    // Max travel distance past the boundaries before hitting 100%
+    const MAX_TRAVEL = 0.12;
+
+    if (wrist.x < minX) {
+      tiltFactor = (wrist.x - minX) / MAX_TRAVEL;
+    } else if (wrist.x > maxX) {
+      tiltFactor = (wrist.x - maxX) / MAX_TRAVEL;
+    }
+
+    tiltFactor = Math.max(-1, Math.min(1, tiltFactor));
+
+    if (handedness === "Right") {
+      tiltFactor = -tiltFactor;
+    }
+
+    return tiltFactor;
+  } catch {
+    return 0;
+  }
 }
 
 function getRawMidiFromCanvasY(canvasY, canvasHeight) {
@@ -203,6 +255,30 @@ class ChordVoice {
     if (!this.ctx) return;
     const clamped = Math.max(0, Math.min(1, volume01));
     this.masterGain.gain.setTargetAtTime(clamped, this.ctx.currentTime, 0.05);
+  }
+
+  // The Gesture Synth "weird modulation": tilt inward for acoustic
+  // warmth, outward for a resonant EDM squelch.
+  updateFilterSweep(tiltFactor) {
+    if (!this.ctx) return;
+
+    let targetFrequency = 3000; // neutral hand = the theremin's open tone
+    let targetQ = 0.5;
+
+    if (tiltFactor < 0) {
+      // ---- INWARD TILT (Acoustic Warmth) ----
+      const intensity = Math.abs(tiltFactor);
+      targetFrequency = 3000 - intensity * 2500; // down to a woody 500 Hz
+      targetQ = 0.5 + intensity * 1.7;
+    } else if (tiltFactor > 0) {
+      // ---- OUTWARD TILT (EDM Filter Sweep) ----
+      targetFrequency = 3000 + tiltFactor * 3800;
+      targetQ = 0.5 + tiltFactor * 4.7; // resonance spike for the squelch
+    }
+
+    const now = this.ctx.currentTime;
+    this.filter.frequency.setTargetAtTime(targetFrequency, now, 0.04);
+    this.filter.Q.setTargetAtTime(targetQ, now, 0.04);
   }
 
   setWaveform(type) {
@@ -519,13 +595,23 @@ async function main() {
     }
 
     // RIGHT HAND = PITCH from height (snapped to standard tuning)
+    //              + TILT modulates the filter
     // LEFT HAND = CHORD TYPE (fingers) + VOLUME (height)
-    const wristPos = cachedRightLandmarks
-      ? wristCanvasPos(cachedRightLandmarks, canvasEl.width, canvasEl.height)
+    const handPos = cachedRightLandmarks
+      ? handCanvasPos(cachedRightLandmarks, canvasEl.width, canvasEl.height)
       : null;
 
-    if (wristPos) {
-      const rawMidi = getRawMidiFromCanvasY(wristPos.y, canvasEl.height);
+    const tilt = cachedRightLandmarks
+      ? getHandHorizontalTilt(cachedRightLandmarks, "Right")
+      : 0;
+    voice.updateFilterSweep(tilt);
+    if (filterDisplayEl) {
+      const pct = Math.round(tilt * 100);
+      filterDisplayEl.textContent = `Filter: ${pct > 0 ? "+" : ""}${pct}%`;
+    }
+
+    if (handPos) {
+      const rawMidi = getRawMidiFromCanvasY(handPos.y, canvasEl.height);
       const midi = quantizePitch(rawMidi);
       const root = midiToFreq(midi);
 

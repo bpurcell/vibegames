@@ -144,6 +144,16 @@ html, body {
 .vol-bar.lit {
   background: #7ec8e3;
 }
+#filterDisplay {
+  position: absolute;
+  top: 105px;
+  right: 12px;
+  color: #7ec8e3;
+  font-family: monospace;
+  font-size: 12px;
+  text-align: right;
+  pointer-events: none;
+}
 #metronomePanel {
   position: absolute;
   top: 130px;
@@ -277,6 +287,8 @@ html, body {
     <option value="sawtooth">Bright</option>
   </select>
 
+  <div id="filterDisplay">Filter: 0%</div>
+
   <div id="metronomePanel">
     <div class="metronome-row">
       <button id="metronomeToggle">🕰 Off</button>
@@ -309,6 +321,11 @@ html, body {
       snapped to standard tuning — every note lands in tune.
       The keyboard on the left edge shows the note you're on
       and lights up every note in the chord.</p>
+
+      <p><b>Tilt</b><br>
+      Tilt your right hand to warp the sound:<br>
+      Inward → warm and woody<br>
+      Outward → bright, resonant filter sweep</p>
 
       <h3>Left Hand — Chord &amp; Volume</h3>
       <p><b>Fingers (Chord Type)</b><br>
