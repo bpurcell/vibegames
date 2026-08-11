@@ -408,10 +408,22 @@ function drawFaceRing(center, radius, now) {
 }
 
 // ---- UI events ----
+const HELP_SEEN_KEY = "headbop-help-seen";
+
 startOverlayEl.addEventListener("click", () => {
   ensureAudio();
   startOverlayEl.style.display = "none";
   canvasEl.classList.remove("dimmed");
+
+  // First visit: pop the guide so new players learn the moves
+  try {
+    if (!localStorage.getItem(HELP_SEEN_KEY)) {
+      localStorage.setItem(HELP_SEEN_KEY, "1");
+      helpModal.classList.remove("hidden");
+    }
+  } catch {
+    // localStorage unavailable (private mode) -> just skip the auto-popup
+  }
 });
 
 helpButton.addEventListener("click", () => {
