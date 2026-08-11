@@ -41,6 +41,24 @@ html, body {
   padding: 6px 10px;
   z-index: 5;
 }
+#bounceModeToggle {
+  position: absolute;
+  top: 58px;
+  left: 12px;
+  background: #2a1a44;
+  color: #ffd23f;
+  border: 2px solid #ff6b35;
+  border-radius: 12px;
+  font-family: monospace;
+  font-size: 16px;
+  padding: 6px 10px;
+  cursor: pointer;
+  z-index: 5;
+}
+#bounceModeToggle.bounce {
+  background: #ff6b35;
+  color: #1a0f2e;
+}
 #helpButton {
   position: absolute;
   bottom: 16px;
@@ -222,6 +240,8 @@ html, body {
     <option value="0.15">⚡ Bouncy</option>
   </select>
 
+  <button id="bounceModeToggle">🎵 Always On</button>
+
   <div id="metronomePanel">
     <div class="metronome-row">
       <button id="metronomeToggle">🕰 Off</button>
@@ -257,6 +277,13 @@ html, body {
       Use <b>both hands</b> for two notes at once.
       Every note always sounds good — promise.
       Drop your hands to make it quiet.</p>
+
+      <h3>Bounce Mode</h3>
+      <p>Tap the 🎵 button to switch how notes play:<br>
+      <b>Always On</b> → hands sing the whole time<br>
+      <b>On Bounce</b> → point with your hands, and the notes
+      only pop when your head goes BOOM — drum and notes
+      together, right on the beat!</p>
 
       <h3>Too easy? Too hard?</h3>
       <p>Use the picker in the corner:<br>

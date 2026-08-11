@@ -103,9 +103,10 @@ class HandVoice {
     this.osc.start();
   }
 
-  // canvasFrac: 0 at top of screen, 1 at bottom
-  play(canvasFrac) {
-    if (!this.osc) return;
+  // canvasFrac: 0 at top of screen, 1 at bottom. Always tracks the
+  // aimed note; only sounds continuously when audible is true
+  // (bounce mode aims silently and plucks on the bob instead).
+  play(canvasFrac, audible) {
     const rawIndex = (1 - canvasFrac) * NOTE_COUNT - 0.5;
     if (
       this.heldIndex === null ||
@@ -115,11 +116,12 @@ class HandVoice {
     }
     this.heldIndex = Math.max(0, Math.min(NOTE_COUNT - 1, this.heldIndex));
 
+    if (!this.osc) return;
     const now = audioCtx.currentTime;
     this.osc.frequency.setTargetAtTime(
       midiToFreq(PENTA_MIDI[this.heldIndex]), now, 0.03
     );
-    this.gain.gain.setTargetAtTime(0.22, now, 0.05);
+    this.gain.gain.setTargetAtTime(audible ? 0.22 : 0, now, 0.05);
   }
 
   stop() {
@@ -130,6 +132,33 @@ class HandVoice {
 }
 
 const handVoices = [new HandVoice(), new HandVoice()]; // [left, right]
+
+// One-shot plucked note for bounce mode: fires on the head bob
+function playPluck(midi) {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "triangle";
+  osc.frequency.value = midiToFreq(midi);
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.35, t + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start(t);
+  osc.stop(t + 0.55);
+}
+
+// ---- Bounce mode: notes only play on the head bob ----
+const bounceModeToggleEl = document.getElementById("bounceModeToggle");
+let bounceMode = false;
+
+bounceModeToggleEl.addEventListener("click", () => {
+  bounceMode = !bounceMode;
+  bounceModeToggleEl.textContent = bounceMode ? "🎵 On Bounce" : "🎵 Always On";
+  bounceModeToggleEl.classList.toggle("bounce", bounceMode);
+});
 
 // ---- Head-bob detection ----
 // Nose y is tracked in normalized video space (0 top, 1 bottom).
@@ -504,6 +533,7 @@ async function main() {
 
   let lastVideoTime = -1;
   let cachedPose = null;
+  let bobFiredThisFrame = false;
 
   function loop() {
     const timestampNow = performance.now();
@@ -517,6 +547,7 @@ async function main() {
       if (cachedPose && (cachedPose[NOSE].visibility ?? 1) > VISIBLE) {
         if (detectBob(cachedPose[NOSE].y, timestampNow)) {
           playKick();
+          bobFiredThisFrame = true;
           const center = landmarkToCanvas(cachedPose[NOSE], canvasEl.width, canvasEl.height);
           spawnBoom(center.x, center.y, timestampNow);
         }
@@ -544,7 +575,7 @@ async function main() {
       if (inPlay) {
         const pos = landmarkToCanvas(lm, canvasEl.width, canvasEl.height);
         const frac = Math.max(0, Math.min(1, pos.y / canvasEl.height));
-        voiceObj.play(frac);
+        voiceObj.play(frac, !bounceMode);
         if (voiceObj.heldIndex !== null) {
           activeIndices.push(voiceObj.heldIndex);
           playingHands.push({ pos, noteIndex: voiceObj.heldIndex });
@@ -552,6 +583,17 @@ async function main() {
       } else {
         voiceObj.stop();
       }
+    }
+
+    // Bounce mode: the bob strums whatever the hands are aiming at
+    if (bobFiredThisFrame) {
+      if (bounceMode) {
+        playingHands.forEach(({ pos, noteIndex }) => {
+          playPluck(PENTA_MIDI[noteIndex]);
+          spawnBoom(pos.x, pos.y, timestampNow);
+        });
+      }
+      bobFiredThisFrame = false;
     }
 
     drawNoteStripes(activeIndices, canvasEl.width, canvasEl.height);
