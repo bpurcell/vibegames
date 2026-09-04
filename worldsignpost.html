@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Signpost — distance &amp; direction to famous places</title>
+<meta name="description" content="Pick a spot on Earth and see the great-circle distance and true bearing to famous landmarks. Print a ground compass to lay outside.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --spruce: #22382E; --spruce-deep: #1A2B23; --chart: #16241E;
+    --line: #3D5548; --line-dim: #2C4237;
+    --cream: #F3E9D2; --brass: #C8A24B; --brass-lt: #E4C98B;
+    --wood: #8A5A33; --wood-dk: #7A4E2B; --wood-lt: #9A6538; --bark: #3B2412;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--spruce); color: var(--cream);
+    font-family: 'Source Sans 3', system-ui, sans-serif; }
+  button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--brass); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  header { padding: 20px 28px 10px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  h1 { font-family: 'Alfa Slab One'; font-size: 26px; margin: 0;
+    color: var(--brass-lt); letter-spacing: 1px; }
+  .sub { font-size: 13px; opacity: .7; }
+  .header-btns { margin-left: auto; display: flex; gap: 8px; }
+
+  .layout { display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; align-items: flex-start; }
+  .rail { flex: 1 1 300px; max-width: 380px; display: flex; flex-direction: column; gap: 18px; }
+  .stage { flex: 2 1 480px; display: flex; justify-content: center; }
+  .stage svg { width: min(92vw, 640px); height: auto; }
+
+  .eyebrow { font-family: Oswald; letter-spacing: 2px; font-size: 12px; color: var(--brass); }
+  .ctl { background: var(--spruce-deep); border: 1px solid var(--line); border-radius: 6px;
+    color: var(--cream); padding: 7px 9px; font-size: 13px; width: 100%; }
+  .btn { background: var(--brass); color: var(--spruce); border: none; border-radius: 6px;
+    padding: 8px 14px; font-weight: 600; cursor: pointer; font-family: Oswald;
+    letter-spacing: 1px; text-transform: uppercase; font-size: 12px; }
+  .btn.ghost { background: transparent; color: var(--brass); border: 1px solid var(--brass); }
+  .fields { display: flex; gap: 6px; margin-top: 6px; }
+  .fields .num { width: 80px; }
+  .check { display: flex; gap: 8px; align-items: center; margin-top: 8px; font-size: 13px; }
+
+  #dest-list { margin-top: 6px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 13px;
+    border-bottom: 1px solid var(--line-dim); }
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: var(--spruce-deep); }
+  .row .nm { flex: 1; font-weight: 600; }
+  .row .d { font-family: Oswald; font-size: 12px; color: var(--brass-lt); }
+  .row .b { width: 56px; text-align: right; font-family: Oswald; font-size: 12px; opacity: .8; }
+  .row .x { background: none; border: none; color: #C77; cursor: pointer; font-size: 14px; }
+
+  .note { font-size: 11.5px; opacity: .6; margin-top: 8px; line-height: 1.5; }
+
+  .map-wrap { padding: 0 24px 28px; }
+  .map-cap { font-size: 12px; opacity: .65; margin: 4px 0 10px; max-width: 640px; line-height: 1.5; }
+  .map-frame { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .map-frame svg { display: block; width: 100%; height: auto; }
+
+  .dim { opacity: .22 !important; }
+  .plank-g { transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .2s; }
+  .route-g { cursor: pointer; transition: opacity .2s; }
+
+  .print-sheet { display: none; }
+  @media print {
+    .app { display: none !important; }
+    body { background: #fff; }
+    .print-sheet { display: block !important; color: #000; background: #fff; }
+    @page { margin: 0.5in; }
+  }
+  .print-sheet h1 { color: #000; text-align: center; font-size: 24px; margin: 0 0 2px; }
+  .print-sheet p { text-align: center; font-size: 12px; margin: 0 0 6px; }
+  .print-sheet .fine { font-size: 9px; text-align: left; margin-top: 6px; }
+  .print-sheet table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+  .print-sheet th { border-bottom: 2px solid #000; text-align: left; padding: 3px; }
+  .print-sheet td { border-bottom: 1px solid #999; padding: 3px; }
+  .print-svg { display: flex; justify-content: center; }
+  .print-svg svg { width: 5.4in; height: 5.4in; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <h1>WORLD SIGNPOST</h1>
+    <span class="sub">Great-circle distance &amp; true bearing from <b id="org-name"></b></span>
+    <span class="header-btns">
+      <button class="btn ghost" id="unit-btn"></button>
+      <button class="btn" onclick="window.print()">Print ground sign</button>
+    </span>
+  </header>
+
+  <div class="layout">
+    <div class="rail">
+      <section>
+        <span class="eyebrow">YOU ARE HERE</span>
+        <select class="ctl" id="origin-sel" style="margin-top:6px"></select>
+        <label class="check"><input type="checkbox" id="custom-org-chk"> Custom coordinates</label>
+        <div class="fields" id="custom-org-fields" hidden>
+          <input class="ctl" id="co-name" placeholder="Name">
+          <input class="ctl num" id="co-lat" placeholder="Lat" inputmode="decimal">
+          <input class="ctl num" id="co-lon" placeholder="Lon" inputmode="decimal">
+        </div>
+      </section>
+
+      <section>
+        <span class="eyebrow">DESTINATIONS</span>
+        <div id="dest-list"></div>
+      </section>
+
+      <section>
+        <span class="eyebrow">ADD A PLACE</span>
+        <div class="fields">
+          <input class="ctl" id="f-name" placeholder="Name">
+          <input class="ctl num" id="f-lat" placeholder="Lat" inputmode="decimal">
+          <input class="ctl num" id="f-lon" placeholder="Lon" inputmode="decimal">
+        </div>
+        <button class="btn" id="add-btn" style="margin-top:8px">Add plank</button>
+        <p class="note">Distances use the haversine formula (Earth mean radius 6,371 km).
+          Arrows show the <i>initial</i> great-circle bearing — the true direction you'd start walking.
+          Your custom places and settings are saved in this browser.</p>
+      </section>
+    </div>
+
+    <div class="stage"><svg id="signpost" viewBox="-330 -330 660 660" role="img"></svg></div>
+  </div>
+
+  <div class="map-wrap">
+    <span class="eyebrow">GREAT-CIRCLE CHART</span>
+    <p class="map-cap">The shortest path on a sphere is a great circle. On this flat (equirectangular)
+      chart those straight-on-Earth routes appear curved — that's projection distortion, not the route
+      bending. Arrows point along the route toward each destination. Hover to highlight.</p>
+    <div class="map-frame"><svg id="worldmap" viewBox="0 0 900 450" role="img"></svg></div>
+  </div>
+</div>
+
+<div class="print-sheet" id="print-sheet"></div>
+
+<script>
+"use strict";
+// ============ Geodesy ============
+const R_KM = 6371.0088;
+const rad = d => d * Math.PI / 180, deg = r => (r * 180 / Math.PI + 360) % 360;
+function haversineKm(a, b) {
+  const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+  const h = Math.sin(dLat/2)**2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon/2)**2;
+  return 2 * R_KM * Math.asin(Math.sqrt(h));
+}
+function initialBearing(a, b) {
+  const p1 = rad(a.lat), p2 = rad(b.lat), dl = rad(b.lon - a.lon);
+  return deg(Math.atan2(Math.sin(dl) * Math.cos(p2),
+    Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl)));
+}
+const WINDS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+const toWind = b => WINDS[Math.round(b / 22.5) % 16];
+const toVec = p => { const f = rad(p.lat), l = rad(p.lon);
+  return [Math.cos(f)*Math.cos(l), Math.cos(f)*Math.sin(l), Math.sin(f)]; };
+const toLatLon = v => ({ lat: Math.asin(v[2])*180/Math.PI, lon: Math.atan2(v[1],v[0])*180/Math.PI });
+function greatCirclePoints(a, b, n = 72) {
+  const va = toVec(a), vb = toVec(b);
+  const w = Math.acos(Math.min(1, Math.max(-1, va[0]*vb[0] + va[1]*vb[1] + va[2]*vb[2])));
+  if (w < 1e-9) return [a, b];
+  const out = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i/n, s1 = Math.sin((1-t)*w)/Math.sin(w), s2 = Math.sin(t*w)/Math.sin(w);
+    out.push(toLatLon([s1*va[0]+s2*vb[0], s1*va[1]+s2*vb[1], s1*va[2]+s2*vb[2]]));
+  }
+  return out;
+}
+const MAP_W = 900, MAP_H = 450;
+const proj = p => [ (p.lon+180)/360*MAP_W, (90-p.lat)/180*MAP_H ];
+function splitAtAntimeridian(pts) {
+  const segs = [[]];
+  for (let i = 0; i < pts.length; i++) {
+    if (i > 0 && Math.abs(pts[i].lon - pts[i-1].lon) > 180) segs.push([]);
+    segs[segs.length-1].push(proj(pts[i]));
+  }
+  return segs.filter(s => s.length > 1);
+}
+
+// ============ Data ============
+const ORIGINS = [
+  { name: "Freeport, Maine", lat: 43.857, lon: -70.103 },
+  { name: "New York City", lat: 40.7128, lon: -74.006 },
+  { name: "Los Angeles", lat: 34.0522, lon: -118.2437 },
+  { name: "Chicago", lat: 41.8781, lon: -87.6298 },
+  { name: "London", lat: 51.5074, lon: -0.1278 },
+  { name: "Paris", lat: 48.8566, lon: 2.3522 },
+  { name: "Tokyo", lat: 35.6762, lon: 139.6503 },
+  { name: "Sydney", lat: -33.8688, lon: 151.2093 },
+  { name: "Halifax, NS", lat: 44.6488, lon: -63.5752 },
+  { name: "Mexico City", lat: 19.4326, lon: -99.1332 },
+  { name: "São Paulo", lat: -23.5505, lon: -46.6333 },
+  { name: "Cairo", lat: 30.0444, lon: 31.2357 },
+  { name: "Nairobi", lat: -1.2921, lon: 36.8219 },
+  { name: "Mumbai", lat: 19.076, lon: 72.8777 },
+  { name: "Singapore", lat: 1.3521, lon: 103.8198 },
+  { name: "Reykjavík", lat: 64.1466, lon: -21.9426 },
+];
+const FAMOUS = [
+  { id: "eiffel", name: "Eiffel Tower", lat: 48.8584, lon: 2.2945 },
+  { id: "liberty", name: "Statue of Liberty", lat: 40.6892, lon: -74.0445 },
+  { id: "giza", name: "Great Pyramid", lat: 29.9792, lon: 31.1342 },
+  { id: "taj", name: "Taj Mahal", lat: 27.1751, lon: 78.0421 },
+  { id: "wall", name: "Great Wall", lat: 40.3542, lon: 116.0075 },
+  { id: "opera", name: "Sydney Opera House", lat: -33.8568, lon: 151.2153 },
+  { id: "machu", name: "Machu Picchu", lat: -13.1631, lon: -72.545 },
+  { id: "everest", name: "Mt. Everest", lat: 27.9881, lon: 86.925 },
+  { id: "colosseum", name: "Colosseum", lat: 41.8902, lon: 12.4922 },
+  { id: "redeemer", name: "Christ the Redeemer", lat: -22.9519, lon: -43.2105 },
+];
+const LANDS = [
+  [[-168,66],[-160,64],[-150,60],[-136,58],[-130,52],[-124,48],[-124,40],[-117,33],[-110,24],[-105,20],[-96,16],[-92,15],[-85,11],[-77,8],[-81,26],[-80,32],[-75,35],[-70,42],[-65,45],[-60,47],[-53,47],[-55,52],[-60,55],[-64,60],[-70,62],[-78,62],[-85,66],[-95,68],[-110,68],[-130,70],[-150,70],[-168,66]],
+  [[-77,8],[-70,12],[-62,10],[-52,5],[-44,-3],[-35,-8],[-39,-15],[-41,-23],[-48,-28],[-53,-34],[-58,-39],[-65,-45],[-68,-52],[-71,-54],[-73,-46],[-70,-33],[-70,-18],[-76,-14],[-81,-6],[-79,0],[-77,8]],
+  [[-17,15],[-16,22],[-10,30],[-6,35],[3,37],[11,37],[20,32],[30,31],[34,28],[38,20],[43,11],[51,11],[45,-2],[40,-10],[35,-20],[33,-28],[27,-34],[20,-35],[15,-28],[12,-18],[9,-5],[9,4],[3,6],[-8,4],[-13,9],[-17,15]],
+  [[-10,37],[-9,43],[-5,48],[0,49],[5,53],[8,55],[12,56],[20,55],[28,60],[25,65],[28,71],[40,68],[60,69],[75,72],[95,76],[110,74],[130,72],[150,70],[170,68],[179,66],[178,62],[162,60],[158,52],[142,54],[140,46],[130,42],[127,40],[122,38],[121,30],[110,20],[108,12],[104,8],[100,6],[98,10],[94,16],[88,21],[85,19],[80,13],[77,8],[73,17],[70,22],[66,25],[57,26],[52,28],[48,30],[55,26],[59,22],[58,17],[52,15],[44,12],[39,17],[35,28],[32,31],[36,36],[26,36],[22,37],[15,38],[12,44],[3,43],[-1,37],[-6,36],[-10,37]],
+  [[114,-22],[113,-26],[115,-34],[124,-33],[131,-31],[138,-35],[141,-38],[147,-38],[150,-37],[153,-30],[153,-25],[146,-19],[142,-11],[136,-12],[130,-12],[125,-14],[121,-19],[114,-22]],
+  [[-45,60],[-52,64],[-54,68],[-52,72],[-45,78],[-35,82],[-25,80],[-20,76],[-22,70],[-30,66],[-40,62],[-45,60]],
+];
+
+// ============ State + persistence ============
+const LS_KEY = "world-signpost-v1";
+let state = {
+  originName: ORIGINS[0].name,
+  useCustomOrigin: false,
+  customOrigin: { name: "", lat: "", lon: "" },
+  unit: "mi",
+  places: FAMOUS.map(p => ({ ...p, on: true, custom: false })),
+};
+try {
+  const saved = JSON.parse(localStorage.getItem(LS_KEY));
+  if (saved && Array.isArray(saved.places)) state = { ...state, ...saved };
+} catch (e) { /* fresh start */ }
+const save = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {} };
+
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const fmt = n => Math.round(n).toLocaleString("en-US");
+
+function getOrigin() {
+  const co = state.customOrigin;
+  if (state.useCustomOrigin && co.lat !== "" && co.lon !== "" && !isNaN(+co.lat) && !isNaN(+co.lon))
+    return { name: co.name || "Custom point", lat: +co.lat, lon: +co.lon };
+  return ORIGINS.find(o => o.name === state.originName) || ORIGINS[0];
+}
+function getRows() {
+  const org = getOrigin();
+  return state.places.map(p => {
+    const km = haversineKm(org, p), b = initialBearing(org, p);
+    return { ...p, km, mi: km * 0.621371, bearing: b, wind: toWind(b) };
+  }).sort((a, b) => a.bearing - b.bearing);
+}
+const dist = r => state.unit === "mi" ? `${fmt(r.mi)} mi` : `${fmt(r.km)} km`;
+const plankColor = i => ["#8A5A33", "#7A4E2B", "#9A6538"][i % 3];
+
+// ============ Renderers ============
+function renderSignpost(org, active) {
+  let s = `<circle r="318" fill="var(--spruce-deep)" stroke="var(--line)"/>`;
+  for (const a of [0,45,90,135,180,225,270,315]) {
+    s += `<g transform="rotate(${a})">
+      <line y1="-318" y2="-300" stroke="var(--line)" stroke-width="${a%90===0?3:1.5}"/>`;
+    if (a % 90 === 0) s += `<text y="-282" text-anchor="middle" font-family="Alfa Slab One"
+      font-size="20" fill="${a===0?"var(--brass)":"#6E8578"}"
+      transform="rotate(${-a} 0 -290)">${["N","E","S","W"][a/90]}</text>`;
+    s += `</g>`;
+  }
+  active.forEach((r, i) => {
+    const left = r.bearing > 180;
+    const rot = left ? r.bearing + 90 : r.bearing - 90;
+    const r0 = 52 + (i % 3) * 14, len = 190 - (i % 3) * 14, w = 26;
+    const x0 = left ? -r0 : r0, x1 = left ? -(r0+len) : r0+len, tip = left ? x1-16 : x1+16;
+    const tx = (x0 + x1) / 2;
+    s += `<g class="plank-g" data-id="${esc(r.id)}"
+        style="transform:rotate(${rot}deg);transform-origin:0 0">
+      <polygon points="${x0},${-w/2} ${x1},${-w/2} ${tip},0 ${x1},${w/2} ${x0},${w/2}"
+        fill="${plankColor(i)}" stroke="var(--bark)" stroke-width="1.5"/>
+      <text x="${tx}" y="-3" text-anchor="middle" font-family="Oswald" font-size="12.5"
+        font-weight="600" letter-spacing="1" fill="var(--cream)"
+        style="text-transform:uppercase">${esc(r.name)}</text>
+      <text x="${tx}" y="9.5" text-anchor="middle" font-family="Oswald" font-size="9"
+        letter-spacing="1.5" fill="var(--brass-lt)">${dist(r)}</text>
+    </g>`;
+  });
+  s += `<circle r="34" fill="#5B3A1E" stroke="var(--bark)" stroke-width="3"/>
+    <circle r="24" fill="#6E4A28"/>
+    <text y="5" text-anchor="middle" font-family="Oswald" font-size="11"
+      fill="var(--cream)" letter-spacing="1">YOU</text>`;
+  const el = document.getElementById("signpost");
+  el.setAttribute("aria-label", `Signpost from ${org.name} showing ${active.length} destinations`);
+  el.innerHTML = s;
+}
+
+function renderMap(org, active) {
+  let s = `<rect width="${MAP_W}" height="${MAP_H}" fill="var(--chart)"/>`;
+  for (let lat = -75; lat <= 75; lat += 15) {
+    const y = proj({ lat, lon: 0 })[1];
+    s += `<line x1="0" x2="${MAP_W}" y1="${y}" y2="${y}" stroke="#26382F"
+      stroke-width="${lat===0?1.4:0.6}"/>`;
+  }
+  for (let lon = -180; lon <= 180; lon += 30) {
+    const x = proj({ lat: 0, lon })[0];
+    s += `<line y1="0" y2="${MAP_H}" x1="${x}" x2="${x}" stroke="#26382F"
+      stroke-width="${lon===0?1.4:0.6}"/>`;
+  }
+  for (const poly of LANDS)
+    s += `<polygon points="${poly.map(([lon,lat]) => proj({lat,lon}).join(",")).join(" ")}"
+      fill="#2E4A3B" stroke="var(--line)" stroke-width="1"/>`;
+  for (const r of active) {
+    const segs = splitAtAntimeridian(greatCirclePoints(org, r));
+    if (!segs.length) continue;
+    const last = segs[segs.length-1];
+    const [x1,y1] = last[last.length-2], [x2,y2] = last[last.length-1];
+    const ang = Math.atan2(y2-y1, x2-x1) * 180 / Math.PI;
+    s += `<g class="route-g" data-id="${esc(r.id)}">`;
+    for (const seg of segs)
+      s += `<polyline points="${seg.map(p=>p.join(",")).join(" ")}" fill="none"
+        stroke="var(--brass)" stroke-width="1.5" stroke-dasharray="5 4" stroke-linecap="round"/>`;
+    s += `<g transform="translate(${x2},${y2}) rotate(${ang})">
+        <polygon points="0,0 -11,-4.5 -11,4.5" fill="var(--brass)"/></g>
+      <circle cx="${x2}" cy="${y2}" r="3.5" fill="var(--cream)" stroke="var(--spruce)" stroke-width="1.5"/>
+      <text class="route-label" x="${x2}" y="${y2-12}" text-anchor="middle" font-family="Oswald"
+        font-size="13" font-weight="600" fill="var(--cream)" stroke="var(--chart)"
+        stroke-width="3.5" paint-order="stroke" visibility="hidden">${esc(r.name)} · ${dist(r)} · ${r.wind} ${Math.round(r.bearing)}°</text>
+      <title>${esc(r.name)}: ${dist(r)}, ${r.wind} ${Math.round(r.bearing)}°</title></g>`;
+  }
+  const [ox, oy] = proj(org);
+  s += `<g transform="translate(${ox},${oy})">
+    <circle r="6.5" fill="var(--brass)" stroke="var(--spruce)" stroke-width="2"/>
+    <circle r="12" fill="none" stroke="var(--brass)" stroke-width="1.2" opacity="0.6"/>
+    <text y="-16" text-anchor="middle" font-family="Oswald" font-size="13" font-weight="600"
+      fill="var(--brass-lt)" stroke="var(--chart)" stroke-width="3.5"
+      paint-order="stroke">${esc(org.name)}</text></g>`;
+  const el = document.getElementById("worldmap");
+  el.setAttribute("aria-label", `World map with great-circle routes from ${org.name}`);
+  el.innerHTML = s;
+}
+
+function renderList(rows) {
+  document.getElementById("dest-list").innerHTML = rows.map(r => `
+    <div class="row" data-id="${esc(r.id)}">
+      <input type="checkbox" data-act="toggle" ${r.on ? "checked" : ""} aria-label="Show ${esc(r.name)}">
+      <span class="nm">${esc(r.name)}</span>
+      <span class="d">${dist(r)}</span>
+      <span class="b">${r.wind} ${Math.round(r.bearing)}°</span>
+      ${r.custom ? `<button class="x" data-act="remove" aria-label="Remove ${esc(r.name)}">✕</button>` : ""}
+    </div>`).join("");
+}
+
+function renderPrint(org, active) {
+  let rays = "";
+  for (const r of active) {
+    const flip = r.bearing > 180;
+    const rot = flip ? r.bearing + 90 : r.bearing - 90;
+    const a = flip ? -1 : 1;
+    rays += `<g transform="rotate(${rot})">
+      <line x1="${30*a}" x2="${178*a}" y1="0" y2="0" stroke="#000" stroke-width="1.5"/>
+      <polygon points="${190*a},0 ${176*a},-5 ${176*a},5" fill="#000"/>
+      <text x="${104*a}" y="-4" text-anchor="middle" font-family="Oswald" font-size="10.5"
+        font-weight="600">${esc(r.name)}</text>
+      <text x="${104*a}" y="8" text-anchor="middle" font-family="Oswald"
+        font-size="8.5">${dist(r)} · ${r.wind} ${Math.round(r.bearing)}°</text></g>`;
+  }
+  let ticks = "";
+  for (let a = 0; a < 360; a += 15)
+    ticks += `<g transform="rotate(${a})"><line y1="-250" y2="${a%90===0?-228:-240}"
+      stroke="#000" stroke-width="${a%90===0?2.5:1}"/></g>`;
+  let cards = "";
+  ["N","E","S","W"].forEach((c, i) => {
+    cards += `<g transform="rotate(${i*90})">
+      <text y="-206" text-anchor="middle" font-family="Alfa Slab One" font-size="24"
+        transform="rotate(${-i*90} 0 -214)">${c}</text>
+      ${c === "N" ? `<polygon points="0,-252 -8,-264 8,-264" fill="#000"/>` : ""}</g>`;
+  });
+  document.getElementById("print-sheet").innerHTML = `
+    <h1 style="font-family:'Alfa Slab One'">WORLD SIGNPOST</h1>
+    <p>You are here: <b>${esc(org.name)}</b> (${org.lat.toFixed(3)}°, ${org.lon.toFixed(3)}°)</p>
+    <p style="font-size:11px">Lay this sheet flat and rotate it until the N arrow points to
+      <b>true north</b> (enable "true north" in your compass app).</p>
+    <div class="print-svg"><svg viewBox="-260 -260 520 520">
+      <circle r="250" fill="none" stroke="#000" stroke-width="2"/>
+      ${ticks}${cards}${rays}
+      <circle r="16" fill="#000"/>
+      <text y="4" text-anchor="middle" font-family="Oswald" font-size="8" fill="#fff">YOU</text>
+    </svg></div>
+    <table><thead><tr><th>Place</th><th>Distance</th><th>Bearing</th><th>Direction</th></tr></thead>
+    <tbody>${active.map(r => `<tr><td style="font-weight:600">${esc(r.name)}</td>
+      <td>${dist(r)}</td><td>${Math.round(r.bearing)}°</td><td>${r.wind}</td></tr>`).join("")}
+    </tbody></table>
+    <p class="fine">Great-circle (haversine) distances, Earth mean radius 6,371 km. Bearings are
+      initial true bearings — magnetic compasses must correct for local declination.</p>`;
+}
+
+function render() {
+  const org = getOrigin(), rows = getRows(), active = rows.filter(r => r.on);
+  document.getElementById("org-name").textContent = org.name;
+  document.getElementById("unit-btn").textContent = state.unit === "mi" ? "→ km" : "→ mi";
+  document.getElementById("origin-sel").disabled = state.useCustomOrigin;
+  document.getElementById("custom-org-fields").hidden = !state.useCustomOrigin;
+  renderList(rows);
+  renderSignpost(org, active);
+  renderMap(org, active);
+  renderPrint(org, active);
+  save();
+}
+
+// ============ Hover linking (list ↔ planks ↔ routes) ============
+function applyHover(id) {
+  document.querySelectorAll("[data-id]").forEach(el => {
+    if (el.classList.contains("row")) return;
+    el.classList.toggle("dim", id !== null && el.dataset.id !== id);
+  });
+  document.querySelectorAll(".route-label").forEach(el =>
+    el.setAttribute("visibility",
+      id !== null && el.closest("[data-id]").dataset.id === id ? "visible" : "hidden"));
+}
+document.addEventListener("mouseover", e => {
+  const g = e.target.closest("[data-id]");
+  applyHover(g ? g.dataset.id : null);
+});
+
+// ============ Events ============
+const $ = id => document.getElementById(id);
+const sel = $("origin-sel");
+sel.innerHTML = ORIGINS.map(o => `<option>${esc(o.name)}</option>`).join("");
+sel.value = state.originName;
+sel.addEventListener("change", () => { state.originName = sel.value; render(); });
+
+$("custom-org-chk").checked = state.useCustomOrigin;
+$("custom-org-chk").addEventListener("change", e => { state.useCustomOrigin = e.target.checked; render(); });
+["co-name","co-lat","co-lon"].forEach((id, i) => {
+  const key = ["name","lat","lon"][i];
+  $(id).value = state.customOrigin[key];
+  $(id).addEventListener("input", e => { state.customOrigin[key] = e.target.value; render(); });
+});
+
+$("unit-btn").addEventListener("click", () => { state.unit = state.unit === "mi" ? "km" : "mi"; render(); });
+
+$("add-btn").addEventListener("click", () => {
+  const name = $("f-name").value.trim(), lat = +$("f-lat").value, lon = +$("f-lon").value;
+  if (!name || isNaN(lat) || isNaN(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return;
+  state.places.push({ id: "c" + Date.now(), name, lat, lon, on: true, custom: true });
+  $("f-name").value = $("f-lat").value = $("f-lon").value = "";
+  render();
+});
+
+$("dest-list").addEventListener("click", e => {
+  const row = e.target.closest(".row"); if (!row) return;
+  const id = row.dataset.id, act = e.target.dataset.act;
+  if (act === "toggle") { const p = state.places.find(p => p.id === id); p.on = !p.on; render(); }
+  if (act === "remove") { state.places = state.places.filter(p => p.id !== id); render(); }
+});
+
+render();
+</script>
+</body>
+</html>
