@@ -1,0 +1,154 @@
+/* =====================================================================
+   Shared site styling — the "Earth Speed" look, applied across the repo.
+
+   Loaded with a plain <link>, which works over file:// as well as http,
+   so every page still opens by double-clicking. Pages keep their own
+   <style> block for anything specific to them; this file owns the design
+   tokens, the nav bar, and the common furniture.
+
+   Games deliberately override the play-area colours below — a terminal-
+   green Minesweeper is the app's identity, not incidental styling.
+   ===================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg:      #070b14;
+  --panel:   #101827;
+  --panel2:  #0b1220;
+  --line:    #1e2b41;
+
+  /* ink */
+  --ink:     #e8eef7;
+  --sub:     #8fa3bf;
+  --faint:   #5b6f8d;
+
+  /* accents — blue/gold, the CVD-safe pair, both >8:1 on --bg */
+  --accent:      #4db8ff;
+  --accent-2:    #ffc447;
+  --accent-dim:  rgba(77,184,255,.16);
+  --accent-2-dim:rgba(255,196,71,.16);
+
+  --radius: 12px;
+  --nav-h: 52px;
+
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  background:
+    radial-gradient(900px 500px at 15% -5%, rgba(77,184,255,.07), transparent 60%),
+    radial-gradient(800px 500px at 90% 105%, rgba(255,196,71,.06), transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- nav */
+
+.site-nav {
+  position: sticky; top: 0; z-index: 9000;
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 14px; min-height: var(--nav-h);
+  background: rgba(11,18,32,.93);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font);
+}
+
+.site-nav .nav-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 7px 12px; font: inherit; font-size: 13.5px; font-weight: 600;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: border-color .12s, color .12s;
+}
+.site-nav .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.site-nav .nav-brand {
+  font-weight: 700; font-size: 14px; color: var(--ink);
+  text-decoration: none; white-space: nowrap;
+}
+.site-nav .nav-brand .dim { color: var(--faint); font-weight: 500; }
+
+.site-nav .nav-menu-wrap { position: relative; margin-left: auto; }
+
+.site-nav .nav-panel {
+  position: absolute; right: 0; top: calc(100% + 8px); width: 258px;
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 8px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.6);
+  max-height: min(70vh, 520px); overflow: auto;
+}
+.site-nav .nav-panel[hidden] { display: none; }
+
+.site-nav .nav-group {
+  font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--faint); font-weight: 800; padding: 9px 10px 4px;
+}
+.site-nav .nav-panel a {
+  display: block; padding: 7px 10px; border-radius: 7px;
+  color: var(--ink); text-decoration: none; font-size: 13.5px;
+}
+.site-nav .nav-panel a:hover { background: var(--panel2); color: var(--accent); }
+.site-nav .nav-panel a[aria-current="page"] {
+  color: var(--accent); background: var(--accent-dim);
+}
+
+@media (max-width: 560px) {
+  .site-nav .nav-brand .dim { display: none; }
+  .site-nav .nav-brand { font-size: 13px; }
+  .site-nav .nav-btn { padding: 7px 10px; font-size: 13px; }
+}
+
+/* Full-viewport apps (the timeline, the tree) size themselves to 100% and
+   hide overflow. Adding a nav on top pushes them past the bottom edge and
+   clips their footer, so those pages become a flex column: nav takes its
+   natural height, the app takes the rest. The #root override needs the
+   body.app-shell prefix to outrank each page's own `#root { height:100% }`. */
+body.app-shell { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+body.app-shell .site-nav { position: relative; flex: none; }
+body.app-shell > #root,
+body.app-shell > .app-main { flex: 1 1 auto; min-height: 0; height: auto; }
+
+/* ------------------------------------------------------- common bits */
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 26px 16px 60px; }
+
+.panel {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 16px;
+}
+
+a { color: var(--accent); }
+
+h1, h2, h3 { letter-spacing: -.01em; }
+
+.btn {
+  background: var(--panel2); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 12px; font: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+
+::selection { background: var(--accent-dim); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

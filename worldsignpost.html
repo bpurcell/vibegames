@@ -4,15 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>World Signpost — distance &amp; direction to famous places</title>
+<link rel="stylesheet" href="shared/site.css?v=2">
+<script src="shared/nav.js?v=2" data-title="World Signpost" data-tag="distance & direction" defer></script>
 <meta name="description" content="Pick a spot on Earth and see the great-circle distance and true bearing to famous landmarks. Print a ground compass to lay outside.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Oswald:wght@400;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* Re-pointed at the shared palette. The signpost planks keep a warm timber
+     tone of their own — they are meant to read as wood, and flattening them
+     into the UI blue would lose the point of the drawing. */
   :root {
-    --spruce: #22382E; --spruce-deep: #1A2B23; --chart: #16241E;
-    --line: #3D5548; --line-dim: #2C4237;
-    --cream: #F3E9D2; --brass: #C8A24B; --brass-lt: #E4C98B;
-    --wood: #8A5A33; --wood-dk: #7A4E2B; --wood-lt: #9A6538; --bark: #3B2412;
+    --spruce: #070b14; --spruce-deep: #101827; --chart: #0b1220;
+    --line: #1e2b41; --line-dim: #16233a;
+    --cream: #e8eef7; --brass: #ffc447; --brass-lt: #ffd77a;
+    --wood: #7a5a3a; --wood-dk: #654a30; --wood-lt: #8c6a45; --bark: #2a1d12;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--spruce); color: var(--cream);
@@ -255,7 +260,7 @@ function getRows() {
   }).sort((a, b) => a.bearing - b.bearing);
 }
 const dist = r => state.unit === "mi" ? `${fmt(r.mi)} mi` : `${fmt(r.km)} km`;
-const plankColor = i => ["#8A5A33", "#7A4E2B", "#9A6538"][i % 3];
+const plankColor = i => ["var(--wood)", "var(--wood-dk)", "var(--wood-lt)"][i % 3];
 
 // ============ Renderers ============
 function renderSignpost(org, active) {
@@ -264,7 +269,7 @@ function renderSignpost(org, active) {
     s += `<g transform="rotate(${a})">
       <line y1="-318" y2="-300" stroke="var(--line)" stroke-width="${a%90===0?3:1.5}"/>`;
     if (a % 90 === 0) s += `<text y="-282" text-anchor="middle" font-family="Alfa Slab One"
-      font-size="20" fill="${a===0?"var(--brass)":"#6E8578"}"
+      font-size="20" fill="${a===0?"var(--brass)":"var(--sub)"}"
       transform="rotate(${-a} 0 -290)">${["N","E","S","W"][a/90]}</text>`;
     s += `</g>`;
   }
@@ -286,7 +291,7 @@ function renderSignpost(org, active) {
     </g>`;
   });
   s += `<circle r="34" fill="#5B3A1E" stroke="var(--bark)" stroke-width="3"/>
-    <circle r="24" fill="#6E4A28"/>
+    <circle r="24" fill="var(--wood-dk)"/>
     <text y="5" text-anchor="middle" font-family="Oswald" font-size="11"
       fill="var(--cream)" letter-spacing="1">YOU</text>`;
   const el = document.getElementById("signpost");

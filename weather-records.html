@@ -3,102 +3,106 @@
 <head>
 <meta charset="utf-8" />
 <title>US Weekly Weather Records Digest</title>
+<link rel="stylesheet" href="shared/site.css?v=2">
+<script src="shared/nav.js?v=2" data-title="US Weather Records" data-tag="weekly digest" defer></script>
 <style>
-  :root { color-scheme: light; }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font: 14.5px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    color: #1a1a1a;
-    background: #fafaf7;
-  }
+  /* Converted from the original light theme to the shared dark palette.
+     The five record pills stay semantically colour-coded, restepped as
+     bright ink on tinted panels so they read on a dark surface, and each
+     still carries its own word so the meaning is never colour-alone. */
+  body { margin: 0; font-size: 14.5px; }
   header {
-    padding: 18px 22px 10px;
-    border-bottom: 1px solid #e5e3dc;
-    background: #fff;
+    padding: 16px 22px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel2);
   }
-  h1 { font-size: 18px; margin: 0 0 4px; letter-spacing: -0.01em; }
-  .meta { color: #6a6a66; font-size: 12.5px; }
-  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 12px; }
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-  .pill.broken { background: #fde7e3; color: #8a2a17; }
-  .pill.near    { background: #fff3c4; color: #6b5300; }
-  .pill.context { background: #e3eef9; color: #1f4a78; }
-  .pill.storm   { background: #efe0f5; color: #5a2473; }
-  .pill.drought { background: #f4e6d0; color: #7a4a10; }
-  main { padding: 14px 22px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .meta { color: var(--sub); font-size: 12.5px; }
+  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 12px;
+    flex-wrap: wrap; color: var(--sub); }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 700; }
+  .pill.broken  { background: rgba(244,99,110,.16);  color: #f4636e; }
+  .pill.near    { background: rgba(255,196,71,.16);  color: #ffc447; }
+  .pill.context { background: rgba(77,184,255,.14);  color: #4db8ff; }
+  .pill.storm   { background: rgba(183,156,240,.16); color: #b79cf0; }
+  .pill.drought { background: rgba(224,163,92,.16);  color: #e0a35c; }
+  main { padding: 16px 22px 40px; max-width: 1080px; margin: 0 auto; }
   section.region, section.panel {
-    background: #fff;
-    border: 1px solid #ece9df;
-    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     padding: 14px 16px;
     margin-bottom: 14px;
   }
-  section.panel.storms  { border-left: 3px solid #8a3aa8; }
-  section.panel.drought { border-left: 3px solid #b07a2a; }
-  section.region h2 {
+  section.panel.storms  { border-left: 3px solid #b79cf0; }
+  section.panel.drought { border-left: 3px solid #e0a35c; }
+  section.region h2, section.panel h2 {
     font-size: 14px;
     margin: 0 0 6px;
-    color: #2a2a28;
+    color: var(--ink);
     display: flex;
     align-items: baseline;
     justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
   }
-  section.region h2 .states { font-size: 11.5px; color: #8a8a82; font-weight: 500; }
+  section h2 .states { font-size: 11.5px; color: var(--faint); font-weight: 500; }
   ul.records { list-style: none; padding: 0; margin: 6px 0 0; }
   ul.records li {
-    padding: 7px 0;
-    border-top: 1px dashed #eeece4;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
     display: flex;
     gap: 10px;
     align-items: flex-start;
   }
   ul.records li:first-child { border-top: none; }
-  ul.records .text { flex: 1; }
-  ul.records a { color: #1f4a78; text-decoration: none; border-bottom: 1px dotted #9ab; }
+  ul.records .text { flex: 1; color: var(--ink); }
+  ul.records a { color: var(--accent); text-decoration: none;
+    border-bottom: 1px dotted rgba(77,184,255,.5); }
   ul.records a:hover { border-bottom-style: solid; }
-  .empty { color: #8a8a82; font-style: italic; font-size: 13px; }
+  .empty { color: var(--faint); font-style: italic; font-size: 13px; }
   footer {
-    color: #8a8a82;
+    color: var(--faint);
     font-size: 11.5px;
-    padding: 14px 22px 24px;
-    border-top: 1px solid #ece9df;
+    padding: 14px 22px 30px;
+    border-top: 1px solid var(--line);
+    max-width: 1080px; margin: 0 auto;
   }
-  footer a { color: #1f4a78; }
+  footer a { color: var(--sub); }
   .toggle {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     margin-top: 10px;
-    padding: 4px 10px;
-    border: 1px solid #d6d3c8;
+    padding: 5px 11px;
+    border: 1px solid var(--line);
     border-radius: 14px;
-    background: #fff;
-    color: #2a2a28;
+    background: var(--panel);
+    color: var(--ink);
     font: inherit;
     font-size: 12px;
     cursor: pointer;
   }
-  .toggle:hover { border-color: #b2ad9e; }
-  .toggle[aria-pressed="true"] { background: #e3eef9; border-color: #b7cce4; color: #1f4a78; }
-  .toggle .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #c0bcae;
+  .toggle:hover { border-color: var(--sub); }
+  .toggle[aria-pressed="true"] {
+    background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
   }
-  .toggle[aria-pressed="true"] .dot { background: #1f4a78; }
+  .toggle .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+  .toggle[aria-pressed="true"] .dot { background: var(--accent); }
   body:not(.show-context) ul.records li:has(.pill.context) { display: none; }
   .prev {
     display: inline-block;
     margin-left: 6px;
     padding: 1px 7px;
     border-radius: 9px;
-    background: #f0ede4;
-    color: #6a6a66;
+    background: var(--panel2);
+    color: var(--sub);
     font-size: 11px;
     font-weight: 500;
     white-space: nowrap;
   }
-  .prev strong { color: #2a2a28; font-weight: 600; }
+  .prev strong { color: var(--ink); font-weight: 600; }
 </style>
 </head>
 <body>

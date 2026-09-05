@@ -4,18 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tree of Life Explorer 🌳</title>
+<link rel="stylesheet" href="shared/site.css?v=2">
+<script src="shared/nav.js?v=2" data-title="Tree of Life Explorer" data-tag="how everything connects" defer></script>
 <meta name="description" content="Explore the tree of life as an interactive phylogenetic tree. Zoom, pan, and tap branches to discover how all animals are connected.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌳</text></svg>">
 <style>
-  html, body { margin: 0; background: #08191d; overflow: hidden; height: 100%; }
+  html, body { margin: 0; background: #070b14; overflow: hidden; height: 100%; }
   #root { height: 100%; }
-  .boot { color: #7fa7a1; font-family: system-ui, sans-serif; text-align: center; padding: 80px 16px; }
+  .boot { color: #8fa3bf; font-family: system-ui, sans-serif; text-align: center; padding: 80px 16px; }
 </style>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
 </head>
-<body>
+<body class="app-shell">
 <div id="root"><div class="boot">Growing the tree of life…🌳</div></div>
 <script type="text/babel" data-presets="react">
 const { useState, useRef, useEffect, useCallback, useMemo } = React;
@@ -122,9 +124,9 @@ const TREE = {
 };
 
 const C = {
-  bg: "#08191d", panel: "#0e2b31", panel2: "#0c2429", line: "#5fb6a8",
-  accent: "#f2a65a", accent2: "#bfe89c", ink: "#eaf4ef", sub: "#7fa7a1",
-  chip: "#123339", chipOn: "#1c545d", border: "#1d4750",
+  bg: "#070b14", panel: "#101827", panel2: "#0b1220", line: "#4db8ff",
+  accent: "#ffc447", accent2: "#4db8ff", ink: "#e8eef7", sub: "#8fa3bf",
+  chip: "#0b1220", chipOn: "#1c2b45", border: "#1e2b41",
 };
 
 const GROUP_COLORS = {

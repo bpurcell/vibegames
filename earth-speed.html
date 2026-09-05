@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earth Speed — how fast are you actually moving?</title>
+<meta name="description" content="You feel still, but you are not. See how fast your spot on Earth is spinning on its axis, and how fast the whole planet is racing around the Sun.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
+<link rel="stylesheet" href="shared/site.css?v=2">
+<script src="shared/nav.js?v=2" data-title="Earth Speed" data-tag="you are not standing still" defer></script>
+<style>
+  /* Surfaces, ink and the nav all come from shared/site.css. These two are
+     just readable local names for the shared accents. */
+  :root {
+    --spin:      var(--accent);     /* rotation — blue */
+    --orbit:     var(--accent-2);   /* orbit    — gold */
+    --spin-dim:  var(--accent-dim);
+    --orbit-dim: var(--accent-2-dim);
+  }
+
+  /* ---------- layout ---------- */
+  .wrap { max-width:1080px; margin:0 auto; padding:26px 16px 60px; }
+  header.hero { margin-bottom:24px; }
+  h1 { font-size:clamp(1.7rem,4.4vw,2.5rem); margin:0 0 8px; letter-spacing:-.02em; line-height:1.1; }
+  .lede { color:var(--sub); max-width:64ch; margin:0; font-size:15px; }
+
+  .unitbar {
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin:22px 0 0; padding:12px 14px;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  }
+  .unitbar label { font-size:12px; color:var(--sub); font-weight:700;
+    text-transform:uppercase; letter-spacing:.08em; }
+  .unitbar select { width:auto; min-width:200px; }
+  .unitnote { font-size:12px; color:var(--faint); }
+
+  .totals {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;
+    margin:12px 0 8px;
+  }
+  .total {
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+  }
+  .total .k { font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--faint); font-weight:800; }
+  .total .v { font-size:26px; font-weight:700; margin-top:4px; letter-spacing:-.01em; }
+  .total .u { font-size:12.5px; color:var(--sub); }
+  .total.spin  { border-left:3px solid var(--spin); }
+  .total.orbit { border-left:3px solid var(--orbit); }
+  .total.both  { border-left:3px solid var(--ink); }
+
+  section.card {
+    background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:20px; margin-top:22px;
+  }
+  section.card.spin  { border-top:3px solid var(--spin); }
+  section.card.orbit { border-top:3px solid var(--orbit); }
+  .sec-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
+  .sec-num { font-size:11px; font-weight:800; letter-spacing:.14em; }
+  .spin .sec-num { color:var(--spin); }
+  .orbit .sec-num { color:var(--orbit); }
+  h2 { font-size:1.25rem; margin:0; letter-spacing:-.01em; }
+  .sec-sub { color:var(--sub); font-size:14px; margin:6px 0 16px; max-width:66ch; }
+
+  .split { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,320px); gap:22px; align-items:start; }
+  @media (max-width:760px){ .split { grid-template-columns:1fr; } }
+  .stage { display:flex; justify-content:center; }
+  .stage svg { width:100%; max-width:420px; height:auto; display:block; }
+
+  .readout { background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .readout + .readout { margin-top:10px; }
+  .big { font-size:32px; font-weight:700; letter-spacing:-.02em; line-height:1.05; }
+  .spin .big  { color:var(--spin); }
+  .orbit .big { color:var(--orbit); }
+  .sm { font-size:12.5px; color:var(--sub); }
+  .row { display:flex; justify-content:space-between; gap:10px; font-size:13px; padding:5px 0; }
+  .row + .row { border-top:1px solid var(--line); }
+  .row .lab { color:var(--sub); }
+  .row .val { font-weight:600; }
+
+  label.ctl { display:block; font-size:12px; color:var(--sub); margin:14px 0 5px; font-weight:600; }
+  input[type=range]{ width:100%; accent-color:var(--spin); }
+  .orbit input[type=range]{ accent-color:var(--orbit); }
+  select, .btn {
+    background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+    border-radius:8px; padding:8px 10px; font:inherit; font-size:13px; width:100%;
+  }
+  .btn { cursor:pointer; font-weight:600; }
+  .btn:hover { border-color:var(--spin); color:var(--spin); }
+  .btn.wide { margin-top:8px; }
+  .hint { font-size:11.5px; color:var(--faint); margin-top:6px; }
+
+  .bars { margin-top:12px; }
+  .bar { display:grid; grid-template-columns:76px 1fr auto; gap:9px; align-items:center;
+    font-size:12px; padding:3px 0; }
+  .bar .n { color:var(--sub); }
+  .bar .track { height:9px; background:var(--panel2); border-radius:5px; overflow:hidden; }
+  .bar .fill { height:100%; border-radius:5px; background:var(--faint); }
+  .bar.me .fill { background:var(--spin); }
+  .bar.me .n { color:var(--ink); font-weight:700; }
+  .bar .q { color:var(--sub); font-variant-numeric:tabular-nums; }
+
+  footer { color:var(--faint); font-size:12.5px; margin-top:34px; padding-top:18px;
+    border-top:1px solid var(--line); }
+  footer a { color:var(--sub); }
+  details summary { cursor:pointer; color:var(--sub); font-weight:600; }
+  details p { margin:8px 0; }
+
+  /* Nav responsiveness and reduced-motion now live in shared/site.css. */
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <h1>You feel perfectly still. You are moving <em>very</em> fast.</h1>
+    <p class="lede">
+      Right now you are riding two enormous motions at once: the planet turning under your feet,
+      and the whole planet swinging around the Sun. Neither one is something you can feel, because
+      you and the air and the ground are all going the same speed. Here is what those speeds
+      actually are.
+    </p>
+  </header>
+
+  <div class="unitbar">
+    <label for="unitSel">Show speeds in</label>
+    <select id="unitSel"></select>
+    <span class="unitnote" id="unitNote"></span>
+  </div>
+
+  <div class="totals">
+    <div class="total spin">
+      <div class="k">Spinning on its axis</div>
+      <div class="v mono" id="tSpin">—</div>
+      <div class="u" id="tSpinAlt">—</div>
+    </div>
+    <div class="total orbit">
+      <div class="k">Orbiting the Sun</div>
+      <div class="v mono" id="tOrbit">—</div>
+      <div class="u" id="tOrbitAlt">—</div>
+    </div>
+    <div class="total both">
+      <div class="k">Travelled since you opened this page</div>
+      <div class="v mono" id="tOdo">—</div>
+      <div class="u" id="tOdoAlt">mostly orbital — the spin is a rounding error</div>
+    </div>
+  </div>
+
+  <!-- ============================ SPIN ============================ -->
+  <section class="card spin">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2>Your spot, going around the axis</h2>
+    </div>
+    <p class="sec-sub">
+      Earth turns once every 23 h 56 m 4 s. Everyone completes that circle in the same time — but
+      the circle is a very different size depending on how far you are from the axis. At the
+      equator you sweep out 40,000 km. Standing exactly on a pole, you just pivot.
+    </p>
+
+    <div class="split">
+      <div class="stage">
+        <svg id="globe" viewBox="-170 -170 340 340" role="img" aria-labelledby="globeTitle">
+          <title id="globeTitle">A globe with latitude rings, showing your position sweeping around its circle of latitude</title>
+          <defs>
+            <radialGradient id="gEarth" cx="35%" cy="30%">
+              <stop offset="0%"  stop-color="#1d3a5c"/>
+              <stop offset="70%" stop-color="#112239"/>
+              <stop offset="100%" stop-color="#0a1526"/>
+            </radialGradient>
+            <radialGradient id="gGlow" cx="50%" cy="50%">
+              <stop offset="60%" stop-color="rgba(77,184,255,0)"/>
+              <stop offset="100%" stop-color="rgba(77,184,255,.20)"/>
+            </radialGradient>
+          </defs>
+          <circle cx="0" cy="0" r="148" fill="url(#gGlow)"/>
+          <circle cx="0" cy="0" r="130" fill="url(#gEarth)" stroke="#24415f" stroke-width="1"/>
+          <g id="ringsBack"></g>
+          <line id="axis" stroke="#3a5madd" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>
+          <g id="ringsFront"></g>
+          <g id="myRing"></g>
+          <g id="pin"></g>
+        </svg>
+      </div>
+
+      <div>
+        <div class="readout">
+          <div class="big mono" id="spinKmh">—</div>
+          <div class="sm" id="spinMph">—</div>
+          <div class="sm" style="margin-top:8px" id="spinCompare">—</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span class="lab">Your latitude</span><span class="val mono" id="latOut">—</span></div>
+          <div class="row"><span class="lab">Circle you trace</span><span class="val mono" id="circOut">—</span></div>
+          <div class="row"><span class="lab">Distance from axis</span><span class="val mono" id="axisOut">—</span></div>
+          <div class="row"><span class="lab">One full turn</span><span class="val mono">23 h 56 m 04 s</span></div>
+        </div>
+
+        <label class="ctl" for="latSlider">Drag to change latitude — watch the speed fall away</label>
+        <input type="range" id="latSlider" min="-90" max="90" step="0.5" value="40.7">
+
+        <label class="ctl" for="citySel">Or jump to a place</label>
+        <select id="citySel"></select>
+
+        <button class="btn wide" id="geoBtn">📍 Use my actual location</button>
+        <div class="hint" id="geoHint">Your location is used in the browser only — nothing is sent anywhere.</div>
+
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ ORBIT ============================ -->
+  <section class="card orbit">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2>The whole planet, going around the Sun</h2>
+    </div>
+    <p class="sec-sub">
+      This one is the same for everybody, and it is roughly 64 times faster than the spin. The
+      orbit below is drawn true to shape, which is the surprise: it really is that close to a
+      perfect circle. The Sun is off-centre by 2.5 million km — a huge number that still amounts
+      to about two pixels here. Earth speeds up when it is closer in and slows down when it is
+      further out, and that variation is far easier to see on the graph than in the picture.
+    </p>
+
+    <div class="split">
+      <div class="stage">
+        <svg id="orbitSvg" viewBox="-170 -150 340 300" role="img" aria-labelledby="orbTitle">
+          <title id="orbTitle">Earth's orbit around the Sun, with the Sun slightly off-centre and Earth at today's position</title>
+          <defs>
+            <radialGradient id="gSun" cx="50%" cy="50%">
+              <stop offset="0%"   stop-color="#fff3d0"/>
+              <stop offset="45%"  stop-color="#ffc447"/>
+              <stop offset="100%" stop-color="rgba(255,196,71,0)"/>
+            </radialGradient>
+          </defs>
+          <g id="orbTicks"></g>
+          <ellipse id="orbPath" fill="none" stroke="#2c3d59" stroke-width="1.2"/>
+          <g id="orbMarks"></g>
+          <circle id="sun" r="34" fill="url(#gSun)"/>
+          <circle id="sunCore" r="9" fill="#ffd77a"/>
+          <line id="radius" stroke="var(--orbit)" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+          <g id="earth"></g>
+        </svg>
+      </div>
+
+      <div>
+        <div class="readout">
+          <div class="big mono" id="orbKmh">—</div>
+          <div class="sm" id="orbMph">—</div>
+          <div class="sm" style="margin-top:8px" id="orbCompare">—</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span class="lab">Date shown</span><span class="val mono" id="dateOut">—</span></div>
+          <div class="row"><span class="lab">Distance to Sun</span><span class="val mono" id="rOut">—</span></div>
+          <div class="row"><span class="lab">Sunlight travel time</span><span class="val mono" id="lightOut">—</span></div>
+          <div class="row"><span class="lab">Nearest / furthest</span><span class="val mono">147.1M / 152.1M km</span></div>
+          <div class="row"><span class="lab">One full orbit</span><span class="val mono">365 d 6 h 9 m</span></div>
+        </div>
+
+        <label class="ctl" for="dateSlider">Scrub through the year</label>
+        <input type="range" id="dateSlider" min="0" max="364" step="1" value="0">
+        <button class="btn wide" id="todayBtn">↺ Back to today</button>
+
+        <div class="readout" style="margin-top:12px">
+          <div class="sm" style="margin-bottom:6px">Orbital speed across the year</div>
+          <svg id="speedCurve" viewBox="0 0 280 96" style="width:100%;height:auto;display:block"
+               role="img" aria-label="Line chart of Earth's orbital speed over the year, fastest in early January and slowest in early July"></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <details>
+      <summary>How these numbers are worked out</summary>
+      <p><strong>Spin.</strong> Earth is a slightly squashed sphere, so the distance from the spin
+      axis at your latitude uses the WGS-84 ellipsoid rather than a plain sphere. Speed is that
+      distance times 2π, divided by the <em>sidereal</em> day of 86,164.09 s — the time to turn once
+      relative to the stars, which is about 4 minutes shorter than a solar day.</p>
+      <p><strong>Orbit.</strong> Position comes from solving Kepler's equation for the date, using a
+      semi-major axis of 1.4960 × 10<sup>8</sup> km and an eccentricity of 0.0167. Speed then comes
+      from the vis-viva equation, <span class="mono">v = √(GM(2/r − 1/a))</span>. That gives
+      30.29 km/s at perihelion in early January and 29.29 km/s at aphelion in early July.</p>
+      <p><strong>Honest caveats.</strong> The orbit drawing is true to shape — it really is that
+      close to a circle, and the Sun really is that slightly off-centre. The globe and orbit
+      animations are hugely sped up (the factors are shown on screen), but the distance odometer at
+      the top counts real elapsed time at real speed. Both figures ignore the Solar System's own
+      motion around the galaxy, which is another 720,000 km/h or so on top.</p>
+    </details>
+    <p style="margin-top:14px">Built by prompting, not typing. <a href="index.html">Back to all projects</a></p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ============================ constants ============================ */
+const RAD = Math.PI / 180;
+const A_EQ = 6378.137;                 // km, WGS-84 equatorial radius
+const FLAT = 1 / 298.257223563;
+const E2   = FLAT * (2 - FLAT);
+const SIDEREAL_DAY = 86164.0905;       // s
+
+const GM_SUN = 1.32712440018e11;       // km^3/s^2
+const A_ORB  = 1.49598261e8;           // km, semi-major axis
+const ECC    = 0.0167086;
+const YEAR_D = 365.256363004;          // days
+const C_LIGHT = 299792.458;            // km/s
+
+// Perihelion 2026: 3 January, ~17:16 UTC.
+const PERIHELION = Date.UTC(2026, 0, 3, 17, 16);
+
+const CITIES = [
+  ["Quito, Ecuador", -0.18], ["Singapore", 1.35], ["Nairobi, Kenya", -1.29],
+  ["Mumbai, India", 19.08], ["Mexico City", 19.43], ["Honolulu", 21.31],
+  ["Cairo, Egypt", 30.04], ["Los Angeles", 34.05], ["Tokyo", 35.68],
+  ["Beijing", 39.90], ["New York", 40.71], ["Madrid", 40.42],
+  ["Chicago", 41.88], ["Rome", 41.90], ["Toronto", 43.65],
+  ["Paris", 48.86], ["Vancouver", 49.28], ["London", 51.51],
+  ["Berlin", 52.52], ["Moscow", 55.76], ["Stockholm", 59.33],
+  ["Anchorage", 61.22], ["Reykjavík", 64.15], ["Tromsø, Norway", 69.65],
+  ["Longyearbyen, Svalbard", 78.22], ["North Pole", 90],
+  ["Sydney", -33.87], ["Cape Town", -33.92], ["Buenos Aires", -34.60],
+  ["Ushuaia, Argentina", -54.80], ["McMurdo Station", -77.85], ["South Pole", -90],
+];
+
+/* ============================ physics ============================ */
+// Distance from the spin axis at a geodetic latitude, on the WGS-84 ellipsoid.
+function axisDistance(latDeg) {
+  const p = latDeg * RAD;
+  const N = A_EQ / Math.sqrt(1 - E2 * Math.sin(p) ** 2);
+  return N * Math.cos(p);
+}
+function spinSpeed(latDeg) {                    // km/s
+  return 2 * Math.PI * axisDistance(latDeg) / SIDEREAL_DAY;
+}
+
+function eccentricAnomaly(M) {
+  let E = M;
+  for (let i = 0; i < 12; i++) {
+    const d = (E - ECC * Math.sin(E) - M) / (1 - ECC * Math.cos(E));
+    E -= d;
+    if (Math.abs(d) < 1e-12) break;
+  }
+  return E;
+}
+// Earth's distance, speed and angle for a given moment.
+function orbitState(ms) {
+  const days = (ms - PERIHELION) / 86400000;
+  const M = 2 * Math.PI * (days / YEAR_D);
+  const E = eccentricAnomaly(M);
+  const r = A_ORB * (1 - ECC * Math.cos(E));
+  const v = Math.sqrt(GM_SUN * (2 / r - 1 / A_ORB));
+  // True anomaly: angle from perihelion, measured at the Sun.
+  const nu = 2 * Math.atan2(
+    Math.sqrt(1 + ECC) * Math.sin(E / 2),
+    Math.sqrt(1 - ECC) * Math.cos(E / 2)
+  );
+  return { r, v, nu };
+}
+
+/* ============================ formatting ============================ */
+const KMH = (kms) => kms * 3600;
+const MPH = (kmh) => kmh * 0.621371;
+const fmt = (n, d = 0) => n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+
+/* ============================ speed units ============================
+ * Everything converts from metres per second. `dist` picks the matching
+ * length unit so a page set to mph doesn't quote distances in km.
+ *
+ * A note on "steps per mile": that is a fixed number (~2,000 steps in a
+ * mile) and does not change with how fast you move, so it cannot express a
+ * speed. Steps per second is the equivalent that does.
+ * ==================================================================== */
+const UNITS = [
+  { id:"mph",     name:"Miles per hour",              to: ms => ms * 2.236936, unit:"mph",
+    dist: km => km * 0.621371, distUnit:"miles" },
+  { id:"kph",     name:"Kilometres per hour",         to: ms => ms * 3.6,      unit:"km/h" },
+  { id:"ms",      name:"Metres per second",           to: ms => ms,            unit:"m/s" },
+  { id:"knots",   name:"Knots",                       to: ms => ms * 1.943844, unit:"knots",
+    dist: km => km * 0.539957, distUnit:"nautical miles" },
+  { id:"mach",    name:"Mach — speed of sound",       to: ms => ms / 343,      unit:"× sound",
+    note:"Mach 1 is 343 m/s, the speed of sound in air at 20 °C." },
+  { id:"steps",   name:"Steps per second",            to: ms => ms / 0.762,    unit:"steps/sec",
+    note:"Assumes a 0.76 m walking stride — roughly 2,000 steps to the mile." },
+  { id:"buses",   name:"Double-decker buses / second",to: ms => ms / 11.23,    unit:"buses/sec",
+    note:"A London Routemaster is 11.23 m nose to tail." },
+  { id:"pitches", name:"Football pitches / second",   to: ms => ms / 105,      unit:"pitches/sec",
+    note:"A full-size pitch is 105 m long." },
+  { id:"whales",  name:"Blue whales / second",        to: ms => ms / 24,       unit:"whales/sec",
+    note:"An adult blue whale is about 24 m — the largest animal that has ever lived." },
+  { id:"bananas", name:"Bananas per second",          to: ms => ms / 0.178,    unit:"bananas/sec",
+    note:"A banana is about 17.8 cm. This is a terrible unit and that is the point." },
+  { id:"bolt",    name:"× Usain Bolt, flat out",      to: ms => ms / 12.42,    unit:"× Bolt",
+    note:"Bolt's peak was 12.42 m/s during his 2009 world record." },
+  { id:"cheetah", name:"× a sprinting cheetah",       to: ms => ms / 33.3,     unit:"× cheetah",
+    note:"A cheetah tops out near 120 km/h, and only for a few seconds." },
+  { id:"jet",     name:"× a cruising airliner",       to: ms => ms / 250,      unit:"× jet",
+    note:"A 747 cruises around 900 km/h." },
+];
+
+let unit = UNITS[0];
+
+/* Pick a sensible number of decimals for whatever magnitude lands here —
+   470 steps/sec and 0.03 whales/sec both have to read well. */
+function fmtAuto(n) {
+  const a = Math.abs(n);
+  if (a === 0) return "0";
+  if (a >= 100)   return fmt(n, 0);
+  if (a >= 10)    return fmt(n, 1);
+  if (a >= 1)     return fmt(n, 2);
+  if (a >= 0.01)  return fmt(n, 3);
+  return n.toExponential(1);
+}
+
+/* Speed in km/s, rendered in the chosen unit. */
+const speedText = (kms) => fmtAuto(unit.to(kms * 1000)) + " " + unit.unit;
+
+/* The canonical figures, always shown underneath so switching to bananas
+   never hides the real number. */
+const speedCanonical = (kms) =>
+  fmt(KMH(kms)) + " km/h  ·  " + fmt(MPH(KMH(kms))) + " mph";
+
+/* Distance in km, rendered in the unit family the user picked. */
+function distText(km) {
+  if (unit.dist) return fmt(unit.dist(km)) + " " + unit.distUnit;
+  return fmt(km) + " km";
+}
+const el = (id) => document.getElementById(id);
+
+function svg(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+
+/* ============================ state ============================ */
+// Snap to UTC midnight so the scrubber and the "today" button agree; orbital
+// speed varies far too slowly for the time of day to matter.
+function utcMidnightToday() {
+  const n = new Date();
+  return new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate()));
+}
+
+let lat = 40.71;
+let viewDate = utcMidnightToday();
+const startedAt = performance.now();
+let odoKm = 0, lastTick = startedAt;
+
+/* ============================ globe ============================ */
+const R = 130, TILT = 24 * RAD;
+const CT = Math.cos(TILT), ST = Math.sin(TILT);
+
+// Orthographic projection of a point on the globe, tilted so the north pole
+// leans toward the viewer. Returns screen coords plus whether it is on the
+// near face.
+function project(latDeg, lonDeg) {
+  const p = latDeg * RAD, l = lonDeg * RAD;
+  return {
+    x: R * Math.cos(p) * Math.cos(l),
+    y: -R * Math.sin(p) * CT + R * Math.cos(p) * ST * Math.sin(l),
+    front: Math.cos(p) * Math.sin(l) * CT + Math.sin(p) * ST > 0,
+  };
+}
+// A whole circle of latitude projects to an ellipse — that is what makes the
+// "small circle near the pole, big circle at the equator" idea visible at a glance.
+function ringGeom(latDeg) {
+  const p = latDeg * RAD;
+  return { cy: -R * Math.sin(p) * CT, rx: R * Math.cos(p), ry: R * Math.cos(p) * ST };
+}
+
+function drawStaticRings() {
+  const back = el("ringsBack"), front = el("ringsFront");
+  back.innerHTML = ""; front.innerHTML = "";
+  for (let L = -75; L <= 75; L += 15) {
+    const g = ringGeom(L);
+    const isEq = L === 0;
+    const e = svg("ellipse", {
+      cx: 0, cy: g.cy, rx: g.rx, ry: g.ry, fill: "none",
+      stroke: isEq ? "#3f6d99" : "#24415f",
+      "stroke-width": isEq ? 1.3 : 0.9,
+      opacity: isEq ? 0.95 : 0.55,
+    });
+    front.appendChild(e);
+  }
+  const ax = el("axis");
+  ax.setAttribute("x1", 0); ax.setAttribute("y1", -R * CT - 16);
+  ax.setAttribute("x2", 0); ax.setAttribute("y2",  R * CT + 16);
+  ax.setAttribute("stroke", "#3a5d8a");
+}
+
+function drawMyRing() {
+  const g = ringGeom(lat);
+  const wrap = el("myRing");
+  wrap.innerHTML = "";
+  wrap.appendChild(svg("ellipse", {
+    cx: 0, cy: g.cy, rx: Math.max(g.rx, 0.4), ry: Math.max(g.ry, 0.2),
+    fill: "none", stroke: "#4db8ff", "stroke-width": 2.4, opacity: 0.95,
+  }));
+}
+
+function drawPin(lonDeg) {
+  const p = project(lat, lonDeg);
+  const wrap = el("pin");
+  wrap.innerHTML = "";
+  // A short motion trail, so the direction and pace of travel are readable.
+  for (let i = 1; i <= 7; i++) {
+    const t = project(lat, lonDeg - i * 5);
+    if (!t.front) continue;
+    wrap.appendChild(svg("circle", {
+      cx: t.x, cy: t.y, r: 2.6 - i * 0.25,
+      fill: "#4db8ff", opacity: 0.34 - i * 0.04,
+    }));
+  }
+  wrap.appendChild(svg("circle", {
+    cx: p.x, cy: p.y, r: 6.5, fill: "none",
+    stroke: "#4db8ff", "stroke-width": 1.4, opacity: p.front ? 0.55 : 0.2,
+  }));
+  wrap.appendChild(svg("circle", {
+    cx: p.x, cy: p.y, r: 4, fill: "#4db8ff", opacity: p.front ? 1 : 0.32,
+  }));
+}
+
+/* ============================ orbit drawing ============================ */
+const ORB_A = 128;                       // px, semi-major axis on screen
+const ORB_B = ORB_A * Math.sqrt(1 - ECC * ECC);
+const ORB_FOCUS = ORB_A * ECC;           // Sun's offset from the ellipse centre
+
+function drawOrbitFrame() {
+  // Ellipse centred left of the Sun by exactly a*e, so the Sun sits at a focus.
+  const path = el("orbPath");
+  path.setAttribute("cx", -ORB_FOCUS);
+  path.setAttribute("cy", 0);
+  path.setAttribute("rx", ORB_A);
+  path.setAttribute("ry", ORB_B);
+
+  const marks = el("orbMarks");
+  marks.innerHTML = "";
+  const peri = { x: ORB_A - ORB_FOCUS, y: 0 };
+  const apo  = { x: -ORB_A - ORB_FOCUS, y: 0 };
+  [[peri, "perihelion", "3 Jan"], [apo, "aphelion", "4 Jul"]].forEach(([pt, name, when]) => {
+    marks.appendChild(svg("circle", { cx: pt.x, cy: pt.y, r: 2.5, fill: "#7d6432" }));
+    const t = svg("text", {
+      x: pt.x, y: pt.y - 12, "text-anchor": pt.x > 0 ? "end" : "start",
+      "font-size": 8.5, fill: "#8a7343",
+    });
+    t.textContent = name + " · " + when;
+    marks.appendChild(t);
+  });
+
+  // Month ticks around the orbit, so the date has somewhere to sit.
+  const ticks = el("orbTicks");
+  ticks.innerHTML = "";
+  for (let m = 0; m < 12; m++) {
+    const d = Date.UTC(2026, m, 1);
+    const { nu } = orbitState(d);
+    const x = -ORB_FOCUS + ORB_A * Math.cos(nu);
+    const y = ORB_B * Math.sin(nu);
+    const k = 1.06;
+    ticks.appendChild(svg("line", {
+      x1: x, y1: y, x2: x * k, y2: y * k,
+      stroke: "#26354d", "stroke-width": 1,
+    }));
+  }
+}
+
+function drawEarth(state) {
+  const x = -ORB_FOCUS + ORB_A * Math.cos(state.nu);
+  const y = ORB_B * Math.sin(state.nu);
+  const g = el("earth");
+  g.innerHTML = "";
+  g.appendChild(svg("circle", { cx: x, cy: y, r: 11, fill: "rgba(77,184,255,.18)" }));
+  g.appendChild(svg("circle", { cx: x, cy: y, r: 6, fill: "#4db8ff" }));
+  const r = el("radius");
+  r.setAttribute("x1", 0); r.setAttribute("y1", 0);
+  r.setAttribute("x2", x); r.setAttribute("y2", y);
+}
+
+function drawSpeedCurve(todayIdx) {
+  const s = el("speedCurve");
+  s.innerHTML = "";
+  const W = 280, H = 96, PADL = 34, PADR = 6, PADT = 10, PADB = 18;
+  const yr = new Date().getUTCFullYear();
+  const pts = [];
+  for (let d = 0; d <= 364; d++) {
+    pts.push(orbitState(Date.UTC(yr, 0, 1 + d)).v);
+  }
+  const lo = Math.min(...pts), hi = Math.max(...pts);
+  const X = (i) => PADL + (i / 364) * (W - PADL - PADR);
+  const Y = (v) => PADT + (1 - (v - lo) / (hi - lo)) * (H - PADT - PADB);
+
+  // Axis labels make the non-zero baseline explicit rather than misleading,
+  // and follow the chosen unit — leaving one chart in km/s while the rest of
+  // the page is in mph is exactly the confusion the picker exists to avoid.
+  [[hi, Y(hi)], [lo, Y(lo)]].forEach(([v, y]) => {
+    s.appendChild(svg("line", { x1: PADL, y1: y, x2: W - PADR, y2: y,
+      stroke: "#1e2b41", "stroke-width": 1 }));
+    const t = svg("text", { x: PADL - 5, y: y + 3, "text-anchor": "end",
+      "font-size": 8, fill: "#5b6f8d" });
+    t.textContent = fmtAuto(unit.to(v * 1000));
+    s.appendChild(t);
+  });
+  const ul = svg("text", { x: PADL - 5, y: PADT - 2, "text-anchor": "end",
+    "font-size": 7.5, fill: "#5b6f8d" });
+  ul.textContent = unit.unit;
+  s.appendChild(ul);
+
+  let d = "";
+  pts.forEach((v, i) => { d += (i ? "L" : "M") + X(i).toFixed(2) + "," + Y(v).toFixed(2); });
+  s.appendChild(svg("path", { d, fill: "none", stroke: "#ffc447", "stroke-width": 1.8 }));
+
+  ["Jan", "Apr", "Jul", "Oct"].forEach((m, i) => {
+    const idx = [0, 90, 181, 273][i];
+    const t = svg("text", { x: X(idx), y: H - 5, "text-anchor": "middle",
+      "font-size": 8, fill: "#5b6f8d" });
+    t.textContent = m;
+    s.appendChild(t);
+  });
+
+  const tx = X(todayIdx), ty = Y(pts[todayIdx]);
+  s.appendChild(svg("line", { x1: tx, y1: PADT, x2: tx, y2: H - PADB,
+    stroke: "#ffc447", "stroke-width": 1, "stroke-dasharray": "2 3", opacity: .6 }));
+  s.appendChild(svg("circle", { cx: tx, cy: ty, r: 3.2, fill: "#ffc447",
+    stroke: "#101827", "stroke-width": 1.5 }));
+}
+
+/* ============================ comparison bars ============================ */
+function drawBars() {
+  const mine = spinSpeed(lat);
+  const rows = [
+    ["Equator", spinSpeed(0)],
+    ["You", mine],
+    ["45°", spinSpeed(45)],
+    ["Arctic circle", spinSpeed(66.5)],
+    ["Pole", spinSpeed(90)],
+  ];
+  const max = spinSpeed(0);
+  const box = el("bars");
+  box.innerHTML = "";
+  rows.forEach(([name, v]) => {
+    const isMe = name === "You";
+    const row = document.createElement("div");
+    row.className = "bar" + (isMe ? " me" : "");
+    row.innerHTML =
+      '<span class="n"></span>' +
+      '<span class="track"><span class="fill"></span></span>' +
+      '<span class="q mono"></span>';
+    row.querySelector(".n").textContent = name;
+    row.querySelector(".fill").style.width = (max ? (v / max) * 100 : 0).toFixed(1) + "%";
+    row.querySelector(".q").textContent = speedText(v);
+    box.appendChild(row);
+  });
+}
+
+/* ============================ updates ============================ */
+function updateSpin() {
+  const v = spinSpeed(lat);
+  const kmh = KMH(v);
+  el("spinKmh").textContent = speedText(v);
+  el("spinMph").textContent = speedCanonical(v);
+  el("tSpin").textContent = speedText(v);
+  el("tSpinAlt").textContent = speedCanonical(v);
+
+  const jet = kmh / 900, sound = kmh / 1235;
+  el("spinCompare").textContent =
+    kmh < 1
+      ? "Essentially zero — on the axis itself you simply pivot on the spot."
+      : sound >= 1
+        ? `About ${sound.toFixed(2)}× the speed of sound, or ${jet.toFixed(1)}× a cruising airliner.`
+        : `About ${(sound * 100).toFixed(0)}% of the speed of sound, or ${jet.toFixed(1)}× a cruising airliner.`;
+
+  el("latOut").textContent = Math.abs(lat).toFixed(2) + "° " + (lat >= 0 ? "N" : "S");
+  el("circOut").textContent = distText(2 * Math.PI * axisDistance(lat));
+  el("axisOut").textContent = distText(axisDistance(lat));
+
+  drawMyRing();
+  drawBars();
+}
+
+function updateOrbit() {
+  const st = orbitState(viewDate.getTime());
+  el("orbKmh").textContent = speedText(st.v);
+  el("orbMph").textContent = speedCanonical(st.v);
+  el("tOrbit").textContent = speedText(st.v);
+  el("tOrbitAlt").textContent = speedCanonical(st.v);
+
+  const ratio = st.v / spinSpeed(lat);
+  el("orbCompare").textContent =
+    `Earth covers its own diameter in about ${(12742 / st.v / 60).toFixed(1)} minutes` +
+    (isFinite(ratio) && ratio > 0 ? `, and this is ${ratio.toFixed(0)}× your spin speed.` : ".");
+
+  // viewDate is always a UTC midnight, so format it in UTC too. Formatting a
+  // UTC-constructed date in local time renders the day before for anyone west
+  // of Greenwich.
+  el("dateOut").textContent = viewDate.toLocaleDateString(undefined,
+    { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+  el("rOut").textContent = distText(st.r);
+  el("lightOut").textContent = (st.r / C_LIGHT / 60).toFixed(2) + " minutes";
+
+  drawEarth(st);
+  const start = Date.UTC(viewDate.getUTCFullYear(), 0, 1);
+  const idx = Math.min(364, Math.max(0,
+    Math.floor((Date.UTC(viewDate.getUTCFullYear(), viewDate.getUTCMonth(), viewDate.getUTCDate()) - start) / 86400000)));
+  drawSpeedCurve(idx);
+}
+
+/* ============================ animation ============================ */
+const SPIN_PERIOD = 14;        // seconds on screen for one full rotation
+const ORBIT_PERIOD = 48;       // seconds on screen for one full orbit
+let spinPhase = 0;
+
+function frame(now) {
+  const dt = (now - lastTick) / 1000;
+  lastTick = now;
+
+  spinPhase = (spinPhase + (360 / SPIN_PERIOD) * dt) % 360;
+  drawPin(spinPhase);
+
+  // Odometer counts real elapsed time at real speed — not the sped-up animation.
+  const st = orbitState(Date.now());
+  odoKm += (st.v + spinSpeed(lat)) * dt;
+  el("tOdo").textContent = distText(odoKm);
+
+  requestAnimationFrame(frame);
+}
+
+/* ============================ wiring ============================ */
+function setLat(v, syncSlider) {
+  lat = Math.max(-90, Math.min(90, v));
+  if (syncSlider) el("latSlider").value = lat;
+  updateSpin();
+  updateOrbit();   // the "× your spin speed" line depends on latitude
+}
+
+// Select the unit without redrawing — used during init, before the static
+// globe and orbit frames exist.
+function applyUnit(id) {
+  unit = UNITS.find((u) => u.id === id) || UNITS[0];
+  el("unitNote").textContent = unit.note || "";
+  try { localStorage.setItem("earthspeed-unit", unit.id); } catch (err) { /* private mode */ }
+}
+
+function setUnit(id) {
+  applyUnit(id);
+  updateSpin();
+  updateOrbit();
+}
+
+(function init() {
+  const us = el("unitSel");
+  UNITS.forEach((u) => {
+    const o = document.createElement("option");
+    o.value = u.id;
+    o.textContent = u.name;
+    us.appendChild(o);
+  });
+  us.addEventListener("change", () => setUnit(us.value));
+  let saved = "mph";
+  try { saved = localStorage.getItem("earthspeed-unit") || "mph"; } catch (err) { /* private mode */ }
+  applyUnit(saved);
+  us.value = unit.id;
+
+  const sel = el("citySel");
+  const blank = document.createElement("option");
+  blank.textContent = "— pick a city —";
+  blank.value = "";
+  sel.appendChild(blank);
+  CITIES.slice().sort((a, b) => b[1] - a[1]).forEach(([name, la]) => {
+    const o = document.createElement("option");
+    o.value = la;
+    o.textContent = `${name}  (${Math.abs(la).toFixed(1)}° ${la >= 0 ? "N" : "S"})`;
+    sel.appendChild(o);
+  });
+  sel.addEventListener("change", () => {
+    if (sel.value !== "") setLat(parseFloat(sel.value), true);
+  });
+
+  el("latSlider").addEventListener("input", (e) => {
+    el("citySel").value = "";
+    setLat(parseFloat(e.target.value), false);
+  });
+
+  el("geoBtn").addEventListener("click", () => {
+    const hint = el("geoHint");
+    if (!navigator.geolocation) {
+      hint.textContent = "This browser does not offer location — use the slider or the city list.";
+      return;
+    }
+    hint.textContent = "Asking your browser…";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        el("citySel").value = "";
+        setLat(pos.coords.latitude, true);
+        hint.textContent = "Using your location. It stayed in the browser — nothing was sent anywhere.";
+      },
+      (err) => {
+        hint.textContent = err.code === err.PERMISSION_DENIED
+          ? "No problem — location denied. Use the slider or the city list instead."
+          : "Could not get a fix. Use the slider or the city list instead.";
+      },
+      { timeout: 10000, maximumAge: 600000 }
+    );
+  });
+
+  const ds = el("dateSlider");
+  const yr = new Date().getUTCFullYear();
+  const dayOfYear = Math.floor((Date.now() - Date.UTC(yr, 0, 1)) / 86400000);
+  ds.value = Math.min(364, Math.max(0, dayOfYear));
+  ds.addEventListener("input", () => {
+    viewDate = new Date(Date.UTC(yr, 0, 1 + parseInt(ds.value, 10)));
+    updateOrbit();
+  });
+  el("todayBtn").addEventListener("click", () => {
+    viewDate = utcMidnightToday();
+    ds.value = Math.min(364, Math.max(0,
+      Math.round((viewDate.getTime() - Date.UTC(yr, 0, 1)) / 86400000)));
+    updateOrbit();
+  });
+
+  drawStaticRings();
+  drawOrbitFrame();
+  setLat(lat, true);
+  requestAnimationFrame((t) => { lastTick = t; frame(t); });
+})();
+</script>
+</body>
+</html>
