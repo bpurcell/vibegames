@@ -43,7 +43,7 @@
   var EYE = 1.62;            // camera height
   var NEAR = 1.4, FAR = 52;
   var PATH = 2.5;            // half-width of the clear path
-  var TREES = 34, SPECKS = 120, WISPS = 26;
+  var TREES = 46, SPECKS = 120, WISPS = 26;
 
   var S = {
     mode: "title",
@@ -92,8 +92,8 @@
 
   // How grey a thing is at this distance. Near black, far mist.
   function fogShade(z) {
-    var t = clamp(Math.pow(clamp(z / FAR, 0, 1), 0.75), 0, 1);
-    var v = Math.round(lerp(4, 196, t));
+    var t = clamp(Math.pow(clamp(z / FAR, 0, 1), 1.35), 0, 1);
+    var v = Math.round(lerp(0, 168, t));
     return "rgb(" + v + "," + v + "," + v + ")";
   }
   function fogAlpha(z) { return clamp((FAR - z) / 10, 0, 1); }
@@ -103,8 +103,20 @@
   // A tree is a list of line segments in local metres, grouped by how deep
   // in the branching they are so each group can be stroked in one path at
   // one width — 4 stroke calls a tree instead of thirty.
+  var TREE_CLASSES = [
+    { p: 0.14, lo: 3.4,  hi: 5.5,  thick: 0.040 },   // scrub
+    { p: 0.46, lo: 7.0,  hi: 11.0, thick: 0.044 },   // the usual run
+    { p: 0.28, lo: 11.0, hi: 15.5, thick: 0.050 },   // tall
+    { p: 0.12, lo: 15.5, hi: 21.0, thick: 0.060 }    // elders
+  ];
+
   function growTree() {
-    var height = 5.5 + Math.random() * 4;
+    var roll = Math.random(), acc = 0, cls = TREE_CLASSES[1];
+    for (var ci = 0; ci < TREE_CLASSES.length; ci++) {
+      acc += TREE_CLASSES[ci].p;
+      if (roll <= acc) { cls = TREE_CLASSES[ci]; break; }
+    }
+    var height = cls.lo + Math.random() * (cls.hi - cls.lo);
     var levels = [[], [], [], []];
     (function branch(x, y, ang, len, depth) {
       var x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
@@ -117,7 +129,11 @@
                len * (0.58 + Math.random() * 0.22), depth + 1);
       }
     })(0, 0, Math.PI / -2 + (Math.random() - 0.5) * 0.24, height * 0.46, 0);
-    return { levels: levels, w: 0.20 + Math.random() * 0.16, height: height };
+    return {
+      levels: levels,
+      w: height * cls.thick * (0.82 + Math.random() * 0.45),
+      height: height
+    };
   }
 
   function placeTree(t, z) {
@@ -674,8 +690,11 @@
       var s = scaleAt(sp.z);
       var r = sp.r * s;
       if (r < 0.4) return;
-      ctx.globalAlpha = fogAlpha(sp.z) * 0.7;
-      ctx.fillStyle = fogShade(sp.z);
+      // Litter gets its own mid-grey rather than the trees' near-black:
+      // at tree darkness these read as holes punched in the trail.
+      ctx.globalAlpha = fogAlpha(sp.z) * 0.38;
+      var lv = Math.round(lerp(70, 150, clamp(sp.z / FAR, 0, 1)));
+      ctx.fillStyle = "rgb(" + lv + "," + lv + "," + lv + ")";
       ctx.beginPath();
       ctx.ellipse(cx + sp.x * s, sy(0, sp.z, s), r * 1.6, r * 0.5, 0, 0, 6.284);
       ctx.fill();
