@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Spooky Forest 2" />
+<meta name="theme-color" content="#000000" />
+<title>Spooky Forest 2</title>
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<script src="../shared/nav.js?v=1" data-title="Spooky Forest 2" data-tag="deeper into the woods" defer></script>
+
+<style>
+/* The whole game is greyscale, so the furniture around it is too — a blue
+   accent bar over a black-and-white forest breaks the spell. */
+:root {
+  --paper: #e8e8e8;
+  --ash:   #8c8c8c;
+  --pitch: #0a0a0a;
+}
+
+body.app-shell { height: 100vh; height: 100dvh; overscroll-behavior: none; background: #000; }
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hud {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 15px;
+}
+.hud .pill {
+  background: #151515;
+  border: 1px solid #333;
+  border-radius: 999px;
+  padding: 5px 13px;
+  white-space: nowrap;
+  color: var(--paper);
+}
+.hud .score { font-size: 17px; }
+.hud .best { color: var(--ash); font-weight: 700; font-size: 13px; }
+.hud .spacer { margin-left: auto; }
+.hud button {
+  background: #151515;
+  border: 1px solid #333;
+  border-radius: 10px;
+  color: var(--paper);
+  font-size: 17px;
+  line-height: 1;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.hud button.text { font-size: 12px; font-weight: 800; padding: 9px 11px; letter-spacing: 0.04em; }
+
+.clock {
+  flex: none;
+  height: 12px;
+  border-radius: 999px;
+  background: #151515;
+  border: 1px solid #333;
+  overflow: hidden;
+}
+.clock i {
+  display: block; height: 100%; width: 100%;
+  background: linear-gradient(90deg, #5a5a5a, #f0f0f0);
+  transform-origin: left center;
+}
+.clock.low i { background: linear-gradient(90deg, #6a6a6a, #ffffff); animation: pulse 0.6s steps(2, end) infinite; }
+@keyframes pulse { 50% { opacity: 0.45; } }
+
+.stage { flex: 1 1 auto; min-height: 0; position: relative; }
+#stage {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  border-radius: 14px;
+  background: #000;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(3px);
+  border-radius: 14px;
+}
+.overlay[hidden] { display: none; }
+.overlay h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 7vw, 2.4rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--paper);
+}
+.overlay p {
+  margin: 0;
+  max-width: 32ch;
+  color: var(--ash);
+  font-size: 1rem;
+}
+.overlay .tally {
+  font-size: clamp(3rem, 18vw, 5rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--paper);
+}
+.overlay .big {
+  background: var(--paper);
+  color: #000;
+  border: 0;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 900;
+  padding: 15px 32px;
+  cursor: pointer;
+}
+.overlay .big:active { transform: translateY(1px); }
+.overlay .how {
+  display: flex;
+  gap: 18px;
+  color: var(--ash);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.overlay .how div { max-width: 9rem; }
+.overlay .how .ico { font-size: 1.8rem; display: block; margin-bottom: 2px; filter: grayscale(1); }
+</style>
+</head>
+<body class="app-shell">
+
+<main class="app-main">
+  <div class="hud">
+    <span class="pill score">◉ <span id="scoreNum">0</span></span>
+    <span class="pill best">Best <span id="bestNum">0</span></span>
+    <span class="spacer"></span>
+    <button id="colorBtn" class="text" type="button" aria-label="Colour mode">B&amp;W</button>
+    <button id="soundBtn" type="button" aria-label="Sound on or off">🔊</button>
+  </div>
+
+  <div class="clock" id="clock"><i id="clockFill"></i></div>
+
+  <div class="stage">
+    <canvas id="stage"></canvas>
+
+    <div class="overlay" id="titleCard">
+      <h2>Spooky Forest 2</h2>
+      <p>You're walking deeper into the woods. Things step out from behind the trees — peg them with a pumpkin before you walk past.</p>
+      <div class="how">
+        <div><span class="ico">🌲</span>The woods go by</div>
+        <div><span class="ico">👆</span>Tap what steps out</div>
+        <div><span class="ico">💨</span>Poof!</div>
+      </div>
+      <button class="big" id="startBtn" type="button">Walk in</button>
+    </div>
+
+    <div class="overlay" id="overCard" hidden>
+      <h2 id="overTitle">Out of the woods</h2>
+      <div class="tally" id="overScore">0</div>
+      <p id="overText"></p>
+      <button class="big" id="againBtn" type="button">Walk in again</button>
+    </div>
+
+    <div class="overlay" id="pauseCard" hidden>
+      <h2>Stopped still</h2>
+      <p>The forest is waiting.</p>
+      <button class="big" id="resumeBtn" type="button">Keep walking</button>
+    </div>
+  </div>
+</main>
+
+<script src="main.js?v=1"></script>
+</body>
+</html>
