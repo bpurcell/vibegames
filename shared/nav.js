@@ -30,6 +30,7 @@
       { href: "index.html", name: "All projects" },
     ]},
     { group: "Tools & webapps", items: [
+      { href: "animalterritory/",     name: "Local Animal Territory" },
       { href: "earth-speed.html",     name: "Earth Speed" },
       { href: "worldsignpost.html",   name: "World Signpost" },
       { href: "timeline.html",        name: "Deep Time" },

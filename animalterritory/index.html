@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Animal Territory" />
+<meta name="theme-color" content="#0b1220" />
+<title>Local Animal Territory</title>
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<!-- Leaflet is vendored rather than pulled from a CDN: this whole site is
+     static files, and a map that stops working when someone else's CDN
+     changes is not worth the saved kilobytes. -->
+<link rel="stylesheet" href="vendor/leaflet.css">
+<script src="../shared/nav.js?v=1" data-title="Local Animal Territory" data-tag="how much ground one animal needs" defer></script>
+
+<style>
+body.app-shell { height: 100vh; height: 100dvh; }
+
+.layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: row-reverse;   /* map first in the DOM, sidebar on the left */
+}
+
+/* ------------------------------------------------------------- map */
+
+.mapwrap { flex: 1 1 auto; min-width: 0; position: relative; }
+#map { position: absolute; inset: 0; background: #0d1526; }
+.leaflet-container { font: inherit; background: #0d1526; }
+/* Lift the scale bar clear of the attribution strip it otherwise lands on. */
+.leaflet-bottom.leaflet-left { bottom: 16px; }
+.leaflet-control-attribution { font-size: 10.5px; }
+
+.maphint {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  bottom: 26px; z-index: 500;
+  background: rgba(11, 18, 32, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 15px;
+  font-size: 12.5px;
+  color: var(--sub);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.maphint[hidden] { display: none; }
+
+.tilewarn {
+  position: absolute;
+  inset: auto 10px 10px 10px;
+  z-index: 600;
+  background: rgba(60, 30, 10, 0.95);
+  border: 1px solid #7a4a1a;
+  border-radius: 10px;
+  padding: 10px 13px;
+  font-size: 12.5px;
+  color: #ffd9a8;
+}
+.tilewarn[hidden] { display: none; }
+
+.fitbtn {
+  position: absolute;
+  right: 10px; top: 10px; z-index: 500;
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 9px;
+  padding: 8px 12px; font: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer;
+}
+.fitbtn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* --------------------------------------------------------- sidebar */
+
+.side {
+  flex: 0 0 340px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--line);
+  background: var(--panel2);
+}
+
+.side .spot {
+  flex: none;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.side .spot .row { display: flex; gap: 8px; align-items: center; }
+.side .spot button {
+  background: var(--accent); color: #06101d;
+  border: 0; border-radius: 9px;
+  padding: 9px 13px; font: inherit; font-size: 13px; font-weight: 800;
+  cursor: pointer; white-space: nowrap;
+}
+.side .spot button.ghost {
+  background: transparent; color: var(--accent);
+  border: 1px solid rgba(77, 184, 255, 0.4);
+}
+.side .spot .coords {
+  font-size: 12px; color: var(--faint);
+  margin-top: 8px; font-variant-numeric: tabular-nums;
+}
+
+.blurb {
+  flex: none;
+  padding: 11px 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--sub);
+  border-bottom: 1px solid var(--line);
+  background: rgba(77, 184, 255, 0.05);
+}
+.blurb b { color: var(--ink); font-weight: 700; }
+
+.listhead {
+  flex: none;
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 11px 14px 6px;
+  font-size: 10.5px; letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--faint); font-weight: 800;
+}
+.listhead button {
+  background: none; border: 0; color: var(--accent);
+  font: inherit; font-size: 11px; font-weight: 800; cursor: pointer;
+  text-transform: none; letter-spacing: 0;
+}
+
+.list { flex: 1 1 auto; overflow-y: auto; padding: 0 8px 14px; -webkit-overflow-scrolling: touch; }
+
+.sp {
+  display: block; width: 100%; text-align: left;
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-left: 4px solid transparent;
+  border-radius: 10px;
+  padding: 9px 11px; margin: 5px 0;
+  font: inherit; cursor: pointer;
+}
+.sp:hover { border-color: rgba(77, 184, 255, 0.4); }
+.sp.on { background: #16203a; }
+.sp .top { display: flex; align-items: center; gap: 8px; }
+.sp .ico { font-size: 19px; line-height: 1; }
+.sp .nm { font-weight: 700; font-size: 14px; }
+.sp .sci { font-size: 11px; color: var(--faint); font-style: italic; }
+.sp .area { margin-left: auto; font-size: 12px; color: var(--sub); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sp .far { font-size: 10px; color: var(--accent-2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.sp .detail { margin-top: 8px; font-size: 12.5px; line-height: 1.5; color: var(--sub); }
+.sp .detail dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0 0 7px; }
+.sp .detail dt { color: var(--faint); }
+.sp .detail dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sp .detail p { margin: 0; }
+
+.foot {
+  flex: none;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  font-size: 11px; line-height: 1.5; color: var(--faint);
+}
+.foot a { color: var(--sub); }
+
+/* ------------------------------------------------------- narrow */
+
+@media (max-width: 760px) {
+  .layout { flex-direction: column; }
+  .mapwrap { flex: 1 1 auto; min-height: 38vh; }
+  .side {
+    flex: 0 0 auto;
+    max-height: 52vh;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+    overflow-y: auto;                 /* the panel scrolls as one column */
+    -webkit-overflow-scrolling: touch;
+  }
+  .side .list { overflow: visible; flex: none; }
+  .side .blurb { font-size: 12px; padding: 9px 14px; }
+  .sheet { position: sticky; top: 0; z-index: 5; }
+  .side.shut { max-height: 46px; }
+  .side.shut .spot, .side.shut .blurb, .side.shut .list, .side.shut .foot { display: none; }
+  .sheet {
+    display: flex; align-items: center; gap: 8px;
+    flex: none; padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px; font-weight: 800; cursor: pointer;
+    background: var(--panel);
+  }
+  .sheet .count { color: var(--accent); }
+  .sheet .chev { margin-left: auto; color: var(--faint); }
+}
+@media (min-width: 761px) { .sheet { display: none; } }
+
+/* Circle labels on the map. */
+.terr-label {
+  background: rgba(11, 18, 32, 0.88);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font: 700 11.5px/1.25 var(--font);
+  padding: 3px 7px;
+  white-space: nowrap;
+  box-shadow: none;
+}
+.terr-label::before { display: none; }
+</style>
+</head>
+<body class="app-shell">
+
+<div class="layout">
+  <div class="mapwrap">
+    <div id="map"></div>
+    <button class="fitbtn" id="fitBtn" type="button">Fit to selection</button>
+    <div class="maphint" id="mapHint">Tap anywhere on the map to move your spot</div>
+    <div class="tilewarn" id="tileWarn" hidden>
+      Map imagery isn’t loading (offline, or the tile server is blocked).
+      The circles below are still drawn to true scale.
+    </div>
+  </div>
+
+  <aside class="side" id="side">
+    <div class="sheet" id="sheet">
+      <span>Animals</span><span class="count" id="sheetCount">0 shown</span>
+      <span class="chev" id="sheetChev">▾</span>
+    </div>
+
+    <div class="spot">
+      <div class="row">
+        <button id="locBtn" type="button">Use my location</button>
+        <button id="clearBtn" class="ghost" type="button">Clear all</button>
+      </div>
+      <div class="coords" id="coords">Finding you…</div>
+    </div>
+
+    <div class="blurb">
+      Each circle is <b>how much ground one animal needs</b> — its home range,
+      drawn around your spot as a circle of the same area. Real home ranges
+      are never circles: they follow woodlots, streams and ridges. The size
+      is the honest part, not the shape.
+    </div>
+
+    <div class="listhead">
+      <span>Animals · smallest first</span>
+      <button id="nearBtn" type="button">Showing all</button>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="foot">
+      Typical figures from the wildlife literature; home range varies widely
+      with habitat, season and sex, so each animal shows a low–high span too.
+      Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.
+    </div>
+  </aside>
+</div>
+
+<script src="vendor/leaflet.js"></script>
+<script src="species.js?v=1"></script>
+<script src="main.js?v=1"></script>
+</body>
+</html>
