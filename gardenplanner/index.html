@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b1220" />
+<title>Summer Garden Planner</title>
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<script src="../shared/nav.js?v=1" data-title="Summer Garden Planner" data-tag="one pass, one plan" defer></script>
+
+<style>
+:root { --leaf: #6fcf6f; --bloom: #ffa8d8; --soil: #3a2a1e; }
+
+.wrap { max-width: 900px; margin: 0 auto; padding: 20px 16px 70px; }
+
+/* ------------------------------------------------------- progress */
+
+.steps { display: flex; gap: 6px; margin-bottom: 22px; }
+.steps div {
+  flex: 1; height: 4px; border-radius: 2px; background: var(--line);
+  transition: background 0.3s;
+}
+.steps div.done { background: var(--accent); }
+.steps div.now { background: var(--accent-2); }
+
+h1 { font-size: clamp(1.5rem, 4.5vw, 2rem); margin: 0 0 6px; }
+.lede { color: var(--sub); margin: 0 0 22px; max-width: 60ch; }
+
+.step { display: none; }
+.step.on { display: block; }
+
+fieldset { border: 0; margin: 0 0 22px; padding: 0; }
+legend { font-size: 1.02rem; font-weight: 700; margin-bottom: 4px; padding: 0; }
+.hint { font-size: 0.85rem; color: var(--faint); margin: 0 0 11px; }
+
+/* ----------------------------------------------------- big choice */
+
+.paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.path {
+  text-align: left; background: var(--panel); color: var(--ink);
+  border: 2px solid var(--line); border-radius: 14px;
+  padding: 20px; font: inherit; cursor: pointer;
+}
+.path:hover { border-color: var(--accent); }
+.path .big { font-size: 2.2rem; line-height: 1; }
+.path h3 { margin: 10px 0 5px; font-size: 1.15rem; }
+.path p { margin: 0; font-size: 0.88rem; color: var(--sub); }
+
+/* --------------------------------------------------------- inputs */
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 8px; }
+.pick {
+  display: flex; align-items: center; gap: 8px; text-align: left;
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 9px 11px; font: inherit; font-size: 13.5px; cursor: pointer;
+}
+.pick:hover { border-color: rgba(77,184,255,.45); }
+.pick.on { border-color: var(--accent); background: var(--accent-dim); }
+.pick .e { font-size: 19px; }
+.pick .n { font-weight: 600; line-height: 1.2; }
+.pick .t { display: block; font-size: 10.5px; color: var(--faint); font-weight: 500; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 9px 16px; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+}
+.chip.on { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+
+select, input[type="date"], input[type="number"] {
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 9px;
+  padding: 9px 11px; font: inherit; font-size: 14px;
+}
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row label { font-size: 13px; color: var(--sub); }
+
+.note {
+  border-left: 3px solid var(--accent-2); background: var(--accent-2-dim);
+  border-radius: 0 8px 8px 0; padding: 10px 13px; margin: 12px 0;
+  font-size: 12.5px; line-height: 1.5; color: var(--sub);
+}
+.note b { color: var(--ink); }
+
+/* ---------------------------------------------------------- nav */
+
+.nav { display: flex; gap: 10px; margin-top: 26px; }
+.btn-main {
+  background: var(--accent); color: #06101d; border: 0; border-radius: 10px;
+  padding: 12px 22px; font: inherit; font-size: 15px; font-weight: 800; cursor: pointer;
+}
+.btn-main[disabled] { opacity: 0.4; cursor: not-allowed; }
+.btn-ghost {
+  background: transparent; color: var(--sub);
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 18px; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.nav .spacer { margin-left: auto; }
+
+/* ---------------------------------------------------------- plan */
+
+.plan h2 { font-size: 1.15rem; margin: 26px 0 8px; }
+.plan h2:first-child { margin-top: 0; }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 6px; }
+.fact { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; }
+.fact .k { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 700; }
+.fact .v { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+.fact .s { font-size: 11.5px; color: var(--sub); }
+
+#bedbox { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; overflow-x: auto; }
+#bed { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th, td { text-align: left; padding: 8px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.cal { list-style: none; padding: 0; margin: 0; }
+.cal li { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.cal .when { flex: 0 0 108px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--accent); }
+.cal .what b { font-weight: 700; }
+.cal .what span { color: var(--sub); }
+
+.warn {
+  border-left: 3px solid #ff9f43; background: rgba(255,159,67,.09);
+  border-radius: 0 8px 8px 0; padding: 10px 13px; margin: 8px 0;
+  font-size: 13px; line-height: 1.5;
+}
+.warn b { color: #ffc48a; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 0; font-size: 12px; }
+.legend span { display: flex; align-items: center; gap: 5px; color: var(--sub); }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+@media print {
+  .site-nav, .steps, .nav, .noprint { display: none !important; }
+  body { background: #fff; color: #000; }
+  .wrap { max-width: none; padding: 0; }
+  .fact, #bedbox, table, .cal li { border-color: #bbb; background: #fff; }
+  .fact .k, th, .cal .what span { color: #444; }
+  .fact .v, td, .cal .what b, h1, h2 { color: #000; }
+  .cal .when { color: #000; }
+  a { color: #000; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="steps noprint">
+    <div id="p0"></div><div id="p1"></div><div id="p2"></div><div id="p3"></div><div id="p4"></div>
+  </div>
+
+  <!-- 1 ----------------------------------------------------------- -->
+  <section class="step on" id="s0">
+    <h1>Summer garden planner</h1>
+    <p class="lede">Five questions, then a planting plan you can print and follow:
+       what to buy, when to sow it, and where each thing goes in the bed.</p>
+    <div class="paths">
+      <button class="path" data-path="food" type="button">
+        <span class="big">🥕</span>
+        <h3>Grow food</h3>
+        <p>Tell it what you actually eat and it works backwards to the plants, the counts and the dates.</p>
+      </button>
+      <button class="path" data-path="flower" type="button">
+        <span class="big">🌻</span>
+        <h3>Grow flowers</h3>
+        <p>For cutting, for pollinators, or both — laid out so nothing shades anything else.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- 2 ----------------------------------------------------------- -->
+  <section class="step" id="s1">
+    <h1>Where are you growing?</h1>
+    <p class="lede">Everything downstream is dates, and dates come from frost.</p>
+
+    <fieldset>
+      <legend>Your USDA zone</legend>
+      <p class="hint">Don't know it? Search "hardiness zone" and your zip code.</p>
+      <select id="zone"></select>
+    </fieldset>
+
+    <div class="note">
+      <b>A zone is a winter number.</b> It describes how cold your coldest night
+      gets, which decides what survives the winter — and everything in a summer
+      garden is planted and finished inside one year. What actually matters is
+      your <b>last spring frost</b>, so that is what the zone is converted into
+      below. It is an average: a hilltop and the valley under it can differ by
+      two or three weeks. If you know your real date, set it.
+    </div>
+
+    <fieldset>
+      <legend>Last spring frost</legend>
+      <p class="hint" id="frostHint"></p>
+      <input type="date" id="frost">
+    </fieldset>
+
+    <fieldset>
+      <legend>How much direct sun does the spot get?</legend>
+      <p class="hint">Midsummer, at its best. Count only hours of unshaded sun.</p>
+      <div class="chips" id="sun">
+        <button class="chip" data-sun="8" type="button">8+ hours</button>
+        <button class="chip" data-sun="6" type="button">6–8 hours</button>
+        <button class="chip" data-sun="4" type="button">4–6 hours</button>
+        <button class="chip" data-sun="3" type="button">Under 4 hours</button>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- 3 ----------------------------------------------------------- -->
+  <section class="step" id="s2">
+    <h1 id="likeTitle">What do you actually eat?</h1>
+    <p class="lede" id="likeLede">Pick what you'd genuinely be pleased to have a lot of. Nothing else earns its space.</p>
+    <div id="likeFilters" class="chips" style="margin-bottom:14px"></div>
+    <div class="grid" id="likes"></div>
+
+    <fieldset style="margin-top:22px">
+      <legend id="appetiteQ">How much do you want?</legend>
+      <p class="hint" id="appetiteHint">This sets how much of the bed each choice gets.</p>
+      <div class="chips" id="appetite">
+        <button class="chip" data-appetite="1" type="button">Just enough to snack on</button>
+        <button class="chip on" data-appetite="2" type="button">Enough for regular meals</button>
+        <button class="chip" data-appetite="3" type="button">Enough to put some away</button>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- 4 ----------------------------------------------------------- -->
+  <section class="step" id="s3">
+    <h1>How big is the bed?</h1>
+    <p class="lede">One rectangle. If you have several, plan the biggest first — you can run this again.</p>
+    <div class="chips" id="sizes" style="margin-bottom:16px"></div>
+    <div class="row">
+      <label>Width <input type="number" id="bw" min="1" max="60" step="0.5"> ft</label>
+      <label>Depth <input type="number" id="bd" min="1" max="60" step="0.5"> ft</label>
+      <span class="hint" id="bedArea" style="margin:0"></span>
+    </div>
+    <div class="note">
+      <b>Width runs left to right on the plan, depth runs away from you.</b>
+      Keep the depth to about 4 ft if it is a raised bed — that is as far as
+      most people can reach in from an edge.
+      The plan puts the tallest plants along the top edge — set the bed out so
+      that top edge points <b>north</b> and nothing shades anything behind it.
+    </div>
+  </section>
+
+  <!-- 5 ----------------------------------------------------------- -->
+  <section class="step" id="s4">
+    <div class="plan" id="plan"></div>
+  </section>
+
+  <div class="nav noprint">
+    <button class="btn-ghost" id="back" type="button">Back</button>
+    <span class="spacer"></span>
+    <button class="btn-ghost" id="restart" type="button" style="display:none">Start over</button>
+    <button class="btn-ghost" id="printBtn" type="button" style="display:none">Print</button>
+    <button class="btn-main" id="next" type="button">Next</button>
+  </div>
+</div>
+
+<script src="plants.js?v=1"></script>
+<script src="main.js?v=1"></script>
+</body>
+</html>
