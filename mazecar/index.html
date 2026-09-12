@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<!-- user-scalable=no kills iOS double-tap zoom, which otherwise fires every
+     time a kid taps the D-pad twice quickly. viewport-fit=cover lets the
+     controls sit below the home indicator via env(safe-area-inset-*). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Maze Car" />
+<meta name="theme-color" content="#0b1220" />
+<title>Maze Car</title>
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<script src="../shared/nav.js?v=1" data-title="Maze Car" data-tag="drive the little car home" defer></script>
+
+<style>
+/* The play area is the app's identity, so it uses its own bright palette
+   rather than the site tokens — same licence the other games take. */
+:root {
+  --road:      #2a3550;
+  --road-2:    #222c44;
+  --wall:      #7ee081;
+  --wall-top:  #b6f2b8;
+  --goal:      #ffc447;
+}
+
+/* 100dvh, not 100vh: on iOS the visual viewport shrinks when the Safari
+   toolbars show, and 100vh would push the D-pad under them. */
+body.app-shell { height: 100vh; height: 100dvh; overscroll-behavior: none; }
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  touch-action: none;          /* no pan/pinch/double-tap inside the game */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ------------------------------------------------------------- hud */
+
+.hud {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 15px;
+}
+.hud .pill {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  white-space: nowrap;
+}
+.hud .pill .num { color: var(--accent); }
+.hud .pill.stars .num { color: var(--accent-2); }
+.hud .spacer { margin-left: auto; }
+.hud button {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.hud button:active { border-color: var(--accent); }
+
+/* ------------------------------------------------------------ maze */
+
+.stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+}
+#maze {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------------------------------------------------------- overlay */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 20px;
+  background: rgba(7, 11, 20, 0.82);
+  backdrop-filter: blur(4px);
+  border-radius: 14px;
+}
+.overlay[hidden] { display: none; }
+.overlay h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 7vw, 2.4rem);
+  line-height: 1.1;
+}
+.overlay p {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--sub);
+  font-size: 0.98rem;
+}
+.overlay .big {
+  background: var(--accent);
+  color: #06101d;
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 14px 28px;
+  cursor: pointer;
+}
+.overlay .big:active { transform: translateY(1px); }
+
+.colors { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.colors button {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.colors button[aria-pressed="true"] { border-color: #fff; }
+
+/* --------------------------------------------------------- controls */
+
+.pad {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(3, var(--btn));
+  grid-template-rows: repeat(3, var(--btn));
+  gap: 8px;
+  justify-content: center;
+  --btn: min(21vw, 76px);
+}
+.pad button {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  color: var(--ink);
+  font-size: calc(var(--btn) * 0.42);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: none;
+}
+.pad button.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.pad .up    { grid-area: 1 / 2; }
+.pad .left  { grid-area: 2 / 1; }
+.pad .horn  { grid-area: 2 / 2; font-size: calc(var(--btn) * 0.36); }
+.pad .right { grid-area: 2 / 3; }
+.pad .down  { grid-area: 3 / 2; }
+
+/* A keyboard is a better control than the D-pad on a desktop, and the
+   pad eats vertical room the maze would rather have. */
+@media (hover: hover) and (pointer: fine) {
+  .pad { --btn: 62px; opacity: 0.85; }
+}
+
+/* A phone on its side has no vertical room to spare — stacking the HUD,
+   the maze and the D-pad leaves the maze about 30px tall. So move the
+   furniture into a column beside the maze instead. */
+@media (orientation: landscape) and (max-height: 600px) {
+  .app-main {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr;
+    column-gap: 10px;
+    padding-left: calc(10px + env(safe-area-inset-left));
+    padding-right: calc(10px + env(safe-area-inset-right));
+  }
+  .hud {
+    grid-column: 2; grid-row: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+  .hud .spacer { display: none; }
+  .stage { grid-column: 1; grid-row: 1 / span 2; }
+  .pad {
+    grid-column: 2; grid-row: 2;
+    align-self: center;
+    --btn: min(15vh, 62px);
+  }
+}
+</style>
+</head>
+<body class="app-shell">
+
+<main class="app-main">
+  <div class="hud">
+    <span class="pill">Maze <span class="num" id="levelNum">1</span></span>
+    <span class="pill stars">★ <span class="num" id="starNum">0</span></span>
+    <span class="spacer"></span>
+    <button id="soundBtn" type="button" aria-label="Sound on or off">🔊</button>
+    <button id="newBtn" type="button" aria-label="New maze">↻</button>
+  </div>
+
+  <div class="stage">
+    <canvas id="maze"></canvas>
+
+    <div class="overlay" id="titleCard">
+      <h2>Maze Car 🚗</h2>
+      <p>Drive your little car through the maze, grab the stars, and park in the golden garage.</p>
+      <div class="colors" id="colorPick"></div>
+      <button class="big" id="startBtn" type="button">Drive!</button>
+    </div>
+
+    <div class="overlay" id="winCard" hidden>
+      <h2 id="winTitle">You parked it! 🎉</h2>
+      <p id="winText">Nice driving.</p>
+      <button class="big" id="nextBtn" type="button">Next maze →</button>
+    </div>
+  </div>
+
+  <div class="pad" id="pad">
+    <button class="up"    type="button" data-dir="up"    aria-label="Drive up">▲</button>
+    <button class="left"  type="button" data-dir="left"  aria-label="Drive left">◀</button>
+    <button class="horn"  type="button" data-horn aria-label="Horn">📣</button>
+    <button class="right" type="button" data-dir="right" aria-label="Drive right">▶</button>
+    <button class="down"  type="button" data-dir="down"  aria-label="Drive down">▼</button>
+  </div>
+</main>
+
+<script src="main.js?v=1"></script>
+</body>
+</html>
