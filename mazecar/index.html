@@ -72,6 +72,12 @@ body.app-shell { height: 100vh; height: 100dvh; overscroll-behavior: none; }
   cursor: pointer;
 }
 .hud button:active { border-color: var(--accent); }
+.hud button.text {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 12px;
+  letter-spacing: 0.01em;
+}
 
 /* ------------------------------------------------------------ maze */
 
@@ -128,6 +134,23 @@ body.app-shell { height: 100vh; height: 100dvh; overscroll-behavior: none; }
   cursor: pointer;
 }
 .overlay .big:active { transform: translateY(1px); }
+
+.sizes { display: flex; gap: 10px; }
+.sizes button {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  color: var(--sub);
+  font: inherit;
+  font-weight: 700;
+  padding: 9px 22px;
+  cursor: pointer;
+}
+.sizes button[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
 
 .colors { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .colors button {
@@ -212,6 +235,7 @@ body.app-shell { height: 100vh; height: 100dvh; overscroll-behavior: none; }
     <span class="pill">Maze <span class="num" id="levelNum">1</span></span>
     <span class="pill stars">★ <span class="num" id="starNum">0</span></span>
     <span class="spacer"></span>
+    <button id="sizeBtn" class="text" type="button">Small</button>
     <button id="soundBtn" type="button" aria-label="Sound on or off">🔊</button>
     <button id="newBtn" type="button" aria-label="New maze">↻</button>
   </div>
@@ -222,6 +246,7 @@ body.app-shell { height: 100vh; height: 100dvh; overscroll-behavior: none; }
     <div class="overlay" id="titleCard">
       <h2>Maze Car 🚗</h2>
       <p>Drive your little car through the maze, grab the stars, and park in the golden garage.</p>
+      <div class="sizes" id="sizePick"></div>
       <div class="colors" id="colorPick"></div>
       <button class="big" id="startBtn" type="button">Drive!</button>
     </div>

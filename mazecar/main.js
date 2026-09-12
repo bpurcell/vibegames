@@ -40,6 +40,14 @@
     { name: "pink",   body: "#ff8ad1", dark: "#cc4f9c" }
   ];
 
+  // Two maze sizes, each with its own run of mazes: picking "Big" should
+  // hand you a big maze straight away, not restart you at a small one.
+  // Both still grow a cell a side per maze finished, up to their cap.
+  var SIZES = [
+    { key: "small", label: "Small", base: 5, cap: 8 },
+    { key: "big",   label: "Big",   base: 9, cap: 16 }
+  ];
+
   // Tuning, all in cell units per second.
   var WALL_T   = 0.15;   // wall thickness
   var CAR_R    = 0.27;   // collision radius; corridor half-width is 0.425
@@ -49,7 +57,8 @@
   var CENTRING = 9;      // how hard the car is nudged to the lane centre
 
   var S = {
-    level: 1,
+    sizeIdx: 0,
+    levels: [1, 1],         // how far along each size's run of mazes is
     stars: 0,
     cols: 5, rows: 5,
     cells: [],
@@ -146,10 +155,23 @@
     return out;
   }
 
-  function newLevel(level) {
-    // Grows one cell a side per maze, then stops: past 12 the corridors
-    // get thin enough on a phone that steering stops being fun.
-    var n = Math.min(4 + level, 12);
+  function size() { return SIZES[S.sizeIdx]; }
+  function level() { return S.levels[S.sizeIdx]; }
+
+  // How many cells a side this maze gets. The cap in the table is the
+  // design intent; the second is physical — a cell thinner than about
+  // 32 CSS px is smaller than the fingertip steering it, so a big maze
+  // stops growing sooner on a phone than it does on an iPad.
+  function cellsAcross(lvl) {
+    var cfg = size();
+    var n = Math.min(cfg.base + (lvl - 1), cfg.cap);
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (w && h) n = Math.min(n, Math.max(cfg.base, Math.floor(Math.min(w, h) / 32)));
+    return n;
+  }
+
+  function newLevel(lvl) {
+    var n = cellsAcross(lvl);
     S.cols = n; S.rows = n;
     S.cells = genMaze(n, n);
     S.walls = buildWalls(S.cells, n, n);
@@ -170,7 +192,7 @@
       S.starPickups.push({ x: sx + 0.5, y: sy + 0.5, got: false, spin: Math.random() * 6.28 });
     }
 
-    elLevel.textContent = String(level);
+    elLevel.textContent = String(lvl);
     resize();
   }
 
@@ -441,9 +463,11 @@
     }
     var got = S.starPickups.filter(function (s) { return s.got; }).length;
     winTitle.textContent = got === 3 ? "All three stars! 🌟" : "You parked it! 🎉";
-    winText.textContent = got === 3
-      ? "Perfect run. The next maze is a little bigger."
-      : "You found " + got + " of 3 stars. The next maze is a little bigger.";
+    var next = cellsAcross(level() + 1) > S.cols
+      ? "The next maze is a little bigger."
+      : "The next maze is a fresh one, the same size.";
+    winText.textContent =
+      (got === 3 ? "Perfect run. " : "You found " + got + " of 3 stars. ") + next;
     // Let the confetti fly for a beat before the button covers it.
     setTimeout(function () { if (S.mode === "won") winCard.hidden = false; }, 900);
   }
@@ -688,27 +712,67 @@
   });
 
   document.getElementById("nextBtn").addEventListener("click", function () {
-    S.level++;
-    store("mazecar.level", String(S.level));
+    S.levels[S.sizeIdx]++;
+    store("mazecar.level." + size().key, String(level()));
     winCard.hidden = true;
-    newLevel(S.level);
+    newLevel(level());
     S.mode = "play";
   });
 
   document.getElementById("newBtn").addEventListener("click", function () {
     winCard.hidden = true;
-    newLevel(S.level);
-    S.mode = S.mode === "title" ? "title" : "play";
+    newLevel(level());
+    if (S.mode === "won") S.mode = "play";
+  });
+
+  // The size lives in two places on purpose: chips on the title card, for
+  // choosing before the first drive, and a button in the bar, because the
+  // size a kid wants is usually the one they discover they wanted halfway
+  // through a maze.
+  var sizeBtn = document.getElementById("sizeBtn");
+  var sizePick = document.getElementById("sizePick");
+
+  function setSize(idx, restart) {
+    S.sizeIdx = idx;
+    store("mazecar.size", size().key);
+    sizeBtn.textContent = size().label;
+    sizeBtn.setAttribute("aria-label", "Maze size: " + size().label + ", tap to change");
+    Array.prototype.forEach.call(sizePick.children, function (b, i) {
+      b.setAttribute("aria-pressed", String(i === idx));
+    });
+    if (restart) {
+      winCard.hidden = true;
+      newLevel(level());
+      if (S.mode === "won") S.mode = "play";
+    }
+  }
+
+  SIZES.forEach(function (cfg, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = cfg.label;
+    b.addEventListener("click", function () { setSize(i, true); });
+    sizePick.appendChild(b);
+  });
+  sizeBtn.addEventListener("click", function () {
+    setSize((S.sizeIdx + 1) % SIZES.length, true);
   });
 
   // Pick up where they left off; a kid closing the tab shouldn't lose
-  // their maze count or their star total.
-  var savedLevel = parseInt(store("mazecar.level") || "1", 10);
+  // their maze count, their star total or their chosen size.
+  SIZES.forEach(function (cfg, i) {
+    var v = parseInt(store("mazecar.level." + cfg.key) || "1", 10);
+    S.levels[i] = v > 0 ? v : 1;
+  });
   var savedStars = parseInt(store("mazecar.stars") || "0", 10);
-  S.level = savedLevel > 0 ? savedLevel : 1;
   S.stars = savedStars > 0 ? savedStars : 0;
   elStars.textContent = String(S.stars);
 
-  newLevel(S.level);
+  var savedSize = store("mazecar.size");
+  var idx = 0;
+  SIZES.forEach(function (cfg, i) { if (cfg.key === savedSize) idx = i; });
+  setSize(idx, false);
+
+  newLevel(level());
   requestAnimationFrame(frame);
 })();

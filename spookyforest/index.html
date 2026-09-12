@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Spooky Forest" />
+<meta name="theme-color" content="#150e26" />
+<title>Spooky Forest</title>
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<script src="../shared/nav.js?v=1" data-title="Spooky Forest" data-tag="throw pumpkins at the monsters" defer></script>
+
+<style>
+/* Halloween night, not the site's blue. Games get to own their play area. */
+:root {
+  --pumpkin:  #ff8a1f;
+  --slime:    #8ee04e;
+  --night:    #150e26;
+}
+
+body.app-shell { height: 100vh; height: 100dvh; overscroll-behavior: none; }
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ------------------------------------------------------------- hud */
+
+.hud {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 15px;
+}
+.hud .pill {
+  background: rgba(38, 24, 62, 0.9);
+  border: 1px solid #3a2a5e;
+  border-radius: 999px;
+  padding: 5px 13px;
+  white-space: nowrap;
+}
+.hud .score { color: var(--pumpkin); font-size: 17px; }
+.hud .best { color: var(--sub); font-weight: 700; font-size: 13px; }
+.hud .spacer { margin-left: auto; }
+.hud button {
+  background: rgba(38, 24, 62, 0.9);
+  border: 1px solid #3a2a5e;
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+/* A 6-year-old reads a shrinking bar faster than a number, so the bar is
+   the real clock and the digits are a footnote. */
+.clock {
+  flex: none;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(38, 24, 62, 0.9);
+  border: 1px solid #3a2a5e;
+  overflow: hidden;
+}
+.clock i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #b06bff, var(--pumpkin));
+  transform-origin: left center;
+  transition: background 0.4s linear;
+}
+.clock.low i { background: linear-gradient(90deg, #ff6b6b, #ff3b3b); }
+
+/* ------------------------------------------------------------ stage */
+
+.stage { flex: 1 1 auto; min-height: 0; position: relative; }
+#stage {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  border-radius: 14px;
+}
+
+/* ---------------------------------------------------------- overlay */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 20px;
+  background: rgba(12, 7, 24, 0.84);
+  backdrop-filter: blur(4px);
+  border-radius: 14px;
+}
+.overlay[hidden] { display: none; }
+.overlay h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 7.5vw, 2.5rem);
+  line-height: 1.1;
+}
+.overlay p {
+  margin: 0;
+  max-width: 32ch;
+  color: #c9b8e8;
+  font-size: 1rem;
+}
+.overlay .tally {
+  font-size: clamp(3rem, 18vw, 5rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--pumpkin);
+}
+.overlay .big {
+  background: var(--pumpkin);
+  color: #2a1400;
+  border: 0;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 900;
+  padding: 15px 32px;
+  cursor: pointer;
+}
+.overlay .big:active { transform: translateY(1px); }
+.overlay .how {
+  display: flex;
+  gap: 18px;
+  color: #c9b8e8;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.overlay .how div { max-width: 9rem; }
+.overlay .how .ico { font-size: 1.9rem; display: block; margin-bottom: 2px; }
+</style>
+</head>
+<body class="app-shell">
+
+<main class="app-main">
+  <div class="hud">
+    <span class="pill score">🎃 <span id="scoreNum">0</span></span>
+    <span class="pill best">Best <span id="bestNum">0</span></span>
+    <span class="spacer"></span>
+    <button id="soundBtn" type="button" aria-label="Sound on or off">🔊</button>
+  </div>
+
+  <div class="clock" id="clock"><i id="clockFill"></i></div>
+
+  <div class="stage">
+    <canvas id="stage"></canvas>
+
+    <div class="overlay" id="titleCard">
+      <h2>Spooky Forest 👻</h2>
+      <p>Monsters are hiding in the trees. Tap one to throw a pumpkin at it!</p>
+      <div class="how">
+        <div><span class="ico">👀</span>Watch the trees</div>
+        <div><span class="ico">👆</span>Tap the monster</div>
+        <div><span class="ico">🎃</span>Splat!</div>
+      </div>
+      <button class="big" id="startBtn" type="button">Start!</button>
+    </div>
+
+    <div class="overlay" id="overCard" hidden>
+      <h2 id="overTitle">Time's up!</h2>
+      <div class="tally" id="overScore">0</div>
+      <p id="overText"></p>
+      <button class="big" id="againBtn" type="button">Play again</button>
+    </div>
+
+    <div class="overlay" id="pauseCard" hidden>
+      <h2>Paused 🌙</h2>
+      <p>The monsters are waiting for you.</p>
+      <button class="big" id="resumeBtn" type="button">Keep going</button>
+    </div>
+  </div>
+</main>
+
+<script src="main.js?v=1"></script>
+</body>
+</html>
