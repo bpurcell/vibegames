@@ -43,6 +43,7 @@
       { href: "minesweeper.html", name: "ASCII Minesweeper" },
       { href: "headbop/",         name: "Head Bop" },
       { href: "mazecar/",         name: "Maze Car" },
+      { href: "spookyforest/",    name: "Spooky Forest" },
       { href: "theremin/",        name: "Theremin" },
       { href: "vibooding.html",   name: "Vibooding" },
     ]},
