@@ -408,10 +408,10 @@ function fmtTick(v, step) {
     if (y > 0) return String(y);
     return num(1 - y, 0) + " BCE";
   }
-  if (v >= 1e9) return num(v / 1e9, decimalsFor(step, 1e9)) + " Ga";
-  if (v >= 1e6) return num(v / 1e6, decimalsFor(step, 1e6)) + " Ma";
-  if (v >= 1e3) return num(v / 1e3, decimalsFor(step, 1e3)) + "ka";
-  return num(v, 0) + "y";
+  if (v >= 1e9) return num(v / 1e9, decimalsFor(step, 1e9)) + "b years ago";
+  if (v >= 1e6) return num(v / 1e6, decimalsFor(step, 1e6)) + "m years ago";
+  if (v >= 1e3) return num(v / 1e3, decimalsFor(step, 1e3)) + "k years ago";
+  return num(v, 0) + " years ago";
 }
 
 /** Rich, human-readable time for the detail panel. */
@@ -503,7 +503,7 @@ function TimelineExplorer() {
     ro.observe(el);
     setWidth(Math.max(240, el.clientWidth));
     return () => ro.disconnect();
-  }, [listMode]);
+  }, [listMode, vertical]);
 
   const span = view.start - view.end;
   const xOf = useCallback((v) => ((view.start - v) / span) * width, [view, span, width]);
@@ -533,11 +533,12 @@ function TimelineExplorer() {
     applyView(hi + p, Math.max(0, lo - p));
   }, [applyView]);
 
-  /* --- wheel: zoom (or pan with shift) --------------------------- */
+  /* --- wheel: explicit zoom (or pan with shift) --------------------------- */
   useEffect(() => {
     const el = plotRef.current;
     if (!el) return;
     const onWheel = (ev) => {
+      if (!ev.ctrlKey && !ev.metaKey && !ev.shiftKey) return;
       ev.preventDefault();
       const rect = el.getBoundingClientRect();
       const px = ev.clientX - rect.left;
@@ -550,11 +551,11 @@ function TimelineExplorer() {
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [zoomAt, applyView, view, span, width]);
+  }, [zoomAt, applyView, view, span, width, vertical, listMode]);
 
   /* --- drag to pan ----------------------------------------------- */
   const onPointerDown = (ev) => {
-    if (ev.button !== 0) return;
+    if (ev.button !== 0 || ev.pointerType === "touch") return;
     drag.current = { x: ev.clientX, start: view.start, end: view.end, moved: false };
     ev.currentTarget.setPointerCapture?.(ev.pointerId);
   };
@@ -634,7 +635,7 @@ function TimelineExplorer() {
 
   /* --- visible ticks ------------------------------------------------ */
   const ticks = useMemo(() => {
-    const step = niceStep(span, Math.max(3, Math.floor(width / 96)));
+    const step = niceStep(span, Math.max(3, Math.floor(width / 150)));
     const out = [];
     const first = Math.ceil(view.end / step) * step;
     for (let v = first; v <= view.start + step * 0.5; v += step) {
@@ -756,8 +757,8 @@ function TimelineExplorer() {
           <h1 className="disp" style={{ fontSize:21, margin:0, lineHeight:1.1 }}>⏳ Deep Time</h1>
           <div style={{ color:C.sub, fontSize:11.5 }}>
             {vertical
-              ? "Scroll to travel through time · pinch or ⌘-scroll to zoom"
-              : "Scroll to zoom · drag to pan · click anything for detail"}
+              ? "Scroll through time · use the slider to zoom · tap events for detail"
+              : "Drag to travel through time · use the slider to zoom · click events for detail"}
           </div>
         </div>
         <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search events…"
@@ -794,6 +795,7 @@ function TimelineExplorer() {
           onZoomBand={(b) => zoomTo(b.startYbp, b.endYbp)} />
       ) : (
         <>
+          <ZoomControl span={span} onZoom={(factor) => zoomAt(width / 2, factor)} onReset={() => applyView(MAX_YBP, 0)} />
           {/* ---------- overview (log scale) ---------- */}
           <Overview view={view} onNavigate={applyView} gut={gut} narrow={narrow} />
 
@@ -1124,11 +1126,32 @@ function Overview({ view, onNavigate, gut = GUTTER, narrow = false }) {
 
 function fmtCompact(v) {
   if (v <= 0.5) return "now";
-  if (v >= 1e9) return num(v / 1e9, 2) + " Ga";
-  if (v >= 1e6) return num(v / 1e6, 1) + " Ma";
-  if (v >= 10000) return num(v / 1000, 0) + " ka";
+  if (v >= 1e9) return num(v / 1e9, 2) + "b years ago";
+  if (v >= 1e6) return num(v / 1e6, 1) + "m years ago";
+  if (v >= 10000) return num(v / 1000, 0) + "k years ago";
   const y = Math.round(REF_YEAR - v);
   return y > 0 ? y + " CE" : (1 - y) + " BCE";
+}
+
+// Logarithmic travel makes billions of years and individual years equally
+// accessible. Native range controls support touch and keyboard arrow keys.
+function ZoomControl({ span, onZoom, onReset }) {
+  const extent = Math.log(MAX_YBP / MIN_SPAN);
+  const value = Math.max(0, Math.min(100, 100 * Math.log(MAX_YBP / span) / extent));
+  const label = `${fmtSpan(span)} across the timeline`;
+  return (
+    <div role="group" aria-label="Timeline zoom" style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:10,
+      padding:"8px 14px", background:C.panel2, borderBottom:`1px solid ${C.border}`, flex:"none" }}>
+      <label htmlFor="timeline-zoom" style={{ fontSize:12, fontWeight:700 }}>Zoom</label>
+      <button className="btn" aria-label="Zoom out" disabled={span >= MAX_YBP} onClick={() => onZoom(2)}>−</button>
+      <input id="timeline-zoom" type="range" min="0" max="100" step="0.1" value={value}
+        aria-valuetext={label} onChange={(e) => onZoom((MAX_YBP * Math.exp(-Number(e.target.value) / 100 * extent)) / span)}
+        style={{ flex:"1 1 110px", minWidth:90, maxWidth:360, height:30, accentColor:C.accent }} />
+      <button className="btn" aria-label="Zoom in" disabled={span <= MIN_SPAN} onClick={() => onZoom(.5)}>+</button>
+      <button className="btn" onClick={onReset}>All time</button>
+      <output htmlFor="timeline-zoom" className="mono" style={{ color:C.sub, fontSize:11 }}>{label}</output>
+    </div>
+  );
 }
 
 function VerticalView({ view, applyView, span, narrow, hidden, matchIds, selected, setSelected, onZoomBand }) {
@@ -1149,7 +1172,7 @@ function VerticalView({ view, applyView, span, narrow, hidden, matchIds, selecte
   }, []);
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
-  const AXIS_W = narrow ? 48 : 68;
+  const AXIS_W = narrow ? 100 : 130;
   const GEO_COL_W = narrow ? 26 : 30;
   const RAIL_W = narrow ? 16 : 24;
   // One lane on phones: two lanes fit more labels but truncate every one of
@@ -1307,7 +1330,9 @@ function VerticalView({ view, applyView, span, narrow, hidden, matchIds, selecte
   const nowY = view.end <= 0 ? yOf(0) : null;
 
   return (
-    <div style={{ flex:1, display:"flex", minHeight:0, position:"relative" }}>
+    <div style={{ flex:1, display:"flex", flexDirection:"column", minHeight:0 }}>
+      <ZoomControl span={span} onZoom={zoomBy} onReset={() => applyView(MAX_YBP, 0)} />
+      <div style={{ flex:1, display:"flex", minHeight:0, position:"relative" }}>
       <div ref={scrollRef} className="vscroll" onScroll={onScroll}
         style={{ flex:1, overflowY:"auto", overflowX:"hidden", minWidth:0 }}
         onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
@@ -1419,13 +1444,6 @@ function VerticalView({ view, applyView, span, narrow, hidden, matchIds, selecte
 
       <VRail view={view} applyView={applyView} w={RAIL_W} />
 
-      {/* zoom controls — vertical mode has no wheel-zoom to fall back on */}
-      <div style={{ position:"absolute", right:RAIL_W + 10, bottom:14, zIndex:20,
-        display:"flex", flexDirection:"column", gap:5 }}>
-        <button className="btn" title="Zoom in" onClick={() => zoomBy(0.55)}
-          style={{ width:32, height:32, padding:0, fontSize:16, lineHeight:1 }}>+</button>
-        <button className="btn" title="Zoom out" onClick={() => zoomBy(1.8)}
-          style={{ width:32, height:32, padding:0, fontSize:16, lineHeight:1 }}>−</button>
       </div>
     </div>
   );
