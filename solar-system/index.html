@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14"><meta name="description" content="Explore eight moving planets in an interactive 3D solar system. Rotate, zoom, and travel through time.">
+<title>Solar System · Vibe Code Webapps</title>
+<link rel="stylesheet" href="../shared/site.css?v=2">
+<link rel="stylesheet" href="style.css?v=2">
+<script src="../shared/nav.js?v=3" data-title="Solar System" data-tag="eight worlds, one star" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<main>
+<section class="intro"><div><p class="eyebrow">A LITTLE PERSPECTIVE</p><h1>Your solar system.<br><em>Always in motion.</em></h1></div><p class="lede">Eight worlds. One star.<br>Take the long way around.</p></section>
+<section class="observatory" aria-label="Interactive solar system">
+<div class="scene-top"><span><i></i> <span id="state">ORBITS RUNNING</span></span><span id="elapsed">DAY 0</span></div>
+<canvas id="space" tabindex="0" aria-label="3D solar system. Drag or use arrow keys to rotate. Pinch, scroll, or use plus and minus to zoom. Select planets with buttons below."></canvas>
+<div id="labels" aria-hidden="true"></div><div id="error" role="alert" hidden></div>
+<div class="scene-bottom"><span>DRAG TO ROTATE <b>·</b> PINCH / SCROLL TO ZOOM</span><div><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="reset">Reset view ↗</button></div></div>
+</section>
+<section class="transport" aria-label="Animation controls"><button id="pause" class="primary" aria-pressed="false">Ⅱ Pause</button><label class="speed">Time speed <input id="speed" type="range" min="0" max="4" step="1" value="2"><output id="rate" for="speed">30 days / sec</output></label><label class="toggle"><input type="checkbox" id="orbits" checked> Orbit paths</label><label class="toggle"><input type="checkbox" id="names" checked> Labels</label><button id="top">Top view</button></section>
+<nav id="planets" aria-label="Choose a planet"></nav>
+<section class="details" aria-live="polite"><div><p class="eyebrow" id="category">OUR HOME STAR</p><h2 id="name">The Sun</h2><p id="description">The star at the center of it all. Its gravity keeps eight planets on their journeys through space.</p></div><dl><div><dt id="stat-label">PLANETS</dt><dd id="stat">8</dd></div><div><dt id="period-label">OUR VIEW</dt><dd id="period">All orbits</dd></div></dl></section>
+<footer><p>A model for exploring, not navigation. Distances are compressed and planet sizes enlarged. Circular orbits use relative orbital periods; starting positions and surface patterns are illustrative. Spin is decorative.</p><a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/" target="_blank" rel="noopener">Planet data: NASA ↗</a></footer>
+<noscript>This app needs JavaScript to animate the solar system.</noscript>
+</main></body></html>

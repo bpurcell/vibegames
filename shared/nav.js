@@ -30,6 +30,7 @@
       { href: "index.html", name: "All projects" },
     ]},
     { group: "Tools & webapps", items: [
+      { href: "solar-system/",        name: "Solar System" },
       { href: "gardenplanner/",       name: "Summer Garden Planner" },
       { href: "animalterritory/",     name: "Local Animal Territory" },
       { href: "earth-speed.html",     name: "Earth Speed" },
@@ -40,6 +41,7 @@
       { href: "weather-records.html", name: "US Weather Records" },
     ]},
     { group: "Games", items: [
+      { href: "little-leaps/",    name: "Little Leaps" },
       { href: "jezzball.html",    name: "JezzBall Classic" },
       { href: "flappybirds.html", name: "Flappy Birds" },
       { href: "minesweeper.html", name: "ASCII Minesweeper" },

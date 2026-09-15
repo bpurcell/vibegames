@@ -157,16 +157,24 @@
       the circle is a very different size depending on how far you are from the axis. At the
       equator you sweep out 40,000 km. Standing exactly on a pole, you just pivot.
     </p>
+    <p class="sec-sub">
+      The globe below is the real thing, right now: the Sun held fixed while the Earth turns
+      under it, the true day/night line for this moment, and your actual spot marked — gold in
+      daylight, blue after dark. At <b>Live</b> it moves at 15° an hour, which is too slow to
+      watch, so the buttons wind it forward without ever pretending that is the real pace.
+    </p>
 
     <div class="split">
       <div class="stage">
         <svg id="globe" viewBox="-170 -170 340 340" role="img" aria-labelledby="globeTitle">
           <title id="globeTitle">A globe with latitude rings, showing your position sweeping around its circle of latitude</title>
           <defs>
-            <radialGradient id="gEarth" cx="35%" cy="30%">
-              <stop offset="0%"  stop-color="#1d3a5c"/>
-              <stop offset="70%" stop-color="#112239"/>
-              <stop offset="100%" stop-color="#0a1526"/>
+            <!-- Deliberately centred and flat. An offset highlight would imply a
+                 light source that disagrees with the computed terminator. -->
+            <radialGradient id="gEarth" cx="50%" cy="50%">
+              <stop offset="0%"   stop-color="#1b3b5e"/>
+              <stop offset="80%"  stop-color="#16324f"/>
+              <stop offset="100%" stop-color="#102540"/>
             </radialGradient>
             <radialGradient id="gGlow" cx="50%" cy="50%">
               <stop offset="60%" stop-color="rgba(77,184,255,0)"/>
@@ -179,6 +187,7 @@
           <line id="axis" stroke="#3a5madd" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>
           <g id="ringsFront"></g>
           <g id="myRing"></g>
+          <g id="night"></g>
           <g id="pin"></g>
         </svg>
       </div>
@@ -191,14 +200,29 @@
         </div>
 
         <div class="readout">
-          <div class="row"><span class="lab">Your latitude</span><span class="val mono" id="latOut">—</span></div>
+          <div class="row"><span class="lab">Your position</span><span class="val mono" id="latOut">—</span></div>
+          <div class="row"><span class="lab">Local solar time</span><span class="val mono" id="clockOut">—</span></div>
           <div class="row"><span class="lab">Circle you trace</span><span class="val mono" id="circOut">—</span></div>
           <div class="row"><span class="lab">Distance from axis</span><span class="val mono" id="axisOut">—</span></div>
           <div class="row"><span class="lab">One full turn</span><span class="val mono">23 h 56 m 04 s</span></div>
         </div>
 
-        <label class="ctl" for="latSlider">Drag to change latitude — watch the speed fall away</label>
+        <div class="readout">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span class="sm" id="sunOut" style="flex:1;min-width:150px">—</span>
+            <span style="display:flex;gap:4px" id="rateBtns"></span>
+          </div>
+          <div class="sm" style="margin-top:7px;color:var(--faint)">
+            This globe is live — real Sun position, real terminator, your real
+            spot. Speed: <span id="rateNote">real time</span>.
+          </div>
+        </div>
+
+        <label class="ctl" for="latSlider">Latitude — drag and watch the speed fall away</label>
         <input type="range" id="latSlider" min="-90" max="90" step="0.5" value="40.7">
+
+        <label class="ctl" for="lonSlider">Longitude — moves you round the globe, not the speed</label>
+        <input type="range" id="lonSlider" min="-180" max="180" step="0.5" value="-74">
 
         <label class="ctl" for="citySel">Or jump to a place</label>
         <select id="citySel"></select>
@@ -285,11 +309,17 @@
       semi-major axis of 1.4960 × 10<sup>8</sup> km and an eccentricity of 0.0167. Speed then comes
       from the vis-viva equation, <span class="mono">v = √(GM(2/r − 1/a))</span>. That gives
       30.29 km/s at perihelion in early January and 29.29 km/s at aphelion in early July.</p>
+      <p><strong>The globe is live.</strong> Solar declination and the equation of time come from
+      the standard low-precision almanac formulae — good to about 0.01° and well under a minute,
+      far finer than anything drawn here. The day/night boundary is the great circle perpendicular
+      to the Sun direction, and sunrise is taken at −0.833° to allow for refraction and the Sun's
+      own width. Local solar time is genuine solar time, so it will differ from your clock by up to
+      half an hour or so, plus an hour again wherever daylight saving is in force.</p>
       <p><strong>Honest caveats.</strong> The orbit drawing is true to shape — it really is that
-      close to a circle, and the Sun really is that slightly off-centre. The globe and orbit
-      animations are hugely sped up (the factors are shown on screen), but the distance odometer at
-      the top counts real elapsed time at real speed. Both figures ignore the Solar System's own
-      motion around the galaxy, which is another 720,000 km/h or so on top.</p>
+      close to a circle. The orbit animation is sped up, and the globe is too whenever you pick a
+      rate above Live; the distance odometer at the top always counts real elapsed time at real
+      speed. Both figures ignore the Solar System's own motion around the galaxy, which is another
+      720,000 km/h or so on top.</p>
     </details>
     <p style="margin-top:14px">Built by prompting, not typing. <a href="index.html">Back to all projects</a></p>
   </footer>
@@ -315,17 +345,17 @@ const C_LIGHT = 299792.458;            // km/s
 const PERIHELION = Date.UTC(2026, 0, 3, 17, 16);
 
 const CITIES = [
-  ["Quito, Ecuador", -0.18], ["Singapore", 1.35], ["Nairobi, Kenya", -1.29],
-  ["Mumbai, India", 19.08], ["Mexico City", 19.43], ["Honolulu", 21.31],
-  ["Cairo, Egypt", 30.04], ["Los Angeles", 34.05], ["Tokyo", 35.68],
-  ["Beijing", 39.90], ["New York", 40.71], ["Madrid", 40.42],
-  ["Chicago", 41.88], ["Rome", 41.90], ["Toronto", 43.65],
-  ["Paris", 48.86], ["Vancouver", 49.28], ["London", 51.51],
-  ["Berlin", 52.52], ["Moscow", 55.76], ["Stockholm", 59.33],
-  ["Anchorage", 61.22], ["Reykjavík", 64.15], ["Tromsø, Norway", 69.65],
-  ["Longyearbyen, Svalbard", 78.22], ["North Pole", 90],
-  ["Sydney", -33.87], ["Cape Town", -33.92], ["Buenos Aires", -34.60],
-  ["Ushuaia, Argentina", -54.80], ["McMurdo Station", -77.85], ["South Pole", -90],
+  ["Quito, Ecuador", -0.18, -78.47], ["Singapore", 1.35, 103.82], ["Nairobi, Kenya", -1.29, 36.82],
+  ["Mumbai, India", 19.08, 72.88], ["Mexico City", 19.43, -99.13], ["Honolulu", 21.31, -157.86],
+  ["Cairo, Egypt", 30.04, 31.24], ["Los Angeles", 34.05, -118.24], ["Tokyo", 35.68, 139.69],
+  ["Beijing", 39.90, 116.41], ["New York", 40.71, -74.01], ["Madrid", 40.42, -3.70],
+  ["Chicago", 41.88, -87.63], ["Rome", 41.90, 12.50], ["Toronto", 43.65, -79.38],
+  ["Paris", 48.86, 2.35], ["Vancouver", 49.28, -123.12], ["London", 51.51, -0.13],
+  ["Berlin", 52.52, 13.40], ["Moscow", 55.76, 37.62], ["Stockholm", 59.33, 18.07],
+  ["Anchorage", 61.22, -149.90], ["Reykjavík", 64.15, -21.94], ["Tromsø, Norway", 69.65, 18.96],
+  ["Longyearbyen, Svalbard", 78.22, 15.65], ["North Pole", 90, 0],
+  ["Sydney", -33.87, 151.21], ["Cape Town", -33.92, 18.42], ["Buenos Aires", -34.60, -58.38],
+  ["Ushuaia, Argentina", -54.80, -68.30], ["McMurdo Station", -77.85, 166.67], ["South Pole", -90, 0],
 ];
 
 /* ============================ physics ============================ */
@@ -446,25 +476,125 @@ function utcMidnightToday() {
   return new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate()));
 }
 
-let lat = 40.71;
+let lat = 40.71, lon = -74.01;        // New York, so the default view is real
 let viewDate = utcMidnightToday();
 const startedAt = performance.now();
 let odoKm = 0, lastTick = startedAt;
 
-/* ============================ globe ============================ */
+/* ============================ globe ============================
+ * This view is live rather than decorative. The Sun is held fixed on
+ * screen and the Earth turns underneath it, so the day/night shading
+ * stays put while your marker is genuinely carried around the axis —
+ * which is the motion this section is about.
+ *
+ * Everything is driven by the real solar position for `simTime`, so at
+ * 1x the picture on screen is the actual state of the planet right now:
+ * your true latitude and longitude, the real terminator, real local
+ * solar time.
+ * ============================================================== */
 const R = 130, TILT = 24 * RAD;
 const CT = Math.cos(TILT), ST = Math.sin(TILT);
 
-// Orthographic projection of a point on the globe, tilted so the north pole
-// leans toward the viewer. Returns screen coords plus whether it is on the
-// near face.
-function project(latDeg, lonDeg) {
-  const p = latDeg * RAD, l = lonDeg * RAD;
+// The subsolar point is parked here (in screen longitude) so the visible
+// face is mostly daylight with the terminator crossing the right-hand side.
+const SUN_SCREEN_LON = 150;
+
+/* --- low-precision solar position (Astronomical Almanac) ---------------
+   Declination is good to ~0.01 deg and the equation of time to well under
+   a minute, which is far finer than anything drawn here. */
+function solar(ms) {
+  const n = ms / 86400000 + 2440587.5 - 2451545.0;   // days since J2000
+  const L = (280.460 + 0.9856474 * n) % 360;
+  const g = ((357.528 + 0.9856003 * n) % 360) * RAD;
+  const lam = (L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * RAD;
+  const eps = (23.439 - 0.0000004 * n) * RAD;
+  const dec = Math.asin(Math.sin(eps) * Math.sin(lam));
+  const ra = Math.atan2(Math.cos(eps) * Math.sin(lam), Math.cos(lam)) / RAD;
+  let eot = L - ra;                                   // equation of time, degrees
+  eot = ((eot + 180) % 360 + 360) % 360 - 180;
+  // Longitude where the Sun is directly overhead.
+  const utcHours = (ms / 3600000) % 24;
+  const subLon = -15 * (utcHours - 12) + eot;
+  return { decDeg: dec / RAD, subLonDeg: ((subLon + 540) % 360) - 180, eotMin: eot * 4 };
+}
+
+// Screen longitude: Sun-fixed, so the lighting is static and the Earth turns.
+const screenLon = (lonDeg, subLonDeg) => lonDeg - subLonDeg + SUN_SCREEN_LON;
+
+// Orthographic projection of a unit vector (x = 0 deg meridian at equator,
+// z = north pole), tilted so the north pole leans toward the viewer.
+function projectVec(v) {
   return {
-    x: R * Math.cos(p) * Math.cos(l),
-    y: -R * Math.sin(p) * CT + R * Math.cos(p) * ST * Math.sin(l),
-    front: Math.cos(p) * Math.sin(l) * CT + Math.sin(p) * ST > 0,
+    x: R * v.x,
+    y: -R * v.z * CT + R * v.y * ST,
+    front: v.y * CT + v.z * ST > 0,
   };
+}
+const vecOf = (latDeg, lonDeg) => {
+  const p = latDeg * RAD, l = lonDeg * RAD;
+  return { x: Math.cos(p) * Math.cos(l), y: Math.cos(p) * Math.sin(l), z: Math.sin(p) };
+};
+
+// Orthographic projection of a point on the globe, in screen longitude.
+function project(latDeg, lonDeg) {
+  return projectVec(vecOf(latDeg, lonDeg));
+}
+
+/* --- solar elevation at a place, from the hour angle ------------------- */
+function sunElevation(latDeg, lonDeg, sol) {
+  const H = (lonDeg - sol.subLonDeg) * RAD;
+  const p = latDeg * RAD, d = sol.decDeg * RAD;
+  return Math.asin(Math.sin(p) * Math.sin(d) +
+                   Math.cos(p) * Math.cos(d) * Math.cos(H)) / RAD;
+}
+
+/* --- the day/night boundary -------------------------------------------
+   The terminator is the great circle perpendicular to the Sun direction, so
+   its visible arc is closed along the limb to fill the night side. The limb
+   maps to the screen circle at the same angle, which makes that closure a
+   simple sweep in screen space. */
+function nightPath(sol) {
+  const s = vecOf(sol.decDeg, SUN_SCREEN_LON);       // Sun in screen frame
+  // Orthonormal basis perpendicular to the Sun direction.
+  const ref = Math.abs(s.z) < 0.9 ? { x: 0, y: 0, z: 1 } : { x: 1, y: 0, z: 0 };
+  const cross = (a, b) => ({ x: a.y * b.z - a.z * b.y,
+                             y: a.z * b.x - a.x * b.z,
+                             z: a.x * b.y - a.y * b.x });
+  const norm = (a) => { const m = Math.hypot(a.x, a.y, a.z); return { x: a.x / m, y: a.y / m, z: a.z / m }; };
+  const u = norm(cross(ref, s));
+  const w = cross(s, u);
+
+  const pts = [];
+  for (let i = 0; i < 360; i++) {
+    const t = i * RAD;
+    const c = Math.cos(t), sn = Math.sin(t);
+    const p = { x: u.x * c + w.x * sn, y: u.y * c + w.y * sn, z: u.z * c + w.z * sn };
+    pts.push({ ...projectVec(p) });
+  }
+  // The visible half is contiguous; rotate the list so it starts at its edge.
+  const firstHidden = pts.findIndex((p) => !p.front);
+  if (firstHidden === -1) return null;               // Sun edge-on: nothing to shade
+  const rot = pts.slice(firstHidden).concat(pts.slice(0, firstHidden));
+  const vis = rot.filter((p) => p.front);
+  if (vis.length < 2) return null;
+
+  const A = vis[0], B = vis[vis.length - 1];
+  let psiA = Math.atan2(A.y, A.x), psiB = Math.atan2(B.y, B.x);
+
+  // Close along whichever limb arc lies on the dark side of the Sun.
+  const limbVec = (psi) => ({ x: Math.cos(psi), y: ST * Math.sin(psi), z: -CT * Math.sin(psi) });
+  const dot = (a, b) => a.x * b.x + a.y * b.y + a.z * b.z;
+  let d1 = psiA - psiB; while (d1 <= 0) d1 += 2 * Math.PI;
+  const mid = psiB + d1 / 2;
+  const sweep = dot(limbVec(mid), s) < 0 ? d1 : d1 - 2 * Math.PI;
+
+  let d = "M" + vis.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join("L");
+  const steps = 48;
+  for (let i = 1; i <= steps; i++) {
+    const psi = psiB + (sweep * i) / steps;
+    d += `L${(R * Math.cos(psi)).toFixed(2)},${(R * Math.sin(psi)).toFixed(2)}`;
+  }
+  return d + "Z";
 }
 // A whole circle of latitude projects to an ellipse — that is what makes the
 // "small circle near the pole, big circle at the equator" idea visible at a glance.
@@ -503,26 +633,69 @@ function drawMyRing() {
   }));
 }
 
-function drawPin(lonDeg) {
-  const p = project(lat, lonDeg);
-  const wrap = el("pin");
-  wrap.innerHTML = "";
-  // A short motion trail, so the direction and pace of travel are readable.
-  for (let i = 1; i <= 7; i++) {
-    const t = project(lat, lonDeg - i * 5);
-    if (!t.front) continue;
-    wrap.appendChild(svg("circle", {
-      cx: t.x, cy: t.y, r: 2.6 - i * 0.25,
-      fill: "#4db8ff", opacity: 0.34 - i * 0.04,
+/* Redraw everything that depends on the clock: the night side, your marker
+   at its true position, and the trail showing the last hour of travel. */
+function drawLive(ms) {
+  const sol = solar(ms);
+
+  // night shading
+  const nightWrap = el("night");
+  nightWrap.innerHTML = "";
+  const d = nightPath(sol);
+  if (d) {
+    nightWrap.appendChild(svg("path", {
+      d, fill: "#03070f", "fill-opacity": 0.82,
+      stroke: "#3a6ea8", "stroke-width": 0.8, "stroke-opacity": 0.5,
     }));
   }
+
+  const sLon = screenLon(lon, sol.subLonDeg);
+  const p = project(lat, sLon);
+  const wrap = el("pin");
+  wrap.innerHTML = "";
+
+  // Trail = where you actually were over the previous hour (15 deg of turn).
+  for (let i = 1; i <= 8; i++) {
+    const t = project(lat, sLon - i * (15 / 8));
+    if (!t.front) continue;
+    wrap.appendChild(svg("circle", {
+      cx: t.x, cy: t.y, r: 2.6 - i * 0.22,
+      fill: "#4db8ff", opacity: 0.32 - i * 0.035,
+    }));
+  }
+
+  const elev = sunElevation(lat, lon, sol);
+  const lit = elev > -0.833;                      // refraction-corrected sunrise
   wrap.appendChild(svg("circle", {
     cx: p.x, cy: p.y, r: 6.5, fill: "none",
-    stroke: "#4db8ff", "stroke-width": 1.4, opacity: p.front ? 0.55 : 0.2,
+    stroke: lit ? "#ffc447" : "#4db8ff", "stroke-width": 1.4,
+    opacity: p.front ? 0.6 : 0.22,
   }));
   wrap.appendChild(svg("circle", {
-    cx: p.x, cy: p.y, r: 4, fill: "#4db8ff", opacity: p.front ? 1 : 0.32,
+    cx: p.x, cy: p.y, r: 4, fill: lit ? "#ffc447" : "#4db8ff",
+    opacity: p.front ? 1 : 0.32,
   }));
+
+  // Subsolar marker — the one spot with the Sun straight overhead.
+  const sp = project(sol.decDeg, SUN_SCREEN_LON);
+  if (sp.front) {
+    wrap.appendChild(svg("circle", {
+      cx: sp.x, cy: sp.y, r: 3, fill: "none", stroke: "#ffc447",
+      "stroke-width": 1.2, opacity: 0.75,
+    }));
+  }
+
+  // Readouts: local solar time and whether the Sun is up where you are.
+  let solarHours = 12 + (lon - sol.subLonDeg) / 15;
+  solarHours = ((solarHours % 24) + 24) % 24;
+  const hh = Math.floor(solarHours);
+  const mm = Math.floor((solarHours - hh) * 60);
+  el("clockOut").textContent =
+    String(hh).padStart(2, "0") + ":" + String(mm).padStart(2, "0");
+  el("sunOut").textContent = lit
+    ? `Sun up, ${elev.toFixed(0)}° above the horizon`
+    : `Dark, Sun ${Math.abs(elev).toFixed(0)}° below the horizon`;
+  el("sunOut").style.color = lit ? "var(--orbit)" : "var(--sub)";
 }
 
 /* ============================ orbit drawing ============================ */
@@ -673,7 +846,9 @@ function updateSpin() {
         ? `About ${sound.toFixed(2)}× the speed of sound, or ${jet.toFixed(1)}× a cruising airliner.`
         : `About ${(sound * 100).toFixed(0)}% of the speed of sound, or ${jet.toFixed(1)}× a cruising airliner.`;
 
-  el("latOut").textContent = Math.abs(lat).toFixed(2) + "° " + (lat >= 0 ? "N" : "S");
+  el("latOut").textContent =
+    Math.abs(lat).toFixed(2) + "° " + (lat >= 0 ? "N" : "S") + ", " +
+    Math.abs(lon).toFixed(2) + "° " + (lon >= 0 ? "E" : "W");
   el("circOut").textContent = distText(2 * Math.PI * axisDistance(lat));
   el("axisOut").textContent = distText(axisDistance(lat));
 
@@ -709,16 +884,23 @@ function updateOrbit() {
 }
 
 /* ============================ animation ============================ */
-const SPIN_PERIOD = 14;        // seconds on screen for one full rotation
-const ORBIT_PERIOD = 48;       // seconds on screen for one full orbit
-let spinPhase = 0;
+// Time-lapse multipliers. 1x is the truth; anything faster says so on screen.
+const RATES = [
+  { x: 1,    label: "Live",   note: "real time" },
+  { x: 60,   label: "×60",    note: "a minute a second" },
+  { x: 900,  label: "×900",   note: "a day in 96 s" },
+  { x: 3600, label: "×3600",  note: "a day in 24 s" },
+];
+let rate = RATES[0];
+let simTime = Date.now();
 
 function frame(now) {
   const dt = (now - lastTick) / 1000;
   lastTick = now;
 
-  spinPhase = (spinPhase + (360 / SPIN_PERIOD) * dt) % 360;
-  drawPin(spinPhase);
+  // At 1x this tracks the wall clock exactly; faster rates advance from it.
+  simTime = rate.x === 1 ? Date.now() : simTime + dt * 1000 * rate.x;
+  drawLive(simTime);
 
   // Odometer counts real elapsed time at real speed — not the sped-up animation.
   const st = orbitState(Date.now());
@@ -729,11 +911,15 @@ function frame(now) {
 }
 
 /* ============================ wiring ============================ */
-function setLat(v, syncSlider) {
-  lat = Math.max(-90, Math.min(90, v));
-  if (syncSlider) el("latSlider").value = lat;
+function setPos(newLat, newLon, syncSliders) {
+  lat = Math.max(-90, Math.min(90, newLat));
+  if (newLon !== null && newLon !== undefined) {
+    lon = ((newLon + 540) % 360) - 180;
+  }
+  if (syncSliders) { el("latSlider").value = lat; el("lonSlider").value = lon; }
   updateSpin();
-  updateOrbit();   // the "× your spin speed" line depends on latitude
+  updateOrbit();      // the "× your spin speed" line depends on latitude
+  drawLive(simTime);  // position moved, so the live view is stale
 }
 
 // Select the unit without redrawing — used during init, before the static
@@ -769,20 +955,47 @@ function setUnit(id) {
   blank.textContent = "— pick a city —";
   blank.value = "";
   sel.appendChild(blank);
-  CITIES.slice().sort((a, b) => b[1] - a[1]).forEach(([name, la]) => {
+  CITIES.slice().sort((a, b) => b[1] - a[1]).forEach(([name, la, lo]) => {
     const o = document.createElement("option");
-    o.value = la;
+    o.value = la + "," + lo;
     o.textContent = `${name}  (${Math.abs(la).toFixed(1)}° ${la >= 0 ? "N" : "S"})`;
     sel.appendChild(o);
   });
   sel.addEventListener("change", () => {
-    if (sel.value !== "") setLat(parseFloat(sel.value), true);
+    if (sel.value !== "") {
+      const [la, lo] = sel.value.split(",").map(Number);
+      setPos(la, lo, true);
+    }
   });
 
   el("latSlider").addEventListener("input", (e) => {
     el("citySel").value = "";
-    setLat(parseFloat(e.target.value), false);
+    setPos(parseFloat(e.target.value), lon, false);
   });
+  el("lonSlider").addEventListener("input", (e) => {
+    el("citySel").value = "";
+    setPos(lat, parseFloat(e.target.value), false);
+  });
+
+  // Time-lapse. 1x is the honest default; the badge always says which.
+  const rb = el("rateBtns");
+  RATES.forEach((r) => {
+    const b = document.createElement("button");
+    b.className = "btn";
+    b.style.cssText = "width:auto;padding:4px 9px;font-size:11.5px";
+    b.textContent = r.label;
+    b.title = r.note;
+    b.addEventListener("click", () => {
+      // Re-anchor to the wall clock so speeding up never drifts from reality.
+      if (rate.x === 1) simTime = Date.now();
+      rate = r;
+      [...rb.children].forEach((c) => c.removeAttribute("aria-pressed"));
+      b.setAttribute("aria-pressed", "true");
+      el("rateNote").textContent = r.note;
+    });
+    rb.appendChild(b);
+  });
+  rb.firstChild.setAttribute("aria-pressed", "true");
 
   el("geoBtn").addEventListener("click", () => {
     const hint = el("geoHint");
@@ -794,7 +1007,7 @@ function setUnit(id) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         el("citySel").value = "";
-        setLat(pos.coords.latitude, true);
+        setPos(pos.coords.latitude, pos.coords.longitude, true);
         hint.textContent = "Using your location. It stayed in the browser — nothing was sent anywhere.";
       },
       (err) => {
@@ -823,7 +1036,7 @@ function setUnit(id) {
 
   drawStaticRings();
   drawOrbitFrame();
-  setLat(lat, true);
+  setPos(lat, lon, true);
   requestAnimationFrame((t) => { lastTick = t; frame(t); });
 })();
 </script>
