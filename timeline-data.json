@@ -28,7 +28,7 @@
       "TimeTree of Life divergence estimates",
       "Peer-reviewed consensus dates for individual first-appearance and extinction events"
     ],
-    "caveat": "Deep dates carry real uncertainty — often tens of millions of years for early life. Every entry carries a certainty field; respect it rather than presenting these as exact."
+    "caveat": "Deep dates carry real uncertainty — often tens of millions of years for early life. Every entry carries a certainty field; respect it rather than presenting these as exact. Biological origin markers summarize fossil evidence or evolutionary estimates, not exact first appearances. Cultural developments often have multiple centers and extended histories. Event sources, where supplied, identify supporting references."
   },
   "scale": [
     {
@@ -399,21 +399,21 @@
     },
     {
       "id": "oldest-rocks",
-      "label": "Oldest surviving rocks",
+      "label": "Ancient rocks survive at Acasta",
       "emoji": "🪨",
       "category": "geology",
       "ybp": 4030000000.0,
       "certainty": "firm",
-      "blurb": "The Acasta Gneiss in Canada is the oldest intact rock we can still put our hands on. Everything older has been recycled by the planet."
+      "blurb": "The Acasta Gneiss in Canada preserves rocks dated to about 4.03 billion years ago. Older mineral grains also survive, while claims for older intact rocks continue to be investigated."
     },
     {
       "id": "first-life",
-      "label": "Life begins",
+      "label": "Possible early evidence of life",
       "emoji": "🦠",
       "category": "origin",
       "ybp": 3800000000,
       "certainty": "debated",
-      "blurb": "Chemical signatures in ancient rocks suggest single-celled life already existed. Everything alive today descends from one of these populations."
+      "blurb": "Chemical signatures in some ancient rocks have been interpreted as evidence of life. Their interpretation and the timing of life’s origin remain debated; this marker is not a known birthday for life."
     },
     {
       "id": "archaea-bacteria",
@@ -468,7 +468,7 @@
       "startYbp": 2430000000,
       "endYbp": 2100000000,
       "certainty": "firm",
-      "blurb": "Oxygen finally builds up in the air. To most life at the time it is a deadly poison — probably the largest extinction in Earth's history, and it left no fossils."
+      "blurb": "Oxygen accumulates in the atmosphere and transforms surface environments. It creates new opportunities for oxygen-using organisms while making many habitats hostile to organisms adapted to oxygen-free conditions."
     },
     {
       "id": "huronian-glaciation",
@@ -538,16 +538,16 @@
     },
     {
       "id": "multicellular",
-      "label": "First multicellular life",
+      "label": "Early multicellular red algae",
       "emoji": "🪸",
       "category": "origin",
       "ybp": 1050000000,
       "certainty": "debated",
-      "blurb": "Bangiomorpha, a fossil red seaweed, is the oldest known organism made of specialized cells working as one body."
+      "blurb": "Bangiomorpha preserves an early example of complex multicellular life. Multicellularity evolved independently in several lineages, and other evidence reaches further back in time."
     },
     {
       "id": "fungi",
-      "label": "First fungi",
+      "label": "Early fungi",
       "emoji": "🍄",
       "category": "origin",
       "ybp": 1000000000.0,
@@ -566,12 +566,12 @@
     },
     {
       "id": "first-animals",
-      "label": "First animals (sponges)",
+      "label": "Estimated early animal origins",
       "emoji": "🧽",
       "category": "origin",
       "ybp": 700000000,
       "certainty": "debated",
-      "blurb": "Molecular clocks put the animal kingdom's origin here, though convincing sponge fossils come later. Every animal, including you, traces back to this branch."
+      "blurb": "Some evolutionary estimates place animal origins around this time, before widely accepted animal fossils. The date and identity of the earliest animals remain debated; this is an estimate, not a fossil first appearance."
     },
     {
       "id": "ediacaran-biota",
@@ -595,7 +595,7 @@
     },
     {
       "id": "first-vertebrates",
-      "label": "First vertebrates — jawless fish",
+      "label": "Early vertebrates — jawless fish",
       "emoji": "🐟",
       "category": "origin",
       "ybp": 530000000,
@@ -667,7 +667,7 @@
     },
     {
       "id": "first-insects",
-      "label": "First insects",
+      "label": "Early insects",
       "emoji": "🪰",
       "category": "origin",
       "ybp": 400000000,
@@ -676,7 +676,7 @@
     },
     {
       "id": "first-forests",
-      "label": "First forests",
+      "label": "Early forests",
       "emoji": "🌲",
       "category": "origin",
       "ybp": 385000000,
@@ -685,12 +685,12 @@
     },
     {
       "id": "first-tetrapods",
-      "label": "Fins become legs — first tetrapods",
+      "label": "Fins and limbs: the transition toward tetrapods",
       "emoji": "🦶",
       "category": "origin",
       "ybp": 375000000,
       "certainty": "firm",
-      "blurb": "Fish like Tiktaalik have shoulders, elbows, wrists, and a neck. Every amphibian, reptile, bird, and mammal is a modified fish because of this."
+      "blurb": "Fossils such as Tiktaalik show a mix of fish and limb-like features, including a mobile neck and robust fins. They document stages in a long evolutionary transition, not a single first step onto land."
     },
     {
       "id": "late-devonian-extinction",
@@ -722,8 +722,20 @@
       "blurb": "Oxygen peaks near 35% of the atmosphere, letting dragonflies reach 70 cm wingspans. Buried swamp plants become nearly all the coal we burn today."
     },
     {
+      "id": "insect-flight",
+      "label": "Insects take flight",
+      "emoji": "🪽",
+      "category": "origin",
+      "certainty": "approximate",
+      "blurb": "Winged insects appear in the fossil record long before flying vertebrates. The origin of flight may be older; fossils and evolutionary estimates do not yet give a single settled date.",
+      "sources": [
+        "https://repository.si.edu/items/eadb097e-b3a2-4e3b-a134-fee627eb85e0"
+      ],
+      "ybp": 325000000
+    },
+    {
       "id": "first-reptiles",
-      "label": "First reptiles",
+      "label": "Early reptiles",
       "emoji": "🦎",
       "category": "origin",
       "ybp": 318000000,
@@ -796,7 +808,7 @@
     },
     {
       "id": "first-dinosaurs",
-      "label": "First dinosaurs",
+      "label": "Early dinosaurs",
       "emoji": "🦕",
       "category": "origin",
       "ybp": 231000000,
@@ -805,7 +817,7 @@
     },
     {
       "id": "turtles",
-      "label": "First turtles",
+      "label": "Early turtles",
       "emoji": "🐢",
       "category": "origin",
       "ybp": 230000000.0,
@@ -823,7 +835,7 @@
     },
     {
       "id": "first-mammals",
-      "label": "First mammals",
+      "label": "Early mammals",
       "emoji": "🐁",
       "category": "origin",
       "ybp": 225000000,
@@ -841,16 +853,16 @@
     },
     {
       "id": "crocodilians",
-      "label": "First crocodilians",
+      "label": "Early relatives of crocodiles",
       "emoji": "🐊",
       "category": "origin",
       "ybp": 200000000.0,
       "certainty": "approximate",
-      "blurb": "Crocodiles arrive before the first birds and change remarkably little afterwards. They watched the dinosaurs come and go."
+      "blurb": "Early crocodile-line reptiles diversify during the age of dinosaurs. Some live on land and look quite unlike modern crocodiles; the living crocodilian groups arise much later."
     },
     {
       "id": "frogs",
-      "label": "First frogs",
+      "label": "Early frogs",
       "emoji": "🐸",
       "category": "origin",
       "ybp": 200000000.0,
@@ -889,11 +901,11 @@
     },
     {
       "id": "first-birds",
-      "label": "First birds",
+      "label": "Early birds",
       "emoji": "🪶",
       "category": "origin",
       "ybp": 150000000,
-      "certainty": "firm",
+      "certainty": "approximate",
       "blurb": "Archaeopteryx has feathers and wings but also teeth and a long bony tail. Birds are dinosaurs — the only lineage that survived."
     },
     {
@@ -916,7 +928,7 @@
     },
     {
       "id": "snakes",
-      "label": "First snakes",
+      "label": "Early snakes",
       "emoji": "🐍",
       "category": "origin",
       "ybp": 128000000.0,
@@ -1011,7 +1023,7 @@
     },
     {
       "id": "first-primates",
-      "label": "First primates",
+      "label": "Early primates",
       "emoji": "🐒",
       "category": "origin",
       "ybp": 66000000,
@@ -1039,7 +1051,7 @@
     },
     {
       "id": "elephants",
-      "label": "First elephant relatives",
+      "label": "Early elephant relatives",
       "emoji": "🐘",
       "category": "origin",
       "ybp": 60000000.0,
@@ -1048,7 +1060,7 @@
     },
     {
       "id": "penguins",
-      "label": "First penguins",
+      "label": "Early penguins",
       "emoji": "🐧",
       "category": "origin",
       "ybp": 60000000.0,
@@ -1075,21 +1087,21 @@
     },
     {
       "id": "horses",
-      "label": "First horses",
+      "label": "Early horses",
       "emoji": "🐎",
       "category": "origin",
       "ybp": 55000000.0,
-      "certainty": "firm",
+      "certainty": "approximate",
       "blurb": "Eohippus is the size of a small dog with four toes on each front foot. The horse lineage is one of the best-documented in all of palaeontology."
     },
     {
       "id": "grasses",
-      "label": "Grasses appear",
+      "label": "Grasses diversify in the early Cenozoic",
       "emoji": "🌾",
       "category": "origin",
       "ybp": 55000000.0,
       "certainty": "approximate",
-      "blurb": "Grass grows from the base, not the tip, so it survives being eaten and burned. That one trick eventually reshapes whole continents."
+      "blurb": "Grasses become part of early Cenozoic landscapes, although evidence places their origins earlier, during the age of dinosaurs. Much later, expanding grasslands reshape ecosystems."
     },
     {
       "id": "eocene-optimum",
@@ -1148,12 +1160,12 @@
     },
     {
       "id": "canids",
-      "label": "First dogs and wolves",
+      "label": "Early members of the dog family",
       "emoji": "🐺",
       "category": "origin",
       "ybp": 40000000.0,
       "certainty": "approximate",
-      "blurb": "The dog family emerges in North America and eventually spreads worldwide — the ancestors of every wolf, fox, and household dog."
+      "blurb": "Early canids appear in North America. This is the history of the wider family that eventually includes wolves, foxes, and domestic dogs, not the appearance of modern dogs or wolves."
     },
     {
       "id": "antarctic-glaciation",
@@ -1185,7 +1197,7 @@
     },
     {
       "id": "felids",
-      "label": "First cats",
+      "label": "Early cats",
       "emoji": "🐈",
       "category": "origin",
       "ybp": 25000000.0,
@@ -1496,12 +1508,12 @@
     },
     {
       "id": "cave-art",
-      "label": "Cave art",
+      "label": "Early surviving figurative cave art",
       "emoji": "🎨",
       "category": "human",
       "ybp": 45500,
       "certainty": "firm",
-      "blurb": "A warty pig painted on a wall in Sulawesi is the oldest known figurative art. Chauvet and Lascaux follow thousands of years later."
+      "blurb": "Paintings in caves such as those in Sulawesi preserve early figurative art. New discoveries and revised dates keep changing the record; surviving paintings cannot tell us when people first began making art."
     },
     {
       "id": "flutes",
@@ -1570,13 +1582,13 @@
     },
     {
       "id": "agriculture",
-      "label": "Agriculture invented",
+      "label": "Early farming in Southwest Asia",
       "emoji": "🌾",
       "category": "human",
       "startYbp": 12000,
       "endYbp": 7000,
       "certainty": "firm",
-      "blurb": "Farming begins independently in at least 11 regions — wheat in the Fertile Crescent, rice in China, maize in Mexico, potatoes in the Andes. Everything else follows from this."
+      "blurb": "Communities in Southwest Asia increasingly cultivate plants and manage animals. Farming emerges gradually and develops independently in several other regions, rather than being invented once."
     },
     {
       "id": "holocene-begins",
@@ -1594,7 +1606,7 @@
       "category": "civilization",
       "ybp": 11600,
       "certainty": "firm",
-      "blurb": "Massive carved stone pillars raised by hunter-gatherers — before pottery, metal, writing, or farming. It overturned the assumption that farming had to come first."
+      "blurb": "Communities build monumental stone enclosures during the transition toward farming in Southwest Asia. The site shows complex cooperation and ritual activity among people whose ways of obtaining food were changing."
     },
     {
       "id": "jericho",
@@ -1625,6 +1637,18 @@
       "blurb": "Grain stores drew mice, and mice drew wildcats. A cat was buried with a human on Cyprus 9,500 years ago."
     },
     {
+      "id": "maize-domestication",
+      "label": "Maize domestication in the Americas",
+      "emoji": "🌽",
+      "category": "human",
+      "certainty": "approximate",
+      "blurb": "People in southwest Mexico cultivate the ancestors of maize. Domestication unfolds over many generations and regions: agriculture develops independently in the Americas, rather than arriving from a single Old World source.",
+      "sources": [
+        "https://www.si.edu/newsdesk/releases/new-research-reveals-earliest-evidence-corn-new-world"
+      ],
+      "ybp": 9000
+    },
+    {
       "id": "doggerland",
       "label": "Doggerland drowns",
       "emoji": "🌊",
@@ -1643,6 +1667,18 @@
       "blurb": "A glacial lake bursts into the North Atlantic and shuts down ocean circulation. The northern hemisphere cools sharply for about 150 years."
     },
     {
+      "id": "rice-cultivation",
+      "label": "Rice cultivation in China",
+      "emoji": "🌾",
+      "category": "human",
+      "certainty": "approximate",
+      "blurb": "Communities cultivate rice in the Yangtze region. Cultivation and domestication are gradual processes: traits such as retaining ripe grains develop over many generations.",
+      "sources": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4035933/"
+      ],
+      "ybp": 8000
+    },
+    {
       "id": "lactose",
       "label": "Lactose tolerance spreads",
       "emoji": "🥛",
@@ -1652,14 +1688,27 @@
       "blurb": "A mutation lets adults digest milk. It sweeps through herding populations — one of the fastest known cases of recent human evolution."
     },
     {
+      "id": "kuk-agriculture",
+      "label": "Independent farming in New Guinea",
+      "emoji": "🌱",
+      "category": "human",
+      "certainty": "approximate",
+      "blurb": "At Kuk in the New Guinea highlands, evidence records an independent transition to agriculture. Farmers manage wet ground and grow crops such as bananas, taro, and yams.",
+      "sources": [
+        "https://whc.unesco.org/en/list/887"
+      ],
+      "startYbp": 7000,
+      "endYbp": 6400
+    },
+    {
       "id": "wheel",
-      "label": "The wheel",
+      "label": "Wheels and wheeled transport",
       "emoji": "⚙️",
       "category": "tech",
       "ybp": 5526,
       "year": -3500,
       "certainty": "approximate",
-      "blurb": "First used for pottery, then carts. Notably, it was never adopted for transport in the pre-Columbian Americas — there were no draft animals to pull it."
+      "blurb": "Wheels appear in craft production and transport in parts of Eurasia. Their usefulness depends on roads, terrain, available animals, and social needs; wheeled objects also existed in the pre-Columbian Americas."
     },
     {
       "id": "horses-domesticated",
@@ -1672,12 +1721,12 @@
     },
     {
       "id": "uruk",
-      "label": "Uruk, the first city",
+      "label": "Uruk: an early major city",
       "emoji": "🏙️",
       "category": "civilization",
       "ybp": 5400,
       "certainty": "approximate",
-      "blurb": "Tens of thousands of people living together in Mesopotamia, requiring the invention of administration, accounting, and eventually writing."
+      "blurb": "Tens of thousands of people gather in a major Mesopotamian urban center. Administration, trade, and record-keeping expand. Urban life develops gradually, so no single settlement is unambiguously the first city."
     },
     {
       "id": "bronze-age",
@@ -1687,17 +1736,17 @@
       "startYbp": 5300,
       "endYbp": 3200,
       "certainty": "firm",
-      "blurb": "Alloying copper with tin makes the first hard metal tools, and the first long-distance trade networks to supply them."
+      "blurb": "Copper alloys, including bronze made with tin, become widely used for tools, weapons, and ornaments. Trade networks expand to supply metal ores; the timing varies substantially by region."
     },
     {
       "id": "writing",
-      "label": "Writing invented",
+      "label": "Early writing in Mesopotamia",
       "emoji": "📜",
       "category": "civilization",
       "ybp": 5226,
       "year": -3200,
       "certainty": "firm",
-      "blurb": "Sumerian cuneiform starts as accounting marks on clay. History, in the literal sense of written record, begins here."
+      "blurb": "Early cuneiform develops from record-keeping in Mesopotamia. Writing also develops in other societies, sometimes independently. Written records preserve new kinds of evidence, but people had rich histories long before writing."
     },
     {
       "id": "stonehenge",
@@ -1708,6 +1757,19 @@
       "endYbp": 3500,
       "certainty": "firm",
       "blurb": "Built in stages over 1,500 years, aligned to the solstices, with some stones hauled 250 km from Wales."
+    },
+    {
+      "id": "caral",
+      "label": "Caral: early cities in the Americas",
+      "emoji": "🏛️",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "Communities in Peru’s Supe Valley build monumental platforms and sunken plazas. Their urban centers develop while cities are also growing in Egypt and Mesopotamia.",
+      "sources": [
+        "https://whc.unesco.org/en/list/1269"
+      ],
+      "startYbp": 5025,
+      "endYbp": 3825
     },
     {
       "id": "indus",
@@ -1746,7 +1808,7 @@
       "ybp": 3780,
       "year": -1754,
       "certainty": "firm",
-      "blurb": "Laws carved on a public stone pillar so that everyone could see them. The idea that rules should be written down and fixed in advance starts here."
+      "blurb": "A Babylonian king has a collection of legal judgments inscribed on a stone monument. It is a famous surviving law collection, not the earliest evidence of written law."
     },
     {
       "id": "chicken-domestication",
@@ -1757,6 +1819,19 @@
       "year": -1500,
       "certainty": "approximate",
       "blurb": "Red junglefowl in Southeast Asia become chickens, probably drawn in by rice farming. There are now about 26 billion of them — the most numerous bird on Earth, and the closest living relative you can eat to a tyrannosaur."
+    },
+    {
+      "id": "vedic-traditions",
+      "label": "Vedic traditions develop",
+      "emoji": "📜",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "Hymns, rituals, and later philosophical texts develop in South Asia through oral transmission. These traditions become important foundations of Hinduism, which has no single founder or universally agreed starting date.",
+      "sources": [
+        "https://82nd-and-fifth.metmuseum.org/toah/ht/04/ssa.html"
+      ],
+      "startYbp": 3525,
+      "endYbp": 2525
     },
     {
       "id": "bronze-collapse",
@@ -1780,13 +1855,13 @@
     },
     {
       "id": "alphabet",
-      "label": "The alphabet",
+      "label": "Phoenician alphabet spreads",
       "emoji": "🔤",
       "category": "civilization",
       "ybp": 3076,
       "year": -1050,
       "certainty": "approximate",
-      "blurb": "Phoenician traders reduce writing to about 22 signs for sounds. Literacy stops being a specialist profession."
+      "blurb": "Phoenician communities use and spread a compact consonantal writing system. It builds on earlier alphabetic traditions and influences later scripts, including Greek."
     },
     {
       "id": "polynesia",
@@ -1797,6 +1872,32 @@
       "endYbp": 800,
       "certainty": "firm",
       "blurb": "Voyagers cross thousands of kilometres of open ocean by stars, swell, and birds, finding specks of land in the largest empty space on Earth."
+    },
+    {
+      "id": "buddhism-jainism",
+      "label": "Buddhist and Jain traditions emerge",
+      "emoji": "🪷",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "The teachings associated with the Buddha and Mahavira reshape religious life in South Asia. Buddhist and Jain communities develop distinctive paths of ethical practice and liberation; dates for their early teachers remain debated.",
+      "sources": [
+        "https://82nd-and-fifth.metmuseum.org/toah/ht/04/ssa.html"
+      ],
+      "startYbp": 2625,
+      "endYbp": 2425
+    },
+    {
+      "id": "jewish-exile",
+      "label": "Babylonian exile and Jewish history",
+      "emoji": "📜",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "Babylonian conquest and exile become a defining chapter in Jewish history. Under Persian rule, some exiles return to Judah. Judaism has older Israelite roots and continues developing across many communities.",
+      "sources": [
+        "https://www.metmuseum.org/es/perspectives/cyrus-and-the-judean-diaspora"
+      ],
+      "startYbp": 2611,
+      "endYbp": 2563
     },
     {
       "id": "classical-antiquity",
@@ -1840,6 +1941,19 @@
       "blurb": "From Augustus to the fall of the West in 476 CE. At its height it governed roughly a quarter of humanity."
     },
     {
+      "id": "christian-communities",
+      "label": "Early Christian communities",
+      "emoji": "📜",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "Following the life and teachings of Jesus of Nazareth, a movement rooted in Jewish society spreads across the Roman world. Its communities develop into diverse Christian traditions over subsequent centuries.",
+      "sources": [
+        "https://pluralism.org/a-worldwide-tradition"
+      ],
+      "startYbp": 1996,
+      "endYbp": 1926
+    },
+    {
       "id": "paper",
       "label": "Paper invented",
       "emoji": "📄",
@@ -1858,6 +1972,19 @@
       "endYbp": 1126,
       "certainty": "firm",
       "blurb": "Mesoamerican city-states with full writing, a place-value number system including zero, and astronomy accurate to minutes per century."
+    },
+    {
+      "id": "islam-hijra",
+      "label": "The Hijra: an early Muslim community in Medina",
+      "emoji": "📜",
+      "category": "civilization",
+      "certainty": "firm",
+      "blurb": "Muhammad and his followers migrate from Mecca to Medina. This milestone in the development of Islam marks the starting year of the Islamic calendar; Muslim tradition dates the beginning of revelation earlier, to about 610 CE.",
+      "sources": [
+        "https://www.metmuseum.org/de/essays/the-birth-of-islam"
+      ],
+      "ybp": 1404,
+      "year": 622
     },
     {
       "id": "zero",
@@ -1901,13 +2028,39 @@
     },
     {
       "id": "compass",
-      "label": "The magnetic compass",
+      "label": "Magnetic navigation develops",
       "emoji": "🧭",
       "category": "tech",
       "ybp": 976,
       "year": 1050,
       "certainty": "approximate",
-      "blurb": "Navigation stops depending on clear skies and a visible coastline. Open-ocean voyaging becomes practical."
+      "blurb": "Mariners increasingly use magnetic direction-finding alongside stars, winds, currents, and coastal knowledge. Long-distance ocean voyaging already existed; the compass adds another powerful navigation tool."
+    },
+    {
+      "id": "cahokia",
+      "label": "Cahokia flourishes",
+      "emoji": "🏘️",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "Near today’s St. Louis, an Indigenous city reaches its peak with large earthen mounds and plazas. Its population is estimated at roughly 10,000–20,000, with many more people in the surrounding region.",
+      "sources": [
+        "https://www.nps.gov/articles/000/archeology-this-month-native-american-heritage.htm"
+      ],
+      "startYbp": 976,
+      "endYbp": 876
+    },
+    {
+      "id": "great-zimbabwe",
+      "label": "Great Zimbabwe",
+      "emoji": "🧱",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "Shona builders create monumental dry-stone walls and a major trading center in southern Africa. Great Zimbabwe connects inland communities with wider trading networks.",
+      "sources": [
+        "https://whc.unesco.org/en/list/364"
+      ],
+      "startYbp": 926,
+      "endYbp": 576
     },
     {
       "id": "angkor",
@@ -1988,6 +2141,19 @@
       "year": 1492,
       "certainty": "firm",
       "blurb": "Two biological worlds separated for 12,000 years collide. Crops, animals, and — devastatingly — diseases move both ways, killing perhaps 90% of the Americas' population."
+    },
+    {
+      "id": "sikh-tradition",
+      "label": "Guru Nanak and the Sikh tradition",
+      "emoji": "📜",
+      "category": "civilization",
+      "certainty": "approximate",
+      "blurb": "Guru Nanak teaches in South Asia, emphasizing devotion to one God and a life of truthful conduct and service. Communities around his teachings form the beginnings of the Sikh tradition, developed further by succeeding Gurus.",
+      "sources": [
+        "https://pluralism.org/guru-nanak"
+      ],
+      "startYbp": 526,
+      "endYbp": 487
     },
     {
       "id": "circumnavigation",
@@ -2072,13 +2238,16 @@
     },
     {
       "id": "vaccination",
-      "label": "The first vaccine",
+      "label": "Jenner’s smallpox vaccination experiment",
       "emoji": "💉",
       "category": "tech",
       "ybp": 230,
       "year": 1796,
       "certainty": "firm",
-      "blurb": "Edward Jenner uses cowpox to protect against smallpox — the first deliberate immunisation, and eventually the tool that eradicates the disease entirely."
+      "blurb": "Edward Jenner demonstrates protection against smallpox using material from cowpox. Earlier inoculation practices already existed; vaccination later becomes a key tool in smallpox eradication.",
+      "sources": [
+        "https://www.who.int/news-room/spotlight/history-of-vaccination/history-of-smallpox-vaccination"
+      ]
     },
     {
       "id": "one-billion",
@@ -2161,6 +2330,19 @@
       "blurb": "Pasteur and Koch show that microbes cause disease. Average human life expectancy roughly doubles over the following century."
     },
     {
+      "id": "london-sewers",
+      "label": "London expands its sewer network",
+      "emoji": "🚰",
+      "category": "tech",
+      "ybp": 161,
+      "year": 1865,
+      "certainty": "firm",
+      "blurb": "Crossness Pumping Station opens as part of Joseph Bazalgette’s sewer system. It marks a major expansion of urban sanitation, not its invention: drainage and sewer systems existed in much older cities.",
+      "sources": [
+        "https://historicengland.org.uk/education/schools-resources/educational-images/crossness-pumping-station-belvedere-road-bexley-greater-london-ioe01-10174-07"
+      ]
+    },
+    {
       "id": "periodic-table",
       "label": "The periodic table",
       "emoji": "⚛️",
@@ -2189,6 +2371,19 @@
       "year": 1879,
       "certainty": "firm",
       "blurb": "Cheap indoor light detaches human activity from the sun, restructuring work, cities, and sleep itself."
+    },
+    {
+      "id": "womens-suffrage",
+      "label": "Women win the parliamentary vote in New Zealand",
+      "emoji": "🗳️",
+      "category": "civilization",
+      "certainty": "firm",
+      "blurb": "After sustained campaigning, New Zealand becomes the first self-governing country to grant women the parliamentary vote. Eligibility still depends on age and nationality; voting rights expand elsewhere through separate struggles.",
+      "sources": [
+        "https://nzhistory.govt.nz/politics/womens-suffrage/brief-history"
+      ],
+      "ybp": 133,
+      "year": 1893
     },
     {
       "id": "xrays",
@@ -2239,6 +2434,32 @@
       "year": 1908,
       "certainty": "firm",
       "blurb": "An object explodes above Siberia and flattens 80 million trees across 2,000 square kilometres. Nobody is recorded as killed, and no crater was ever found."
+    },
+    {
+      "id": "water-disinfection",
+      "label": "Routine drinking-water disinfection",
+      "emoji": "🚰",
+      "category": "tech",
+      "certainty": "firm",
+      "blurb": "Jersey City begins routine disinfection of its drinking-water supply, an early municipal milestone in the United States. Water treatment joins sanitation and filtration as a major defense against waterborne disease.",
+      "sources": [
+        "https://archive.cdc.gov/www_cdc_gov/healthywater/drinking/history.html"
+      ],
+      "ybp": 118,
+      "year": 1908
+    },
+    {
+      "id": "synthetic-fertilizer",
+      "label": "Synthetic fertilizer at industrial scale",
+      "emoji": "🌾",
+      "category": "tech",
+      "certainty": "firm",
+      "blurb": "A factory at Oppau, Germany, begins making ammonia using the Haber–Bosch process. Turning nitrogen from the air into fertilizer greatly expands food production, while also enabling explosives and altering the nitrogen cycle.",
+      "sources": [
+        "https://cen.acs.org/articles/101/i26/The-industrialization-Haber-Bosch-process.html"
+      ],
+      "ybp": 113,
+      "year": 1913
     },
     {
       "id": "world-wars",
@@ -2343,14 +2564,17 @@
     },
     {
       "id": "anthropocene",
-      "label": "Human-driven change becomes global",
+      "label": "Human-driven planetary change accelerates",
       "emoji": "🌡️",
       "category": "climate",
       "startYbp": 76,
       "endYbp": 0,
       "year": 1950,
       "certainty": "debated",
-      "blurb": "CO2 climbs past any level in 3 million years, species are lost at hundreds of times the background rate, and human-made mass now outweighs all living biomass. Whether to formally name this the Anthropocene epoch is still contested."
+      "blurb": "From the mid-twentieth century, industrial activity, resource use, and environmental change accelerate worldwide. The proposed Anthropocene geological epoch was formally rejected in 2024; the term remains widely used to discuss human influence on Earth.",
+      "sources": [
+        "https://quaternary.stratigraphy.org/working-groups/anthropocene"
+      ]
     },
     {
       "id": "sixth-extinction",
@@ -2391,6 +2615,19 @@
       "year": 1958,
       "certainty": "firm",
       "blurb": "Charles Keeling starts measuring CO2 on Mauna Loa. The resulting sawtooth graph — the planet breathing, on a rising trend — becomes the defining chart of climate science."
+    },
+    {
+      "id": "decolonization",
+      "label": "UN declaration on decolonization",
+      "emoji": "🌍",
+      "category": "civilization",
+      "certainty": "firm",
+      "blurb": "Amid independence movements across Africa, Asia, and beyond, the United Nations adopts a declaration supporting independence for colonial countries and peoples. Decolonization is an extended, uneven process, not a single completed event.",
+      "sources": [
+        "https://digitallibrary.un.org/record/206145"
+      ],
+      "ybp": 66,
+      "year": 1960
     },
     {
       "id": "cmb",
@@ -2444,13 +2681,16 @@
     },
     {
       "id": "internet",
-      "label": "The Internet goes public",
+      "label": "The World Wide Web opens to wider use",
       "emoji": "🌐",
       "category": "tech",
       "ybp": 35,
       "year": 1991,
       "certainty": "firm",
-      "blurb": "The World Wide Web is released to everyone. Within 30 years most of humanity is connected to it."
+      "blurb": "Tim Berners-Lee introduces the Web to wider Internet users in 1991. The Web links documents through browsers; it is not the Internet itself. CERN releases the Web software into the public domain in 1993.",
+      "sources": [
+        "https://home.cern/science/computing/the-birth-of-the-web/"
+      ]
     },
     {
       "id": "exoplanets",

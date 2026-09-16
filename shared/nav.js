@@ -30,6 +30,7 @@
       { href: "index.html", name: "All projects" },
     ]},
     { group: "Tools & webapps", items: [
+      { href: "half-staff/", name: "For Every Life" },
       { href: "solar-system/",        name: "Solar System" },
       { href: "gardenplanner/",       name: "Summer Garden Planner" },
       { href: "animalterritory/",     name: "Local Animal Territory" },

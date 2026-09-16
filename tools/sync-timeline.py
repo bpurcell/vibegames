@@ -50,8 +50,10 @@ def event_line(e: dict) -> str:
         js_str(e["certainty"]),
         js_str(e["blurb"]),
     ]
-    if "year" in e:
-        parts.append(js_num(e["year"]))
+    if "year" in e or e.get("sources"):
+        parts.append(js_num(e["year"]) if "year" in e else "null")
+    if e.get("sources"):
+        parts.append(json.dumps(e["sources"], ensure_ascii=False))
     return "  E(" + ",".join(parts) + "),"
 
 

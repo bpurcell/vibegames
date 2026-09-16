@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#070b14">
+<title>For Every Life · A Digital Memorial</title><meta name="description" content="A digital flag remembering victims of US mass shootings, with adjustable mourning and recovery time.">
+<link rel="stylesheet" href="../shared/site.css"><link rel="stylesheet" href="style.css">
+<script src="../shared/nav.js" data-title="For Every Life" defer></script><script src="core.js" defer></script><script src="app.js" defer></script>
+</head><body><main class="wrap">
+<header><p class="eyebrow">A DIGITAL MEMORIAL</p><h1>For every life.</h1><p class="intro">A flag lowered for people lost to mass shootings in the United States.<br>A moment of remembrance that does not depend on a famous name.</p></header>
+<div id="data-status" class="notice" role="status">Loading incident records…</div>
+<div class="layout"><section class="memorial panel" aria-label="Digital memorial flag">
+<div class="scene-top"><span id="mode-label">RECORDED INCIDENTS</span><span id="position">—</span></div>
+<svg id="scene" viewBox="0 0 640 550" role="img" aria-labelledby="flag-title flag-desc"><title id="flag-title">Digital United States flag</title><desc id="flag-desc">Loading flag position.</desc>
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#14233a"/><stop offset="1" stop-color="#0b1220"/></linearGradient><pattern id="stripes" width="190" height="20" patternUnits="userSpaceOnUse"><rect width="190" height="20" fill="#e3e6ec"/><rect width="190" height="10" fill="#a84b55"/></pattern></defs>
+<rect width="640" height="550" fill="url(#sky)"/><circle cx="495" cy="90" r="45" fill="#d6bf8b" opacity=".08"/>
+<path d="M0 505 Q160 475 320 501 T640 492 V550 H0Z" fill="#101b2b"/>
+<g stroke="#53667f" stroke-dasharray="3 8" opacity=".4"><path d="M135 70H520M135 217.5H520M135 365H520"/></g>
+<g fill="#8fa3bf" font-size="12" font-family="system-ui"><text x="90" y="75">100%</text><text x="98" y="222.5">50%</text><text x="104" y="370">0%</text></g>
+<path d="M235 62V505" stroke="#acb7c7" stroke-width="5"/><circle cx="235" cy="56" r="7" fill="#d6bf8b"/><rect x="213" y="505" width="45" height="7" rx="3" fill="#53667f"/>
+<g id="flag" transform="translate(238 70)"><rect width="190" height="130" fill="url(#stripes)"/><rect width="76" height="70" fill="#293d66"/><g id="stars" fill="#f1f2f5"></g></g></svg>
+<div class="scene-bottom"><h2 id="flag-state">Connecting to the record</h2><p id="countdown">The flag will appear when data is available.</p></div></section>
+<aside class="panel settings"><p class="eyebrow">YOUR REMEMBRANCE SETTINGS</p><h2>Time to remember.</h2>
+<label for="hold">Time lowered per person killed <output id="hold-value"></output></label><input id="hold" type="range" min="1" max="168" step="1" value="24"><p>Each victim adds this much time to the mourning period. New incidents extend the time remaining.</p>
+<label for="rise">Time for a full upward journey <output id="rise-value"></output></label><input id="rise" type="range" min="1" max="168" step="1" value="48"><p>A smaller number raises the flag faster. It rises steadily after mourning ends.</p>
+<label for="year">Remember incidents from</label><select id="year" aria-describedby="year-help"></select><p id="year-help">Starts at full height on January 1 of the selected year. Settings recalculate the entire period.</p>
+<button class="btn" id="defaults">Reset timing</button><p id="save-note">Settings are saved on this device.</p>
+<div class="rule"><b>100% → 50% → 25% → 12.5%</b><p>Each incident halves the flag’s current height. The percentages describe the flag’s position, never the value of a life.</p></div>
+<button class="btn" id="demo">Try an illustrated example</button>
+<div id="demo-controls" hidden><p><b>EXAMPLE ONLY</b> · Fictional incidents; no changes to the real record.</p><button class="btn" id="demo-add">Add another incident · 4 victims</button><button class="btn" id="demo-time">Advance 24 hours</button><button class="btn" id="demo-exit">Return to recorded incidents</button></div>
+</aside></div>
+<section class="stats" aria-label="Selected year totals"><div><strong id="incident-count">—</strong><span>recorded incidents</span></div><div><strong id="death-count">—</strong><span>people killed, excluding perpetrators</span></div><div><strong id="latest">—</strong><span>most recent recorded incident</span></div></section>
+<section class="panel records"><div class="records-head"><div><p class="eyebrow">BEHIND THE FLAG</p><h2 id="records-title">The incident record</h2></div><button id="refresh" class="btn">Check for updates</button></div><p id="record-note"></p><div id="incidents"></div></section>
+<details class="panel methodology"><summary>What this memorial counts & how the flag works</summary><p>We use incidents classified as mass shootings or mass public shootings by the <a href="https://cssh.northeastern.edu/sccj/mass-killing-database/" target="_blank" rel="noopener">AP / USA TODAY / Northeastern University Mass Killing Database</a>, with at least four victims killed, excluding perpetrators. The database includes family and private-location incidents, not only public attacks. Its mass-killing definition uses a 24-hour period.</p><p>Dates are recorded at day precision. For this visualization only, each incident is placed at 00:00 UTC on its recorded date; this is not a claim about the actual time of the attack. Incidents on the same date are processed together. Victim counts may be revised as reporting develops.</p><p>After each incident, the flag’s height is halved and time per victim is added to the remaining hold. After the hold, the flag rises at a constant rate: 100 percentage points over your selected upward-journey time. A new incident during recovery halves its current height and starts a new hold. Reloading does not reset remembrance.</p><p>The app checks the public data feed when opened and every 15 minutes while open. If the feed is unavailable it uses a clearly dated saved copy. A recently fetched feed is not a guarantee of complete reporting. This is an independent symbolic memorial, not an official flag-status notice.</p></details>
+<footer>Every number represents a person. No graphic imagery or perpetrator profiles.</footer><noscript>This memorial needs JavaScript to load records and calculate the flag position.</noscript>
+</main></body></html>
