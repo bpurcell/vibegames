@@ -39,6 +39,7 @@
       { href: "timeline.html",        name: "Deep Time" },
       { href: "tree-of-life.html",    name: "Tree of Life Explorer" },
       { href: "cousins-machine.html", name: "The Cousins Machine" },
+      { href: "churchcousins/",       name: "Church Cousins" },
       { href: "weather-records.html", name: "US Weather Records" },
     ]},
     { group: "Games", items: [

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b1220" />
+<title>Church Cousins</title>
+<meta name="description" content="Pick two Christian denominations and see where they parted, what the argument was, and how closely related they actually are.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⛪</text></svg>">
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<script src="../shared/nav.js?v=1" data-title="Church Cousins" data-tag="who split from whom, and over what" defer></script>
+
+<style>
+.wrap { max-width: 900px; margin: 0 auto; padding: 22px 16px 70px; }
+h1 { font-size: clamp(1.6rem, 5vw, 2.1rem); margin: 0 0 6px; }
+.lede { color: var(--sub); margin: 0 0 20px; max-width: 62ch; }
+
+/* --------------------------------------------------------- pickers */
+
+.pickers { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: end; }
+.pickers label { display: block; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); font-weight: 800; margin-bottom: 5px; }
+select {
+  width: 100%; background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 11px 10px; font: inherit; font-size: 14.5px; font-weight: 600;
+}
+#swap {
+  background: var(--panel); color: var(--sub); border: 1px solid var(--line);
+  border-radius: 10px; padding: 11px 12px; font-size: 15px; cursor: pointer;
+}
+#swap:hover { border-color: var(--accent); color: var(--accent); }
+
+.quick { display: flex; flex-wrap: wrap; gap: 7px; margin: 14px 0 0; }
+.quick button {
+  background: transparent; color: var(--sub);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 7px 13px; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.quick button:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------------------------------------------------------- result */
+
+.result { margin-top: 24px; }
+.verdict {
+  background: var(--panel); border: 1px solid var(--line);
+  border-left: 4px solid var(--accent); border-radius: 12px;
+  padding: 18px 20px;
+}
+.verdict .big { font-size: clamp(1.3rem, 4.6vw, 1.9rem); font-weight: 800; line-height: 1.15; margin: 0 0 7px; }
+.verdict p { margin: 0; color: var(--sub); font-size: 0.97rem; line-height: 1.55; }
+.verdict p + p { margin-top: 8px; }
+.verdict b { color: var(--ink); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+.stat { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.stat .k { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 800; }
+.stat .v { font-size: 1.02rem; font-weight: 700; margin-top: 3px; }
+
+h2 { font-size: 1.05rem; margin: 26px 0 10px; }
+
+/* --------------------------------------------------------- lineage */
+
+.lin { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.lin + .lin { margin-top: 10px; }
+.lin .who { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 800; margin-bottom: 9px; }
+.chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; }
+.stepbtn {
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+  background: var(--panel2); color: var(--ink);
+  border: 1px solid var(--line); border-left: 3px solid var(--line);
+  border-radius: 9px; padding: 8px 11px; font: inherit; cursor: pointer;
+}
+.stepbtn:hover { border-color: rgba(77,184,255,.5); }
+.stepbtn.shared { border-left-color: var(--accent-2); background: var(--accent-2-dim); }
+.stepbtn .yr { font-size: 11px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.stepbtn .nm { font-size: 13.5px; font-weight: 700; }
+.arrow { align-self: center; color: var(--faint); font-size: 13px; }
+
+.why { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px; font-size: 13.5px; line-height: 1.55; color: var(--sub); }
+.why[hidden] { display: none; }
+.why b { color: var(--ink); }
+.why .tag { display: inline-block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; color: var(--accent-2); margin-bottom: 4px; }
+
+/* ------------------------------------------------------- full tree */
+
+.treebox { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px 14px; }
+.tnode { padding: 5px 0 5px 12px; border-left: 2px solid var(--line); margin-left: 6px; }
+.tnode > .row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; cursor: pointer; }
+.tnode .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; align-self: center; }
+.tnode .yr { font-size: 11.5px; color: var(--faint); font-variant-numeric: tabular-nums; min-width: 34px; }
+.tnode .nm { font-size: 14px; font-weight: 600; }
+.tnode .row:hover .nm { color: var(--accent); }
+.tnode .sz { font-size: 11px; color: var(--faint); }
+.tnode .det { font-size: 13px; line-height: 1.55; color: var(--sub); padding: 6px 0 4px; max-width: 62ch; }
+.tnode .det[hidden] { display: none; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 9px; margin: 10px 0 14px; font-size: 11.5px; }
+.legend span { display: flex; align-items: center; gap: 5px; color: var(--sub); }
+.legend i { width: 10px; height: 10px; border-radius: 50%; }
+
+/* ---------------------------------------------------------- notes */
+
+.caveat {
+  border-left: 3px solid var(--accent-2); background: var(--accent-2-dim);
+  border-radius: 0 10px 10px 0; padding: 13px 16px; margin: 10px 0;
+  font-size: 13.5px; line-height: 1.6; color: var(--sub);
+}
+.caveat b { color: var(--ink); }
+.caveat + .caveat { margin-top: 8px; }
+
+@media (max-width: 620px) {
+  .pickers { grid-template-columns: 1fr; }
+  #swap { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Church Cousins</h1>
+  <p class="lede">Pick two Christian bodies. See where their lines last ran together,
+     what the argument was that parted them, and how close a relation that actually
+     makes them — in the same terms you'd use for a family.</p>
+
+  <div class="pickers">
+    <div>
+      <label for="a">One church</label>
+      <select id="a"></select>
+    </div>
+    <button id="swap" type="button" aria-label="Swap">⇄</button>
+    <div>
+      <label for="b">The other</label>
+      <select id="b"></select>
+    </div>
+  </div>
+
+  <div class="quick" id="quick"></div>
+
+  <div class="result" id="result"></div>
+
+  <h2>The whole tree</h2>
+  <div class="legend" id="legend"></div>
+  <div class="treebox" id="tree"></div>
+
+  <h2>Where this diagram lies to you</h2>
+  <div class="caveat">
+    <b>Family trees split and never rejoin. Churches merge.</b> The United Methodist
+    Church and the United Church of Christ each have several parents. A single-parent
+    tree can only draw the largest one, so those entries say so rather than pretend.
+  </div>
+  <div class="caveat">
+    <b>Both sides of a split usually claim to be the original.</b> Catholics and
+    Orthodox each hold that theirs is the continuing church and the other departed.
+    Neither is drawn as the parent of the other here. Where one body is shown
+    branching off another, that is a claim about institutional continuity — not
+    about who was right.
+  </div>
+  <div class="caveat">
+    <b>Some movements reject the tree entirely.</b> Restorationists teach a recovery
+    of the first-century church that bypasses every later body. Where that claim is
+    central, this app declines to compute a relationship rather than invent one.
+  </div>
+  <div class="caveat">
+    <b>The dates are markers, not events.</b> 1054 had been building for centuries
+    and was not settled for centuries after. Sizes are rough, and the definitions
+    behind them are argued over — "how many Pentecostals are there" has no agreed
+    answer within a factor of two.
+  </div>
+</div>
+
+<script src="tree.js?v=1"></script>
+<script src="main.js?v=1"></script>
+</body>
+</html>
