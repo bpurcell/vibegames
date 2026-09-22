@@ -33,6 +33,7 @@
       { href: "half-staff/", name: "For Every Life" },
       { href: "solar-system/",        name: "Solar System" },
       { href: "gardenplanner/",       name: "Summer Garden Planner" },
+      { href: "instruments/",         name: "The Instrument Cabinet" },
       { href: "firescale/",           name: "Wildfire Scale" },
       { href: "animalterritory/",     name: "Local Animal Territory" },
       { href: "earth-speed.html",     name: "Earth Speed" },

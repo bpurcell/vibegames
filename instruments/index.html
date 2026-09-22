@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b1220" />
+<title>The Instrument Cabinet</title>
+<meta name="description" content="An instrument encyclopedia in the spirit of the 1990s multimedia CD-ROMs — except every sound is synthesised from the instrument's physics, not sampled.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎻</text></svg>">
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<script src="../shared/nav.js?v=1" data-title="The Instrument Cabinet" data-tag="every sound computed, none recorded" defer></script>
+
+<style>
+:root {
+  --wood:   #2a1f18;
+  --wood2:  #1d1510;
+  --brass:  #d9a441;
+  --felt:   #131a2a;
+  --bevel-l: rgba(255,255,255,.14);
+  --bevel-d: rgba(0,0,0,.55);
+}
+
+.wrap { max-width: 1060px; margin: 0 auto; padding: 18px 14px 60px; }
+
+/* The chrome is a nod to the era: chunky bevels, a title plate, tabs
+   that look pressed. Restrained enough to still be readable. */
+.cabinet {
+  background: linear-gradient(#241a14, #1a1310);
+  border: 1px solid #3d2d22;
+  border-top-color: var(--bevel-l);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  overflow: hidden;
+}
+
+.plate {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  padding: 14px 18px;
+  background: linear-gradient(#32251c, #241a14);
+  border-bottom: 1px solid #0f0b08;
+}
+.plate h1 {
+  margin: 0; font-size: clamp(1.15rem, 3.4vw, 1.55rem);
+  letter-spacing: .02em; color: #f0dcc0;
+  text-shadow: 0 1px 0 rgba(0,0,0,.6);
+}
+.plate .sub { font-size: 12px; color: #a08a70; }
+
+.tabs { display: flex; gap: 3px; padding: 8px 10px 0; background: #1a1310; }
+.tabs button {
+  background: #251b15; color: #b59c80;
+  border: 1px solid #3d2d22; border-bottom: 0;
+  border-top-color: var(--bevel-l);
+  border-radius: 6px 6px 0 0;
+  padding: 8px 15px; font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.tabs button.on { background: var(--felt); color: var(--brass); border-color: #3d2d22; }
+
+.panes { display: flex; min-height: 520px; background: var(--felt); }
+
+/* -------------------------------------------------------------- list */
+
+.list { flex: 0 0 248px; border-right: 1px solid #22304a; overflow-y: auto; max-height: 640px; }
+.group {
+  padding: 9px 12px 4px; font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--faint); font-weight: 800;
+  position: sticky; top: 0; background: var(--felt);
+}
+.item {
+  display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+  background: none; color: var(--ink); border: 0; border-left: 3px solid transparent;
+  padding: 8px 12px; font: inherit; font-size: 13.5px; cursor: pointer;
+}
+.item:hover { background: #18213a; }
+.item.on { background: #1d2740; border-left-color: var(--brass); color: var(--brass); font-weight: 700; }
+.item .e { font-size: 16px; }
+
+/* -------------------------------------------------------------- card */
+
+.card { flex: 1 1 auto; min-width: 0; padding: 18px 20px 24px; }
+.card h2 { margin: 0 0 3px; font-size: clamp(1.3rem, 4vw, 1.75rem); }
+.card .tagline { color: var(--sub); font-size: 13px; margin: 0 0 14px; }
+.badge {
+  display: inline-block; font-size: 10.5px; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px; margin-right: 6px;
+}
+
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.controls button {
+  background: linear-gradient(#3a2a1e, #2a1e16); color: #f0dcc0;
+  border: 1px solid #4d3a2a; border-top-color: var(--bevel-l);
+  border-radius: 7px; padding: 10px 16px;
+  font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+.controls button:hover { border-color: var(--brass); color: var(--brass); }
+.controls button:active { background: #241a13; transform: translateY(1px); }
+.controls button.primary { background: linear-gradient(#6b4a1f, #4a3214); color: #ffe9c4; }
+
+/* ----------------------------------------------------------- keyboard */
+
+.keys { display: flex; gap: 2px; margin: 0 0 14px; height: 62px; user-select: none; }
+.keys button {
+  flex: 1; background: linear-gradient(#e9e2d6, #cfc6b6); border: 1px solid #8a8072;
+  border-radius: 0 0 4px 4px; cursor: pointer; padding: 0 0 5px;
+  font: inherit; font-size: 9.5px; color: #6b6154; font-weight: 700;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.keys button.black {
+  flex: .62; background: linear-gradient(#3a3630, #1c1a16); color: #9a9084; border-color: #000;
+  margin: 0 -10px; z-index: 2; height: 62%;
+}
+.keys button:active, .keys button.lit { background: linear-gradient(#ffd98a, #e0a93f); color: #3a2a10; }
+
+/* ----------------------------------------------------------- display */
+
+.scope {
+  background: #080c16; border: 1px solid #22304a; border-radius: 8px;
+  padding: 8px; margin: 0 0 16px;
+}
+#scope { display: block; width: 100%; height: 140px; }
+.scope .cap {
+  display: flex; justify-content: space-between; gap: 10px;
+  font-size: 10.5px; color: var(--faint); padding: 5px 2px 0;
+  letter-spacing: .06em; text-transform: uppercase; font-weight: 700;
+}
+
+/* ------------------------------------------------------------- prose */
+
+.sec { margin: 0 0 15px; }
+.sec h3 {
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brass); margin: 0 0 5px; font-weight: 800;
+}
+.sec p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--sub); }
+.sec p b, .sec p strong { color: var(--ink); }
+
+.specs { display: grid; grid-template-columns: auto 1fr; gap: 3px 14px; font-size: 13px; }
+.specs dt { color: var(--faint); }
+.specs dd { margin: 0; color: var(--ink); }
+
+.recipe { display: flex; align-items: flex-end; gap: 3px; height: 54px; margin-top: 6px; }
+.recipe div { flex: 1; background: var(--brass); border-radius: 2px 2px 0 0; min-height: 2px; position: relative; opacity: .85; }
+.recipe div span {
+  position: absolute; bottom: -15px; left: 0; right: 0; text-align: center;
+  font-size: 9px; color: var(--faint);
+}
+.recipe-wrap { padding-bottom: 16px; }
+
+.caveat {
+  border-left: 3px solid var(--accent-2); background: var(--accent-2-dim);
+  border-radius: 0 8px 8px 0; padding: 10px 13px; font-size: 12.5px;
+  line-height: 1.55; color: var(--sub);
+}
+.caveat b { color: var(--ink); }
+
+.footnote {
+  margin-top: 16px; padding: 12px 16px; border-top: 1px solid #22304a;
+  font-size: 12px; line-height: 1.6; color: var(--faint); background: #101728;
+}
+.footnote b { color: var(--sub); }
+
+@media (max-width: 760px) {
+  .panes { flex-direction: column; }
+  .list { flex: none; max-height: 190px; border-right: 0; border-bottom: 1px solid #22304a; }
+  .card { padding: 14px 14px 20px; }
+  .keys { height: 54px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="cabinet">
+    <div class="plate">
+      <h1>The Instrument Cabinet</h1>
+      <span class="sub">every sound computed from the physics — not one recording</span>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button data-mode="family" class="on" type="button">By family</button>
+      <button data-mode="region" type="button">By region</button>
+      <button data-mode="az" type="button">A–Z</button>
+    </div>
+
+    <div class="panes">
+      <div class="list" id="list"></div>
+      <div class="card" id="card"></div>
+    </div>
+
+    <div class="footnote">
+      <b>An homage, not a reissue.</b> This is an original tribute to the
+      multimedia encyclopedias of the early 1990s — it is not affiliated with
+      Microsoft, and contains none of that software's text, pictures or audio.
+      What it does contain is a small synthesiser: every note you hear is
+      computed in your browser from a model of how that instrument makes sound.
+      The models are caricatures, some cruder than others, and each card says
+      where its own falls short.
+    </div>
+  </div>
+</div>
+
+<script src="data.js?v=1"></script>
+<script src="synth.js?v=1"></script>
+<script src="main.js?v=1"></script>
+</body>
+</html>
