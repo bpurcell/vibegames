@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b1220" />
+<title>Gourd Garden</title>
+<meta name="description" content="A procedural 3D gourd generator — every pumpkin, squash and bottle gourd grown from a seed, drawn in ink and hatching, and yours to turn in your hands.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎃</text></svg>">
+<link rel="stylesheet" href="../shared/site.css?v=1">
+<script src="../shared/nav.js?v=1" data-title="Gourd Garden" data-tag="grow another" defer></script>
+
+<style>
+.wrap { max-width: 980px; margin: 0 auto; padding: 16px 14px 60px; }
+
+.stage {
+  position: relative;
+  background: #f3ead6;                 /* paper */
+  border: 1px solid #d8ccb0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,.45);
+  touch-action: none;
+}
+#c { display: block; width: 100%; height: auto; cursor: grab; }
+#c:active { cursor: grabbing; }
+
+.plate {
+  position: absolute; left: 14px; bottom: 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  color: #3b2d1f; pointer-events: none;
+}
+.plate .nm { font-size: clamp(16px, 2.6vw, 22px); font-style: italic; }
+.plate .no { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .6; }
+
+.hint {
+  position: absolute; right: 14px; top: 12px;
+  font-size: 11px; color: #6b5a44; background: rgba(255,250,238,.8);
+  border: 1px solid #d8ccb0; border-radius: 999px; padding: 4px 10px; pointer-events: none;
+  transition: opacity .5s;
+}
+.hint.gone { opacity: 0; }
+
+.bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+.bar button {
+  background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 15px; font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+.bar button:hover { border-color: var(--accent); color: var(--accent); }
+.bar button.main { background: #e8882c; color: #22140a; border-color: #e8882c; }
+.bar button.main:hover { filter: brightness(1.08); color: #22140a; }
+.bar button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.bar .seed { margin-left: auto; font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; }
+.bar .seed input {
+  width: 110px; background: var(--panel2); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; font: inherit; font-size: 12.5px;
+}
+
+.about { margin-top: 18px; color: var(--sub); font-size: 13.5px; line-height: 1.6; max-width: 70ch; }
+.about b { color: var(--ink); }
+.about p { margin: 0 0 8px; }
+
+@media (max-width: 560px) {
+  .bar .seed { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage">
+    <canvas id="c"></canvas>
+    <div class="plate"><div class="nm" id="name">—</div><div class="no" id="no"></div></div>
+    <div class="hint" id="hint">drag to turn it over</div>
+  </div>
+
+  <div class="bar">
+    <button class="main" id="grow" type="button">🎃 Grow another</button>
+    <button id="spin" type="button" aria-pressed="true">Slow turn</button>
+    <button id="ink" type="button" aria-pressed="false">Ink only</button>
+    <button id="save" type="button">Save PNG</button>
+    <button id="share" type="button">Copy link</button>
+    <label class="seed">seed <input id="seedBox" type="text" inputmode="numeric" spellcheck="false"></label>
+  </div>
+
+  <div class="about">
+    <p><b>Every gourd here is grown, not drawn.</b> A seed sets a spine that may
+       lean or crook over, a profile built from a few overlapping bulges, a
+       ribbing pattern, a scatter of warts and a stem — and the result is a true
+       surface in three dimensions, which the page then renders as pen and ink:
+       flat colour, hatching that thickens into shadow, and a contour wherever
+       the surface turns away from you.</p>
+    <p>The same seed grows the same gourd every time, so a link is a gourd.
+       Inspired by Lingdong Huang's <em>fishdraw</em>.</p>
+  </div>
+</div>
+
+<script src="main.js?v=1"></script>
+</body>
+</html>

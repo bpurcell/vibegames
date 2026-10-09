@@ -53,6 +53,7 @@
       { href: "mazecar/",         name: "Maze Car" },
       { href: "spookyforest/",    name: "Spooky Forest" },
       { href: "spookyforest2/",   name: "Spooky Forest 2" },
+      { href: "gourds/",          name: "Gourd Garden" },
       { href: "theremin/",        name: "Theremin" },
       { href: "vibooding.html",   name: "Vibooding" },
     ]},
