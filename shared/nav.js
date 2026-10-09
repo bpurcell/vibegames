@@ -23,13 +23,14 @@
     (function () { var s = document.getElementsByTagName("script"); return s[s.length - 1]; })();
 
   // Site root = the parent of /shared/. Works under file:// and http.
-  var ROOT = new URL("..", script.src).href;
+  var ROOT = new URL(script.dataset.root || "..", script.src).href;
 
   var PAGES = [
     { group: "Home", items: [
       { href: "index.html", name: "All projects" },
     ]},
     { group: "Tools & webapps", items: [
+      { href: "chatgourdspt/", name: "chatgourdspt" },
       { href: "half-staff/", name: "For Every Life" },
       { href: "solar-system/",        name: "Solar System" },
       { href: "gardenplanner/",       name: "Summer Garden Planner" },
