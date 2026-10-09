@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Vibe Code Webapps</title>
-<link rel="stylesheet" href="shared/site.css?v=2">
-<script src="shared/nav.js?v=3" data-title="Vibe Code Webapps" data-tag="built by prompting, not typing" defer></script>
+<link rel="stylesheet" href="shared/site.css?v=6">
+<script src="shared/nav.js?v=6" data-title="Vibe Code Webapps" data-tag="built by prompting, not typing" defer></script>
     <style>
         /* Surfaces, ink and accents come from shared/site.css; these are the
            local aliases this page's older rules were written against. */
         :root {
             --bg-card: var(--panel);
-            --bg-card-hover: #16203a;
+            --bg-card-hover: var(--panel-hover, #16203a);
             --border: var(--line);
-            --border-hover: rgba(77, 184, 255, 0.35);
+            --border-hover: var(--accent);
             --text: var(--ink);
             --text-dim: var(--sub);
             --text-faint: var(--faint);
-            --accent-glow: rgba(77, 184, 255, 0.20);
+            --accent-glow: var(--accent-dim);
         }
 
         .container {
@@ -186,7 +186,7 @@
         footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
     </style>
 </head>
-<body>
+<body class="site-home">
     <div class="container">
         <header>
             <span class="eyebrow">Vibe Coding · No Hands</span>

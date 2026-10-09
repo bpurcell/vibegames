@@ -2,3 +2,6 @@
 
 /* Keep the shared navigation separate from the generator controls. */
 .intro .eyebrow{display:inline-block;background:var(--accent-dim);border-radius:999px;padding:5px 10px;font-size:10px;letter-spacing:.14em;margin-bottom:16px}.edition{color:var(--accent-2);border-color:var(--line);background:var(--accent-2-dim)}.quiet:hover{color:var(--accent);border-color:var(--accent)}.specimen h2{line-height:1.25}.brand-icon{color:var(--accent-2)}
+
+/* The 3D stage stays dark even when the surrounding site uses a light style. */
+.viewport { --ink: #e8eef7; --sub: #b4c5dc; --accent-2: #ffc447; --line: #33445d; color: var(--ink); }

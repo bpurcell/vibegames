@@ -22,6 +22,31 @@
   var script = document.currentScript ||
     (function () { var s = document.getElementsByTagName("script"); return s[s.length - 1]; })();
 
+  // Theme preference is shared by every page on this origin. Storage can be
+  // unavailable in private/file contexts; the picker must still work there.
+  var STYLES = [
+    ["classic", "Original", "The original navy, blue and gold"],
+    ["neo-brutalism", "Neo-Brutalism", "Bold ink, solid shadows, punchy yellow"],
+    ["glassmorphism", "Glassmorphism", "Translucent panels and soft depth"],
+    ["swiss", "Swiss Design", "Clean type, crisp grids, red accents"],
+    ["pixel-art", "Pixel Art", "Arcade colors and square edges"],
+    ["synthwave", "Synthwave", "Neon pink, cyan and midnight purple"]
+  ];
+  var STYLE_KEY = "vibegames-style";
+  function validStyle(value) {
+    return STYLES.some(function (style) { return style[0] === value; });
+  }
+  function applyStyle(value) {
+    value = validStyle(value) ? value : "classic";
+    if (value === "classic") document.documentElement.removeAttribute("data-style");
+    else document.documentElement.setAttribute("data-style", value);
+    if (styleSelect) styleSelect.value = value;
+    return value;
+  }
+  var savedStyle = "classic";
+  try { savedStyle = localStorage.getItem(STYLE_KEY) || "classic"; } catch (_) {}
+  applyStyle(savedStyle);
+
   // Site root = the parent of /shared/. Works under file:// and http.
   var ROOT = new URL(script.dataset.root || "..", script.src).href;
 
@@ -150,6 +175,31 @@
   // "Back" to the homepage from the homepage is noise.
   if (!onHome) nav.appendChild(back);
   nav.appendChild(brand);
+  var styleLabel = document.createElement("label");
+  styleLabel.className = "nav-style";
+  var styleCaption = document.createElement("span");
+  styleCaption.textContent = "Style";
+  var styleSelect = document.createElement("select");
+  styleSelect.className = "nav-style-select";
+  styleSelect.setAttribute("aria-label", "Site style");
+  STYLES.forEach(function (style) {
+    var option = document.createElement("option");
+    option.value = style[0];
+    option.textContent = style[1];
+    option.title = style[2];
+    styleSelect.appendChild(option);
+  });
+  styleSelect.value = validStyle(savedStyle) ? savedStyle : "classic";
+  styleSelect.addEventListener("change", function () {
+    var value = applyStyle(styleSelect.value);
+    try { localStorage.setItem(STYLE_KEY, value); } catch (_) {}
+  });
+  window.addEventListener("storage", function (event) {
+    if (event.key === STYLE_KEY || event.key === null) applyStyle(event.newValue);
+  });
+  styleLabel.appendChild(styleCaption);
+  styleLabel.appendChild(styleSelect);
+  nav.appendChild(styleLabel);
   nav.appendChild(wrap);
 
   function mount() {
