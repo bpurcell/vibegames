@@ -55,6 +55,7 @@
       { href: "index.html", name: "All projects" },
     ]},
     { group: "Tools & webapps", items: [
+      { href: "komorebi-formula/", name: "Komorebi: Equations" },
       { href: "komorebi/", name: "Komorebi" },
       { href: "chatgourdspt/", name: "chatgourdspt" },
       { href: "half-staff/", name: "For Every Life" },
