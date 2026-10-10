@@ -1,0 +1,49 @@
+// Seeded recursive branching: each child shrinks, rotates, and inherits wind.
+// Geometry is independent of canvas size, so pan, reload, and export agree.
+(function(global){
+const cache=new Map();
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function generate(type,seed,settings={}){
+ settings=settings&&typeof settings==='object'?settings:{};
+ const bounded=(value,min,max,fallback)=>{const n=Number(value);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):fallback};
+ const p={fullness:bounded(settings.fullness??.6,0,1,.6),depth:Math.round(bounded(settings.depth??5,3,7,5)),spread:bounded(settings.spread??35,15,65,35),wildness:bounded(settings.wildness??.45,0,1,.45),wind:bounded(settings.wind??0,-1,1,0)};
+ const key=JSON.stringify([type,seed,p]);if(cache.has(key))return cache.get(key);
+ const r=rng(seed),branches=[],leaves=[];const lean=(r()-.5)*(.25+p.wildness*.65)+p.wind*.12,ratio=.62+r()*.16,spread=p.spread*Math.PI/180*(.8+r()*.4);
+ function branch(x,y,len,angle,thickness,depth){
+  const bend=(r()-.5)*p.wildness*.55+p.wind*.07;
+  const a=angle+bend,ex=x+Math.cos(a)*len,ey=y+Math.sin(a)*len;
+  branches.push({x,y,ex,ey,cx:x+Math.cos(angle-bend)*len*.5,cy:y+Math.sin(angle-bend)*len*.5,width:thickness});
+  if(depth===0){
+   const count=type==='sakura'?18:24,target=Math.round(count*p.fullness/.6);
+   function leaf(next){const theta=next()*Math.PI*2,rad=Math.sqrt(next());return {x:ex+Math.cos(theta)*rad*(type==='sakura'?7:9),y:ey+Math.sin(theta)*rad*4,size:.6+next()*1.5,angle:theta,color:Math.floor(next()*4),alpha:.45+next()*.45}}
+   // Consume the same growth RNG at every fullness: changing foliage never reshapes branches.
+   for(let i=0;i<count;i++){const l=leaf(r);if(i<target)leaves.push(l)}
+   const extra=rng(seed^Math.imul(branches.length,7919));for(let i=count;i<target;i++)leaves.push(leaf(extra));
+   return;
+  }
+  const noise=()=>1+(r()-.5)*p.wildness*.65;
+  if(type==='pine'){
+   const side=r()<.5?-1:1;
+   branch(ex,ey,len*(ratio+.035)*noise(),a+(r()-.5)*.22+p.wind*.035,thickness*.72,depth-1);
+   branch(ex,ey,len*.58*noise(),a+side*spread*(1+r()*.4)+p.wind*.07,thickness*.56,depth-1);
+  }else{
+   branch(ex,ey,len*ratio*noise(),a-spread*(.65+r()*.5)+p.wind*.05,thickness*.68,depth-1);
+   branch(ex,ey,len*ratio*noise(),a+spread*(.65+r()*.5)+p.wind*.05,thickness*.68,depth-1);
+  }
+ }
+ branch(0,0,34,-Math.PI/2+lean,4.8,p.depth);
+ let model={branches,leaves,settings:p};if(cache.size>=512)cache.delete(cache.keys().next().value);cache.set(key,model);return model;
+}
+function render(c,x,y,size,type,seed,opacity=1,settings={}){
+ const model=generate(type,seed,settings);c.save();c.translate(x,y);c.scale(size/100,size/100);c.lineCap='round';c.strokeStyle='#494b41';c.globalAlpha=opacity;
+ for(const b of model.branches){
+  const dx=b.ex-b.x,dy=b.ey-b.y,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;
+  if(b.width>1){const left=[],right=[];for(let i=0;i<=10;i++){const t=i/10,u=1-t,px=u*u*b.x+2*u*t*b.cx+t*t*b.ex,py=u*u*b.y+2*u*t*b.cy+t*t*b.ey,edge=b.width*(1-t*.4)*(.5+Math.sin(t*17+seed)*.07);left.push([px+nx*edge,py+ny*edge]);right.push([px-nx*edge,py-ny*edge])}c.beginPath();left.concat(right.reverse()).forEach((v,i)=>i?c.lineTo(...v):c.moveTo(...v));c.closePath();c.fillStyle='#777565';c.globalAlpha=opacity*.18;c.fill();c.globalAlpha=opacity*.8;c.lineWidth=.55;c.stroke()}
+  else{c.globalAlpha=opacity*.65;c.lineWidth=Math.max(.22,b.width*.65);c.beginPath();c.moveTo(b.x,b.y);c.quadraticCurveTo(b.cx,b.cy,b.ex,b.ey);c.stroke()}
+ }
+ const colors=type==='sakura'?['#9d8179','#b4a095','#b9ab99','#867267']:['#484b42','#5a5b4f','#6b6b5b','#83816c'];
+ for(const l of model.leaves){c.globalAlpha=opacity*l.alpha*.8;c.fillStyle=colors[l.color];c.beginPath();c.ellipse(l.x,l.y,type==='sakura'?l.size:l.size*2,type==='sakura'?l.size*.8:.6,l.angle,0,Math.PI*2);c.fill()}
+ c.globalAlpha=opacity*.5;c.lineWidth=.7;c.beginPath();c.moveTo(-9,2);c.quadraticCurveTo(0,-2,12,1);c.stroke();c.restore();
+}
+ global.ForestFractal={generate,render};
+})(typeof window==='undefined'?globalThis:window);
