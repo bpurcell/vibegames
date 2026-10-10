@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#081316"><meta name="description" content="Select a region of Earth and explore real elevation in 3D, with animated GFS wind vectors.">
+<title>Earth / relief — Wind in three dimensions</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+<header><a class="brand" href="./" aria-label="Earth relief home"><span class="brand-icon">◎</span> earth <i>/</i> <strong>relief</strong></a><div class="header-sub">WIND IN THREE DIMENSIONS</div><a class="back" href="../">All experiments ↗</a></header>
+<main>
+<aside>
+<div class="eyebrow">01 / FIND YOUR LANDSCAPE</div><h1>A different<br>view of the wind.</h1><p class="intro">Pick a patch of Earth. Lift it into 3D.<br>Follow the air across the landscape.</p>
+<div class="section-label">EXPLORE A REGION</div><div class="presets" aria-label="Example regions"><button data-preset="alps" class="active">The Alps</button><button data-preset="himalaya">Himalayas</button><button data-preset="andes">Andes</button><button data-preset="rockies">Rockies</button></div>
+<div class="selection-card"><div class="selection-heading"><span class="dot"></span><strong id="regionName">The Alps</strong><span class="small-tag">SELECTION</span></div><form id="coordinates"><div class="coordinate-inputs"><label>Latitude<input id="latitude" type="number" min="-84" max="84" step="0.01" value="46" required></label><label>Longitude<input id="longitude" type="number" min="-180" max="180" step="0.01" value="10" required></label><button class="locate" type="submit" aria-label="Locate coordinates">↗</button></div></form><label class="slider-label" for="extent">Region width <output id="extentValue">6°</output></label><input id="extent" type="range" min="1" max="20" step="0.5" value="6"><div class="range-ends"><span>LOCAL</span><span>REGIONAL</span></div><div id="bounds" class="bounds"></div></div>
+<button id="render" class="primary" disabled>Build 3D landscape <span>↗</span></button>
+<div class="controls"><div class="eyebrow">02 / SHAPE YOUR VIEW</div><label class="slider-label" for="exaggeration">Elevation exaggeration <output id="exaggerationValue">8×</output></label><input id="exaggeration" type="range" min="1" max="30" value="8"><label class="slider-label" for="speed">Animation speed <output id="speedValue">1×</output></label><input id="speed" type="range" min="0.25" max="3" step="0.25" value="1"><div class="toggle-row"><label><input id="windToggle" type="checkbox" checked> Wind particles</label><label><input id="meshToggle" type="checkbox"> Wireframe</label></div><div class="view-buttons"><button id="pause" aria-pressed="false">Ⅱ Pause wind</button><button id="reset">↺ Reset camera</button></div></div>
+<details><summary>About the data &amp; this experiment</summary><p>Inspired by <a href="https://github.com/cambecc/earth" target="_blank" rel="noopener">cambecc/earth</a>. Wind is its bundled historical NOAA GFS sample: <strong>31 Jan 2014, 03:00 UTC</strong>, at 10 m above ground, on a 1° grid. This is not live weather.</p><p>Particles follow horizontal wind vectors and are visually draped over terrain. They do not model vertical air motion or resolve local mountain winds. Animation time is accelerated.</p><p>Elevation uses <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">Mapzen / AWS Terrain Tiles</a>, sampled to a 161 × 161 mesh. Ocean elevations are shown at sea level. Polar regions beyond 84° are excluded.</p><p>Terrain sources: <a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md" target="_blank" rel="noopener">Mapzen attribution</a>. Globe imagery: NASA Blue Marble via WebGL Earth. Renderer: Three.js (MIT).</p></details>
+</aside>
+<section class="workspace" aria-label="Globe and 3D terrain explorer">
+<div class="workspace-bar"><div class="tabs"><button id="globeTab" class="selected" aria-pressed="true">01 <span>Globe</span></button><button id="terrainTab" aria-pressed="false" disabled>02 <span>3D landscape</span></button></div><span class="sample-label"><span class="dot"></span> HISTORICAL WIND SAMPLE</span></div>
+<div id="viewport"><canvas id="scene" aria-label="Interactive globe. Drag to rotate, scroll to zoom, and click to select a region. Alternatively use the coordinate fields or region buttons." tabindex="0"></canvas><div class="scene-title"><span id="viewEyebrow">THE BIG PICTURE</span><h2 id="viewTitle">Earth, in motion.</h2></div><div id="sceneHint" class="scene-hint">Drag to rotate · Scroll to zoom · Click to select</div><div class="compass" aria-hidden="true">N<br><span>↑</span></div><div id="status" role="status" aria-live="polite">Loading Earth &amp; wind data…</div><div id="probe">Click the globe to place your region</div><div class="legend"><span>WIND SPEED <small>m/s</small></span><div class="gradient"></div><div class="legend-values"><span>0</span><span>10</span><span>20</span><span>30+</span></div></div><button id="snapshot" class="snapshot" title="Save the current view as a PNG">↓ Save view</button></div>
+<div class="metrics"><div><span id="metric1Label">SELECTED AREA</span><strong id="area">—</strong></div><div><span id="metric2Label">CENTER WIND</span><strong id="windMetric">—</strong></div><div><span>MAX. SAMPLED ELEVATION</span><strong id="elevationMetric">— <small>m</small></strong></div><div class="axis-key"><span>COORDINATE SYSTEM</span><strong><b>X</b> east <b>Y</b> north <b>Z</b> elevation</strong></div></div>
+<footer><span>GFS · 31 JAN 2014 · 03:00 UTC</span><span>Real terrain. A new perspective.</span></footer>
+</section>
+</main>
+<noscript>This app needs JavaScript and WebGL to render the globe and terrain.</noscript>
+<script type="module" src="app.js"></script>
+</body></html>
