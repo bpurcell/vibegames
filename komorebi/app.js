@@ -12,10 +12,9 @@ function validItem(o){
 try{const stored=JSON.parse(localStorage.getItem('komorebi-forest'));if(stored&&Array.isArray(stored.items)){items=stored.items.slice(0,2000).filter(validItem);offset=finite(stored.offset)?stored.offset:0}}catch(e){}
 
 function checkpoint(){undoHistory.push(JSON.stringify(items));if(undoHistory.length>50)undoHistory.shift()}
-function tree(c,x,y,size,type,seed,opacity=1,settings={}){if(type!=='bamboo'){ForestFractal.render(c,x,y,size,type,seed,opacity,settings);return;}const r=random(seed);c.save();c.translate(x,y);c.scale(size/100,size/100);c.globalAlpha=opacity;const ink='#35483b';c.lineCap='round';
- if(type==='bamboo'){for(let j=0;j<4;j++){let bx=(j-1.5)*11,top=-80-r()*35;c.strokeStyle='#60745b';c.lineWidth=3;c.beginPath();c.moveTo(bx,0);c.quadraticCurveTo(bx-5,top/2,bx+3,top);c.stroke();for(let k=0;k<5;k++){let yy=-18-k*19;c.lineWidth=1;c.beginPath();c.moveTo(bx-3,yy);c.lineTo(bx+4,yy);c.stroke();for(let n=0;n<3;n++){let d=k%2?1:-1,ex=bx+d*(20+n*6),ey=yy-10+n*7;c.beginPath();c.moveTo(bx,yy);c.quadraticCurveTo(ex,ey-12,ex+8*d,ey);c.quadraticCurveTo(ex,ey+4,bx,yy);c.fillStyle='#677c60';c.fill()}}}}
- else{c.strokeStyle=ink;c.lineWidth=5;c.beginPath();c.moveTo(0,0);c.bezierCurveTo(-8,-28,12,-51,4,-92);c.stroke();let branches=type==='sakura'?9:7;for(let j=0;j<branches;j++){let yy=-26-j*10,dir=j%2?1:-1,reach=(40-j*3)*(0.7+r()*.5),ex=dir*reach;c.lineWidth=2.6-j*.22;c.beginPath();c.moveTo(2,yy+9);c.quadraticCurveTo(ex*.35,yy-5,ex,yy-5);c.stroke();if(type==='sakura'){for(let k=0;k<55;k++){let a=r()*Math.PI*2,d=Math.sqrt(r());c.fillStyle=['#c79891','#d8b1a8','#e1c0b5','#b77d79'][Math.floor(r()*4)];c.globalAlpha=opacity*(.45+r()*.4);c.beginPath();c.ellipse(ex+Math.cos(a)*d*23,yy-9+Math.sin(a)*d*13,1.5+r()*2,1+r()*2,r()*3,0,Math.PI*2);c.fill()}}else{for(let k=0;k<100;k++){let a=r()*Math.PI*2,d=Math.sqrt(r());c.fillStyle=['#394e3d','#4e6248','#647357','#7d8664'][Math.floor(r()*4)];c.globalAlpha=opacity*(.4+r()*.5);c.beginPath();c.ellipse(ex+Math.cos(a)*d*(20+reach*.12),yy-9+Math.sin(a)*d*9,1+r()*4,.6+r()*1.6,-.1,0,Math.PI*2);c.fill()}}}c.globalAlpha=opacity*.6;c.strokeStyle=ink;c.lineWidth=.8;for(let k=0;k<9;k++){c.beginPath();c.moveTo((r()-.5)*35,r()*3);c.lineTo((r()-.5)*40,-4-r()*7);c.stroke()}}
- c.restore()}
+function tree(c,x,y,size,type,seed,opacity=1,settings={}){
+ ForestFractal.render(c,x,y,size,type,seed,opacity,settings);
+}
 function landscape(c,w,h,view){c.fillStyle='#f1ecdf';c.fillRect(0,0,w,h);let base=h*.76;
  c.fillStyle='#c87459';c.globalAlpha=.75;c.beginPath();c.arc(w*.78-view*.025,h*.27,30,0,Math.PI*2);c.fill();c.globalAlpha=1;
  ScrollTerrain.render(c,w,h,view);
@@ -42,7 +41,7 @@ document.querySelector('#export').onclick=()=>{const out=document.createElement(
 
 function growthSettings(){return {fullness:Number(document.querySelector('#fullness').value)/100,depth:Number(document.querySelector('#depth').value),spread:Number(document.querySelector('#spread').value),wildness:Number(document.querySelector('#wildness').value)/100,wind:Number(document.querySelector('#wind').value)/100}}
 for(const id of ['depth','spread','wildness','wind','fullness']){const slider=document.querySelector('#'+id);slider.oninput=()=>{document.querySelector('#'+id+'-value').textContent=slider.value+(id==='spread'?'°':(id==='wildness'||id==='fullness')?'%':'');growthPreview()}}
-function growthPreview(){const c=document.querySelector('#tree-preview'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);ForestFractal.render(g,100,148,105,tool==='sakura'?'sakura':'pine',Number(document.querySelector('#seed').value)||1,1,growthSettings())}
+function growthPreview(){const c=document.querySelector('#tree-preview'),g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);ForestFractal.render(g,100,148,105,['pine','sakura','bamboo'].includes(tool)?tool:'pine',Number(document.querySelector('#seed').value)||1,1,growthSettings())}
 document.querySelector('#seed').oninput=growthPreview;
 document.querySelector('#random-seed').onclick=()=>{document.querySelector('#seed').value=Math.floor(Math.random()*999999)+1;growthPreview()};
 document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',growthPreview));
