@@ -48,7 +48,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Arlo Guthrie - City Of New Orleans",
+        "chordpro": "{title: City Of New Orleans}\n{artist: Arlo Guthrie}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/arlo-guthrie/city-of-new-orleans-official-3058999}\n\n{c: Intro}\n[C]\n\n{c: Verse 1}\n[C]Riding on the Ci[G]ty of New Or[C]leans,\n[Am]Illinois Central [F]Monday morning [C]rail\nFifteen cars and fif[G]teen restless ri[C]ders\nThree con[Am]ductors and [G]twenty five sacks of mail\n[C] All a[Am]long the southbound odyssey\nThe [Em]train pulls out at Kankakee\n[G]Rolls along past houses, farms and fields[D]\n[Am]Passin' trains that have no names\n[Em]Freight yards full of old black men\nAnd the [G]graveyards of the rusted automobiles[C]\n\n{c: Chorus}\n[F]Good morning A[G]merica how [C]are you?\nSay [Am]don't you know me [F]I'm your native [C]son\n[G]I'm the [C]train they call The [G]City of New Or[Am]leans[Am/G]\n[D/F#]    I'll be gone[A#]  five [Am]hundred miles[G] when the day is [C]done\n\n{c: Verse 2}\nDealin' [C]card games with the [G]old men in the club[C] car\n[Am]Penny a point ain't no[F] one keepin' [C]score\nPass the paper bag[G] that holds the [C]bottle\n[Am]Feel the wheels [G]rumblin' 'neath the floor\n[C] And the sons[Am]  of Pullman porters\nAnd the sons[Em]  of engineers\nRide their [G]fathers' magic carpets made of steel[D]\n[Am]Mothers with their babes asleep\nAre [Em]rockin' to the gentle beat\nAnd the [G]rhythm of the rails is all they [C]feel\n\n{c: Chorus}\n[F]Good morning A[G]merica how [C]are you?\nSay [Am]don't you know me [F]I'm your native [C]son\n[G]I'm the [C]train they call The [G]City of New Or[Am]leans[Am/G]\n[D/F#]    I'll be gone[A#]  five [Am]hundred miles[G] when the day is [C]done\n\n{c: Verse 3}\n[C]Nighttime on The [G]City of New Or[C]leans\n[Am]Changing cars in [F]Memphis, Tennessee[C]\nHalf way home, [G]we'll be there by [C]morning\nThrough the [Am]Mississippi darkness\n[G]Rolling down to the sea\n[C] But all[Am]  the towns and people seem\nTo [Em]fade into a bad dream\nAnd the [G]steel rails still ain't heard the news[D]\nThe conduc[Am]tor sings his songs again\nThe [Em]passengers will please refrain\nThis [G]train's got the disappearing railroad [C]blues\n\n{c: Chorus}\n[F]Good night, A[G]merica, how [C]are you?\nSay [Am]don't you know me [F]I'm your native [C]son\n[G]I'm the [C]train they call The [G]City of New Or[Am]leans[Am/G]\n[D/F#]    I'll be gone[A#]  five [Am]hundred miles[G] when the day is [C]done\n\n[Fade Out]\n[C] [G] [C] [Am]\n[F] [C]\n",
+        "sourceFile": "Arlo Guthrie - City Of New Orleans.cho"
+      }
+    ]
   },
   {
     "artist": "Bee Gees",
@@ -417,7 +423,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "Level 1"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Fleetwood Mac - Landslide",
+        "chordpro": "{title: Landslide}\n{artist: Fleetwood Mac}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/fleetwood-mac/landslide-official-2158823}\n\n{c: Intro}\n[C] [G/B] [Am7] [G/B] [C] [G/B]\n[Am7] [G/B]\n\n{c: Verse 1}\n[C] I took my love,[G/B]   I took it down[Am7][G/B]\n[C] I climbed a moun[G/B]tain and I turned around[Am7][G/B]\nAnd I saw[C] my reflec[G/B]tion in the snow[Am7]covered hills[G/B]\n'Till the [C]landslide [G/B]brought me down[Am7]\n\n{c: Verse 2}\n[G/B]Oh, [C]mirror in the sky,[G/B]   what is [Am7]love?[G/B]\nCan the child[C] within my [G/B]heart rise above?[Am7][G/B]\nCan I sail[C] through the [G/B]changing o[Am7]cean tides?[G/B]\nCan I [C]handle the [G/B]seasons of[Am7]   my life?[G/B][G/B[C]][[G/B]Am7]\n[C] Mmm.[G/B][D7/[Am7]F#]\n\n{c: Chorus}\nWell, I've[G] been afraid[D/F#]    of[D7/F#]     chang[Em]ing\n'Cause I've built[C] my life[G/B]   around you[Am7][D7/F#]\nBut time[G] makes you bold[D/F#]er, e[D7/F#]ven\n[Em]Children get older\nAnd I'm[C] getting old[G/B]er too[Am7][G/B]\n\n{c: Solo}\n[C] [G/B] [Am7] [G/B] [C] [G/B] [Am7] [G/B]\n[C] [G/B] [Am7] [G/B] [C] [G/B]\n\n{c: Chorus}\n[Am7]    [D7/F#]     Well, I've[G] been afraid[D/F#]    of[D7/F#]     chang[Em]ing\n'Cause I've built[C] my life[G/B]   around you[Am7][D7/F#]\nBut time[G] makes you bold[D/F#]er, e[D7/F#]ven\n[Em]Children get older\nAnd I'm[C] getting old[G/B]er too[Am7][G/B]\nOh I'm[C] getting old[G/B]er too[Am7][G/B]\n\n{c: Verse 3}\nAh,[C] take my [G/B]love, take it down\n[Am7]    [G/B]   Ah,[C] climb a moun[G/B]tain and turn around[Am7][G/B]\nAnd if you see[C] my reflec[G/B]tion in the snow[Am7]covered hills[G/B]\nWell the [C]landslide will [G/B]bring it down[Am7][G/B]\nAnd if you see[C] my reflec[G/B]tion in the snow[Am7]covered hills[G/B]\nWell the [C]landslide will [G/B]bring it down[Am7]   Oh[G/B]\nthe [C]landslide will [G/B]bring it down[Am]\n",
+        "sourceFile": "Fleetwood Mac - Landslide (1).cho"
+      }
+    ]
   },
   {
     "artist": "Gillian Welch",
@@ -427,7 +439,18 @@ window.SONG_LIBRARY = [
     "playlists": [
       "Level 1"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Gillian Welch - Wayside Back In Time — alternate export",
+        "chordpro": "{title: Wayside Back In Time}\n{artist: Gillian Welch}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/gillian-welch/wayside-back-in-time-chords-330856}\n\n{c: Intro}\n\n[G]     [G] [G/F#] [Em]\n\n{c: Verse 1}\n\n[G]Standing on the corner with a nickel or a d[C]ime\nThere [C]used to be a ra[G]il car to take you [G/F#]down the li[Em]ne\n[G]Too much beer and whiskey to ever be empl[C]oyed\nAnd [C]when I got to Na[G]shville, it was too much s[G/F#]oldiers j[Em]oy\n[G]Wasted on the wayside, wasted on the w[C]ay\nIf[C] I don’t go tom[G]orrow, you know I’m[G/F#] gone to[Em]day\n\n{c: Chorus}\n\n[G]Back baby, back in [C]time\nI wanna go b[G]ack when you were m[Em]ine\n[G]Back baby, back in [C]time\nI wanna go b[Em]ack [D]  when you were [G]mine\n\n[Bm]Black highway all night [C]ride\nWatching the [Em]times[D]  fall away to the s[C]ide\nBm                      C\nClear channel way down low\n              Em D                   C\nIs comin’ in loud   and my mind let go\n\n{c: Verse 2}\n\nG                                         C\nPeaches in the summertime, apples in the fall\n   C                 G                         G/F#    Em\nIf I can’t have you all the time, I won’t have none at all\nG                                                C\nI wish I was in Frisco in a brand new pair of shoes\n    C                G                      G/F#      Em\nI’m sittin’ here in Nashville with Norman’s Nashville blues\n   G                                           C\nSo come you good time rounders listenin’ to my sound\n    C                 G                   G/F#    Em\nAnd drink a round to Nashville 'fore they tear it down\n\n{c: Chorus}\n\nG                  C\nBack baby, back in time\n            G                  Em\nI wanna go back when you were mine\nG                  C\nBack baby, back in time\n            Em  D               G\nI wanna go back   when you were mine\n\nBm                     C\nHard weather, drivin’ slow\n                Em   D                 C\nBuggies and the hats   in town for the show\nBm                          C\nOh darlin', the songs they played\n          Em   D                 C\nAll I got left   of the love we made\n\nG                    C\nBack baby, back in time\n             G                 Em\nI wanna go back when you were mine\nG                   C\nBack baby, back in time\n            Em  D               G\nI wanna go back   when you were mine\n\nG\n",
+        "sourceFile": "Gillian Welch - Wayside Back In Time (1).cho"
+      },
+      {
+        "label": "Gillian Welch - Wayside Back In Time — original export",
+        "chordpro": "{title: Wayside Back In Time}\n{artist: Gillian Welch}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/gillian-welch/wayside-back-in-time-chords-330856}\n\n{c: Intro}\n\n[G]     [G] [G/F#] [Em]\n\n{c: Verse 1}\n\n[G]Standing on the corner with a nickel or a d[C]ime\nThere [C]used to be a ra[G]il car to take you [G/F#]down the li[Em]ne\n[G]Too much beer and whiskey to ever be empl[C]oyed\nAnd [C]when I got to Na[G]shville, it was too much s[G/F#]oldiers j[Em]oy\n[G]Wasted on the wayside, wasted on the w[C]ay\nIf[C] I don’t go tom[G]orrow, you know I’m[G/F#] gone to[Em]day\n\n{c: Chorus}\n\n[G]Back baby, back in [C]time\nI wanna go b[G]ack when you were m[Em]ine\n[G]Back baby, back in [C]time\nI wanna go b[Em]ack [D]  when you were [G]mine\n\n[Bm]Black highway all night [C]ride\nWatching the [Em]times[D]  fall away to the s[C]ide\n[Bm]Clear channel way down l[C]ow\nIs comin’ in l[Em]oud[D]   and my mind let g[C]o\n\n{c: Verse 2}\n\nG                                         C\nPeaches in the summertime, apples in the fall\n   C                 G                         G/F#    Em\nIf I can’t have you all the time, I won’t have none at all\nG                                                C\nI wish I was in Frisco in a brand new pair of shoes\n    C                G                      G/F#      Em\nI’m sittin’ here in Nashville with Norman’s Nashville blues\n   G                                           C\nSo come you good time rounders listenin’ to my sound\n    C                 G                   G/F#    Em\nAnd drink a round to Nashville 'fore they tear it down\n\n{c: Chorus}\n\nG                  C\nBack baby, back in time\n            G                  Em\nI wanna go back when you were mine\nG                  C\nBack baby, back in time\n            Em  D               G\nI wanna go back   when you were mine\n\nBm                     C\nHard weather, drivin’ slow\n                Em   D                 C\nBuggies and the hats   in town for the show\nBm                          C\nOh darlin', the songs they played\n          Em   D                 C\nAll I got left   of the love we made\n\nG                    C\nBack baby, back in time\n             G                 Em\nI wanna go back when you were mine\nG                   C\nBack baby, back in time\n            Em  D               G\nI wanna go back   when you were mine\n\nG\n",
+        "sourceFile": "Gillian Welch - Wayside Back In Time.cho"
+      }
+    ]
   },
   {
     "artist": "Gillian Welch",
@@ -505,7 +528,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "Level 1"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Jeff Buckley - Hallelujah",
+        "chordpro": "{title: Hallelujah}\n{artist: Jeff Buckley}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/jeff-buckley/hallelujah-chords-198052}\n\nCapo 1 for the official video  https://www.youtube.com/watch?v=y8AWFf7EAc4\nNo capo for the original studio version  https://www.youtube.com/watch?v=WIF4_Sm-rgQ\n\n{c: Intro}\n[C] [Am] [C] [Am]\n\n{c: Verse 1}\nI [C]heard there was a [Am]secret chord\nThat [C]David played and it [Am]pleased the Lord\nBut [F]you don't really care for [G]music, [C]do you?[G]\nWell it [C]goes like this the [F]fourth, the [G]fifth\nThe [Am]minor fall and the [F]major lift\nThe [G]baffled king com[E7]posing halle[Am]lujah\n\n{c: Chorus}\nHalle[F]lujah, halle[Am]lujah, halle[F]lujah, halle[C]lu-u-[G]u-u-[C]jah ...[Am].[A[C]m]\n\n{c: Verse 2}\nWell, your [C]faith was strong but you [Am]needed proof\nYou [C]saw her bathing [Am]on the roof\nHer [F]beauty and the moonlight [G]over[C]threw you[G]\nShe [C]tied you to her [F]kitchen [G]chair\nShe [Am]broke your throne and she [F]cut your hair\nAnd [G]from your lips she [E7]drew the halle[Am]lujah\n\n[Chorus]     F           Am          F           C    G   C      Am C Am\nHallelujah, hallelujah, hallelujah, hallelu-u-u-u-jah ....\n\n[Verse 3]C               Am\nBaby, I've been here before\n     C                       Am\nI've seen this room and I've walked this floor, you know\n  F                    G      C          G\nI used to live alone before I knew you\n     C                     F      G\nI've seen your flag on the marble arch\n    Am            F\nAnd love is not a victory march\n       G               E7          Am\nIt's a cold and it's a broken hallelujah\n\n[Chorus]     F           Am          F           C    G   C      Am C Am\nHallelujah, hallelujah, hallelujah, hallelu-u-u-u-jah ....\n\n[Verse 4]            C                   Am\nWell, there was a time when you let me know\n       C            Am\nWhat's really going on below\n    F                       G     C        G\nBut now you never show that to me do you\n      C             F        G\nBut remember when I moved in you\n        Am            F\nAnd the holy dove was moving too\n    G               E7            Am\nAnd every breath we drew was hallelujah\n\n[Chorus]     F           Am          F           C    G   C      Am C Am\nHallelujah, hallelujah, hallelujah, hallelu-u-u-u-jah ....\n\n[Verse 5]      C               Am\nWell, maybe there's a God above\n    C             Am\nBut all I've ever learned from love\n    F                     G      C        G\nWas how to shoot somebody who outdrew you\n         C                  F       G\nAnd it's not a cry that you hear at night\n     Am                 F\nIt's not somebody who's seen the light\n       G               E7          Am\nIt's a cold and it's a broken hallelujah\n\n[Outro]     F           Am          F           C    G\nHallelujah, hallelujah, hallelujah, hallelu-u-u-u ....\n     F           Am          F           C    G\nHallelujah, hallelujah, hallelujah, hallelu-u-u-u ....\n     F           Am          F               C     G    F    Am   F   Am\nHallelujah, hallelujah, hallelujah, hallelu-u-u-u-u-u-u-u-u-u-u-u-u-u-u-u-ujah ....\n     F   G     C\nHalleluuuuuuujah\n",
+        "sourceFile": "Jeff Buckley - Hallelujah.cho"
+      }
+    ]
   },
   {
     "artist": "John Denver",
@@ -568,7 +597,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Keith Urban - Blue Aint Your Color",
+        "chordpro": "{title: Blue Aint Your Color}\n{artist: Keith Urban}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/keith-urban/blue-aint-your-color-official-2458758}\n\n{c: Verse 1}\nI can[G] see you over there\nStarring at your drink\nWatchin' that ice sink\nAll a[Am]lone tonight\nAnd[C] chances are\nYou're sittin' here [D]in this bar\n'Cause he ain't gonna\n[G]Treat you right\nWell, it's[G] probably not my place\nBut I'm gonna say it anyway\n'Cause [Am]you look like\nYou[C] haven't felt the fire\nHad a little [D]fun\nHadn't had a smile[G]in a little while\nBaby\n\n{c: Chorus}\n[G]Bluelooks good on the [Am]sky\nLooks good on that [C]neon buzzin' on the wall\nBut [D]darling, it don't match your [G]eyes\nI'm tellin'\n[G]Youdon't need that guy[Am]\nIt's so black and [C]white\nHe's stealin' your [D]thunder\nBaby, [C]blue [G]ain't your[Am]  color\n\n[Post-Chorus]\n[G] I'm not tryna\n\n{c: Verse 2}\n[G] Be another just\nPick you up\nKinda guy\nTryna drink you up\nTry[Am]na take you home\nBut I just\n[C] I don't understand\nHow another [D]man\nCan take your sun\nAnd turn[G] it ice cold\nWell, I've[G] had enough to drink\nAnd it's makin'\nMe think that I just[Am]  might\nTell you[C] if I were a painter I wouldn't [D]change ya\nI'd just [G]paint you bright\nBaby\n'Cause\n\n{c: Chorus}\n[G]Bluelooks good on the [Am]sky\nLooks good on that [C]neon buzzin' on the wall\nBut [D]darling, it don't match your [G]eyes\nI'm tellin'\n[G]Youdon't need that guy[Am]\nIt's so black and [C]white\nHe's stealin' your [D]thunder\nBaby, [C]blue [G]ain't your[Am]  color\n\n{c: Solo}\n[Em]No no no[Am]\nBlue ain't your colour [Em]baby[C]\n\n{c: Chorus}\n[G]Bluelooks good on the[Am]  sky\nLooks good on that [C]neon buzzin' on the wall\nBut [D]darling, it don't match your [G]eyes\nI'm tellin'\n[G]Youdon't need that guy[Am]\nIt's so black and [C]white\nHe's stealin' your [D]thunder\nBaby, [C]blue [G]ain't your[Am]  color\n\n{c: Outro}\n[C]Blue[G]ain't your [Am]color,[G][G[C]]\nNo, no baby[C][G]\nCall me baby[C]\n[G] Let me light up your world[C]\n[G] [C] [G]\n",
+        "sourceFile": "Keith Urban - Blue Aint Your Color.cho"
+      }
+    ]
   },
   {
     "artist": "Little Big Town",
@@ -688,7 +723,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "Level 1"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Oasis - Wonderwall",
+        "chordpro": "{title: Wonderwall}\n{artist: Oasis}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/oasis/wonderwall-official-1910851}\n\n{c: Intro}\n[Em] [G] [D] [A] [Em] [G] [D] [A]\n[Em] [G] [D] [A] [Em] [G]\n[D] [A]\n\n{c: Verse 1}\n[Em]   Today is g[G]onna be the day that they're[D] gonna throw it [A]back to    you.\n[Em]   By now you should[G] have somehow re[D]alized what yo[A]u gotta    do.\n[Em]I  don't believe that[G] anybody[D] feels the[A] way I     do ab[C]ou[D]t [A]you now.\n\n{c: Verse 2}\n[Em]   Back beat the word[G] is on the street that the[D] fire in your h[A]eart is    out.\n[Em]   I'm sure you've heard[G] it all before but you[D] never really[A] had a     doubt.\n[Em]I  don't believe that[G] anybody[D] feels the[A] way I     do ab[Em]out you now.\n[G] [D] [A]\n\n{c: Pre-Chorus}\nAnd a[C]ll   the roads[D] we have to wal[Em]k are winding,\nAnd a[C]ll   the lights t[D]hat lead us there[Em] are blinding.\n[C]There are m[D]any things that [G]I would [D]like t[Em]o say   [D]  to you[A], but I don't know how.\n\n{c: Chorus}\nBecause [C]ma[Em]ybe[G],   you'[Em]re gonna be the one[C] th[Em]at [G]saves me,\nAnd [Em]after [C]al[Em]l, [G]       you'[Em]re my w[C]on[Em]der[G] wa____ll_\n\n[Break]\n[Em]\n\n{c: Verse 3}\n[Em]   Today was go[G]nna be the day, but they'll[D] never throw it [A]back to    you.\n[Em]   By now you should[G] have somehow rea[D]lized what you're[A] not to    do.\n[Em]I  don't believe that[G] anybody[D] feels the[A] way I     do ab[Em]out you now.\n[G] [D] [A]\n\n[Pre-Chorus]And a\n[C]ll   the roads t[D]hat lead you there[Em] were winding,\nAnd a[C]ll   the lights t[D]hat light the way[Em] are blinding.\n[C]There are m[D]any things that [G]I would [D]like t[Em]o say   [D]  to you,[A] but I don't know how.\n\n{c: Chorus}\nI said [C]ma[Em]ybe[G],   you'[Em]re gonna be the one[C] th[Em]at [G]saves m___e,\nand [Em]after [C]a_[Em]___[G]_ll,  you'[Em]re my w[C]on[Em]der wa____ll_\n[G]  [Em]   I said[C] m[Em]ayb[G]e,  you'[Em]re gonna be the one that[C] s[Em]aves m____e,_\n[G]and af[Em]ter [C]al[Em]l,   [G]you're [Em]my wo[C]nder wall\n[Em]I  [G]  [Em]    said m[C]ay[Em]be [G]       e, yo[Em]u're gonna be the o[C]ne [Em]tha[G]t saves m___e,\nyou're go[Em]nna be the one that[C] sa[Em]ves[G] m___e, you[Em]'re gonna be the on[C]e t[Em]hat[G] s[Em]aves m___e.\n\n{c: Outro}\n[C] [Em] [G] [Em] [C] [Em] [G] [Em]\n[C] [Em] [G] [Em] [C] [Em] [G] [Em]\n",
+        "sourceFile": "Oasis - Wonderwall.cho"
+      }
+    ]
   },
   {
     "artist": "Old Crow Medicine Show",
@@ -743,7 +784,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "Level 1"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Rod Stewart - Reason To Believe",
+        "chordpro": "{title: Reason To Believe}\n{artist: Rod Stewart}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/rod-stewart/reason-to-believe-official-5583849}\n\n{c: Intro}\n[G]\n\n{c: Verse 1}\n[G]If I listened long enough to you\nI'd find a w[C]ay to be[D]lieve that it's all [G]true\n[A]Knowing that you [D]lied straight[C]faced while I cri[G]ed\nStill I [Em]look to find a rea[C]son to bel[D]ieve\n\n{c: Chorus}\nSomeone like [C]you makes it [D]hard to live wit[Em]hout[D] somebody else\nSomeone like [C]you makes it [D]easy to give,[Em]  never think [D]about myself\n\n{c: Verse 2}\n[G]If I gave you [D]time to change my mi[G]nd\n[G7]  I'd find a w[C]ay just to lea[D]ve the past behi[G]nd\n[A]Knowing that you [D]lied straight[C]faced while I cr[G]ied\nStill I [Em]look to find a rea[C]son to be[D]lieve\n\n[Violin Solo]\n[C] [D]  [Em] [D]\n[C] [D]  [Em] [D]\n\n{c: Verse 3}\n[G]If I listened [D]long enough to yo[G]u\n[G7]  I'd find a wa[C]y to belie[D]ve that it's all [G]true\n[A]Knowing that you [D]lied straight[C]faced while I cr[G]ied\nStill I [Em]look to find a re[C]ason to be[D]lieve\n\n{c: Chorus}\n[G]  [D]   [G] Someone like[C] you makes it[D] hard to live wit[Em]hou[D]t somebody else\nSomeone like [C]you makes it [D]easy to give,[Em]  never think [D]about myself\nSomeone like [C]you makes it [D]hard to live with[Em]out[D] somebody else\nSomeone like [C]you makes it [D]easy to give,[Em]  never think [D]about myself, woo\n[C]  [D]   [Em]   [D]  Someone like[C] you makes i[D]t hard to live wi[Em]tho[D]ut somebody else\nSomeone like [C]you makes it [D]easy to give,[Em]  never think [D]about myself\nSomeone like [C]you makes it [D]hard to live with[Em]out[D] somebody else\n\n{c: Outro (Fade Out)}\n[C] [D]  [Em] [D]\n[C]\n",
+        "sourceFile": "Rod Stewart - Reason To Believe.cho"
+      }
+    ]
   },
   {
     "artist": "Rod Stewart",
@@ -961,7 +1008,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Oscar Isaac - Fare Thee Well Dinks Song",
+        "chordpro": "{title: Fare Thee Well Dinks Song}\n{artist: Oscar Isaac}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/oscar-isaac/fare-thee-well-dinks-song-official-3400145}\n\n[D]\n\n{c: Intro}\n[D] [G] [D] [Bm]\n[D] [G] [D] [G]\n[D] [A] [D] [G]\n[D]\n\n{c: Verse 1}\nIf I had [D]wings like [G]Noah's [D]dove\nI'd fly the [Bm]river to the [D]one I [G]love\nFare thee well,[D]  [G]my [D]honey, [A]fare thee well[D]\n[G]  [D] Well, I had a man,\n\n{c: Verse 2}\n[D] who was [G]long and [D]tall\nHe moved his [Bm]body like a [D]cannon [G]ball\nFare thee well,[D]  [G]my [D]honey, [A]fare thee well[D]\n[G]  [D] I remember one eve[D]ning in the [G]pouring [D]rain\n\n{c: Verse 3}\nAnd in my [Bm]heart was an [D]achin' [G]pain\nFare thee well,[D]  [G]my [D]honey, [A]fare thee well[D][D[G]]\n\n{c: Solo}\n[D] [G] [D] [Bm]\n[D] [G] [D] [G]\n[D] [A] [D] [G]\n[D]\n\n{c: Verse 4}\nMuddy [D]river was [G]muddy and [D]wild\nCan't give a [Bm]bloody for my [D]unborn [G]child\nFare thee well,[D]  [G]my [D]honey, [A]fare thee well[D]\n[G]  [D] So show us a [D]bird flying [G]high a[D]bove\n\n{c: Verse 5}\nLife ain't worth [Bm]living without the [D]one you [G]love\nFare thee well,[D]  [G]my [D]honey, [A]fare thee well[D][D[G]]\n\n{c: Outro}\n[D] Fare thee well, [G]my [D]honey, [A]fare thee well[D]\n",
+        "sourceFile": "Oscar Isaac - Fare Thee Well Dinks Song.cho"
+      }
+    ]
   },
   {
     "artist": "Adele",
@@ -989,7 +1042,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Gordon Lightfoot - Early Morning Rain",
+        "chordpro": "{title: Early Morning Rain}\n{artist: Gordon Lightfoot}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/gordon-lightfoot/early-morning-rain-chords-1044730}\n\nEarly Morning Rain chords\nGordon Lightfoot 1966\n\nhttps://en.wikipedia.org/wiki/Early_Morning_Rain\n\nCapo III ****\n\n{c: Intro}\n\n[D]  [G]  [A]  [G]  [D]  [G]  [D]\n\n{c: Verse 1}\n\n[D]In the early morning [A]rain\n[G] With a dollar in my [D]hand\nWith an aching in my [Em]heart\n[G] And my pockets full of [D]sand\nI'm a long way from [Em]home\n[G] and I miss my loved one [D]so\nIn the early morning [A]rain\n[G] With no place to [D]go\n\n{c: Verse 2}\n\n[D]Out on the runway number [A]nine\n[G] Big 707 set to [D]go\n                          Em\nAnd I'm stuck here in the grass\nG                      D\n With a pain that ever grows\n                      Em\nNow the liquor tasted good\nG                       D\n And the women all were fast\n                       A\nWell there she goes my friend\nG                          D   G  A  G  D  G  D\n She'll be rolling down at last\n\n{c: Verse 3}\n\nD                       A\nHear the mighty engines roar\nG                       D\n See the silver wing on high\n                        Em\nShe's away and westward bound\nG                            D\n Far above the clouds she'll fly\n                             Em\nWhere the morning rain don't fall\nG                   D\n And the sun always shines\n                         A\nShe'll be flying o'er my home\nG                     D   G  A  G  D  G  D\n In about three hours time\n\n{c: Verse 4}\n\nD                         A\nThis old airport's got me down\nG                        D\n It's no earthly good to me\n                          Em\nAnd I'm stuck here on the ground\nG                           D\n As cold and drunk as I can be\n                     Em\nYou can't jump a jet plane\nG                       D\n Like you can a freight train\n                   A\nSo I best be on my way\nG                     D\n In the early morning rain\n\n{c: Ending}\n\nD                    Em\nYou can't jump a jet plane\nG                       D\n Like you can a freight train\n                   A\nSo I best be on my way\nG                     D   G  A  G  D  G  D\n In the early morning rain\n\n*    Try Asus4 A and Dsus4 D to jazz the tab up a bit\n**   Some folks believe G sounds better here then Em\n***  Some folks believe A sounds better here then G\n\n**** Alternates:\n\nOpen\n\nD  = F\nA  = C\nG  = Bb\nEm = Gm\n\nCapo V\n\nD  = C\nA  = G\nG  = F\nEm = Dm\n\nOpen (These chords are not in the original key)\n\nD  = A\nA  = E\nG  = D\nEm = Bm\n\nD  = G\nA  = D\nG  = C\nEm = Am\n\nSet8\n",
+        "sourceFile": "Gordon Lightfoot - Early Morning Rain.cho"
+      }
+    ]
   },
   {
     "artist": "Weezer",
@@ -1000,7 +1059,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Weezer - Say It Aint So",
+        "chordpro": "{title: Say It Aint So}\n{artist: Weezer}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/weezer/say-it-aint-so-chords-1006422}\n\n{c: Intro}\n\n[Am]  [E]  [F]  [C]  x2\n\n[Am]Oh yeah.[[E]C][F]\n[Am]All right[E].[C[F]]\n\n{c: Verse 1}\n\n[Am]Somebody's [E]Heine' is [F]crowdin' my [C]icebox\n[Am]Somebody's [E]cold one is [F]givin' me [C]chills\n[Am]Guess I'll just [E]close my [F]eyes[C]\n\n{c: Interlude}\n\nOh [Am]yeah,[E]   al[F]right[C]\nFeels [Am]good,[E]  ins[F]ide[C]\n\n{c: Verse 2}\n\n[Am]Flip on the [E]tele', [F]wrestle with [C]Jimmy\n[Am]Something is [E]bubbling [F]behind my [C]back\nThe [Am]bottle is [E]ready to [F]blow[C]\n\n{c: Chorus}\n\nAm E  F            C\n      Say it ain't so\nAm      E         F        C\n   Your drug is a heartbreaker\nAm E  F            C\n      Say it ain't so\nAm      E       F      C\n   My love is a lifetaker\n\n{c: Interlude}\n\nAm  E  F  C  x2\n\n{c: Verse 3}\n\nAm         E          F       C\nI can't confront you, I never could do\nAm               E            F          C\nThat which might hurt you, so try and be cool\n          Am      E        F                            C\nWhen I say - This way is a waterslide away from me that takes you further every\nAm   E           F     C\nday (hey), so be cool\n\n{c: Chorus}\n\nAm E  F            C\n      Say it ain't so\nAm      E         F        C\n   Your drug is a heartbreaker\nAm E  F            C\n      Say it ain't so\nAm      E       F      C\n   My love is a lifetaker\n\n{c: Bridge}\n\nG            G/F#           C            Eb\n   Dear Daddy,   I write you in spite of years of silence.\nG                    G/F#           C                Eb\n   You've cleaned up,   found Jesus, things are good or so I hear.\nG             G/F#           C         Eb\n   This bottle   of Steven's   awakens ancient feelings.\nG              G/F#          C             Eb              Am   E\n   Like father,   stepfather,   the son is drowning in the floooooood\nF                  C\n   Yeah, yeah yeah, yeah yeah.\n\n{c: Solo}\n\nAm  E  F  C  x3\n\n{c: Chorus}\n\nAm E  F            C\n      Say it ain't so\nAm      E         F        C\n   Your drug is a heartbreaker\nAm E  F            C\n      Say it ain't so\nAm      E       F      C\n   My love is a lifetaker\n\n{c: Outro}\n\nAm  E  F  C  x2\n",
+        "sourceFile": "Weezer - Say It Aint So.cho"
+      }
+    ]
   },
   {
     "artist": "Mason Jennings",
@@ -1074,7 +1139,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Lucinda Williams - Drunken Angel",
+        "chordpro": "{title: Drunken Angel}\n{artist: Lucinda Williams}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/lucinda-williams/drunken-angel-tabs-118486}\n\nDrunken Angel - Lucinda Williams\n\nTabbed by Seb Oddos dit Zappy the Koala\n\nVerse 1&2 (D  Em  G  D  /  Em  G x2/ D):\n\nD                  Em\nSun came up it was another day\n         G                      D\nAnd the sun went down you were blown away\nEm                  G\nWhy'd you let go of your guitar\nEm                     G\nWhy'd you ever let it go that far\n        D\nDrunken Angel\n\nCould've held on to that long smooth neck\nLet your hand remember every fret\nFingers touching each shiny string\nBut you let go of everything Drunken Angel\n\nChorus (Em  G  D x2)\n        Em\nDrunken Angel\nG             D\nYou're on the other side x2\n\nE |--5--3--2-------2-----------------------------------------------|\nB |------------5---3-----------------------------------------------|\nG |----------------2-----------------------------------------------|\nD |----------------0-----------------------------------------------|\nA |----------------------------------------------------------------|\nE |----------------------------------------------------------------|\n\nVerse 3 &4 (D  Em  G  D  /  Em  G x2/ D):\n\nFollowers would cling to you\nHang around just to meet you\nSome threw roses at your feet\nAnd watch you pass out on the street\nDrunken Angel\n\nFeed you and pay off all your debts\nKiss your brow taste your sweat\nWrite about your soul your guts\nCriticize you and wish you luck\n\nChorus\n\nVerse 5 & 6 (D  Em  G  D  /  Em  G x2/ D):\n\nSome kind of savior singing the blues\nA derelict in your duct tape shoes\nYour orphan clothes and your long dark hair\nLooking like you didn't care Druken Angel\n\nBlood spilled out from the hole in your heart\nOver the strings of your guitar\nThe worn down places in the wood\nThat once made you feel so good Druken Angel\n\nChorus and Verse 1 again\n",
+        "sourceFile": "Lucinda Williams - Drunken Angel.cho"
+      }
+    ]
   },
   {
     "artist": "The Animals",
@@ -2205,7 +2276,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Cat Stevens (Yusuf Islam) - Father And Son",
+        "chordpro": "{title: Father And Son}\n{artist: Cat Stevens (Yusuf Islam)}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/cat-stevens-yusuf-islam/father-and-son-official-2168611}\n\n{c: Intro}\n[G] [C] [G] [C]\n[G] [C]\n\n{c: Verse 1}\n[G]  [C] It's not [G]time to make a change[D/A]\nJust relax,[C] take it ea[Am7]sy\nYou're still [G]young, that's your [Em]fault\nThere's so [Am7]much you have to know[D]\nFind a girl [G], settle down[D/A]\nIf you want[C] you can ma[Am7]rry\nLook at me,[G] I am old,[Em]  but I'm [Am7]happy[D]\nI was [G]once like you are now,[D/A]\nAnd I know[C] that it's not ea[Am7]sy\nTo be calm[G] when you've found[Em]  something [Am7]going on[D]\nBut take your time,[G] think a lot[D/A]\nWhy, think of every[C]thing you've got[Am7]\nFor you will [G]still be here tomor[Em]row\nBut your dre[D]ams may [G]not[C]\n\n{c: Verse 2}\n[G]  [C] How can I[G] try to explain[Bm7]\nCause when I do[C] he turns away[Am7]   again\nIt's [G]always been the same,[Em]  same old [Am7]story[D]\nFrom the mo[G]ment I could talk[Bm7]   I was or[C]dered to listen[Am7]\nNow there's a way[G] and I know[Em]  that I [D]have to [G]go away\nI [D]know I [C]have to [G]go[C][C[G]]\n\n{c: Solo}\n[G] [Bm7] [C] [Am7] [G] [Em] [Am7] [D]\n[G] [D/A] [C] [Am7] [G] [Em] [D] [G]\n[D] [C]\n\n[Break]\n[G] [C]\n\n{c: Verse 3}\n[G]  [C] It's not [G]time to make a change[Bm7]\nJust sit down,[C] take it slow[Am7]ly\nYou're still [G]young, that's your [Em]fault\nThere's so [Am7]much you have to go [D]through\nFind a girl,[G] settle down[Bm7]\nIf you want,[C] you can mar[Am7]ry\nLook at me,[G] I am old,[Em]  but I'm [Am7]happy[D]\nAll the times[G] that I cried[Bm7]\nKeeping all[C] the things I knew[Am7]   inside\nIt's [G]hard, but it's har[Em]der to ig[Am7]nore it[D]\nIf they were right,[G] I'd agree[Bm7]\nBut it's them[C] they know not me[Am7]\nNow there's a way[G] and I know[Em]  that I [D]have to go[G] away\nI [D]know I [C]have to [G]go\n",
+        "sourceFile": "Cat Stevens (Yusuf Islam) - Father And Son.cho"
+      }
+    ]
   },
   {
     "artist": "a-ha",
@@ -2519,7 +2596,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Demi Lovato - Let It Go",
+        "chordpro": "{title: Let It Go}\n{artist: Demi Lovato}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/demi-lovato/let-it-go-official-3982432}\n\n{c: Intro}\n[G] Let it go, let it go[D]\nCan't [Em]hold it back anymore[C]\nLet it go,[G] let it go[D]\nTurn my [Em]back, and slam the [C]door\n\n{c: Verse 1}\nThe [Em]snow blows white on the [Cadd9]mountain tonight\nNot a [D]footprint to be [Am]seen\nA [Em]kingdom of isola[Cadd9]tion, and it [D]looks like I'm the queen[A]\n[Em]  The wind is how[Cadd9]ling like the swir[D]ling storm inside[Am]\n[Em]  Couldn't keep it in[D]\nHeaven knows I[A] tried\n\n{c: Pre-Chorus}\n[D] Don't let them in, don't let them see[Cadd9]\nBe the good girl, you always have to be\n[D] Conceal, don't feel, don't let them know[Cadd9]\nWell, now they know\n\n{c: Chorus}\nLet it go,[G] let it go[D]\nCan't [Em]hold it back anymore[C]\nLet it go,[G] let it go[D]\nTurn my [Em]back and slam the door[C]\nAnd [G]here I stand[D]\nAnd [Em]here I'll stay[C]\nLet it go,[G] let it go[D]\nThe [C]cold never bothered me anyway\n\n{c: Verse 2}\n[Em]  It's funny how some dis[Cadd9]tance makes [D]everything seem small[Am]\nAnd the [Em]fears that once controlled[Cadd9]     me, can't [D]get to me at all[A]\n[Em]Up here in the cold,[Cadd9]     thin air I [D]finally can breathe[Am]\nI [Em]know I left a life[D] behind, but I'm [C]too relieved to grieve\n\n{c: Chorus}\nLet it go,[G] let it go[D]\nCan't [Em]hold it back anymore[C]\nLet it go,[G] let it go[D]\nTurn my [Em]back, and slam the door[C]\nAnd [G]here I stand[D]\nAnd [Em]here I'll stay[C]\nLet it go,[G] let it go[D]\nThe [C]cold never bothered me anyway\n\n{c: Bridge}\n[G] Standing[D] frozen[Em]  in the life[C] I've chosen\n[G] You won't[D] find me,[Em]  the past is so[C] behind me\n[G] Buried[D] in the snow[Em][C]\n\n{c: Chorus}\nLet it go,[G] let it go[D]\nCan't [Em]hold it back anymore[C]\nLet it go,[G] let it go[D]\nTurn my [Em]back, and slam the door[C]\nAnd [G]here I stand[F]\nAnd [Em]here I'll stay[D#]\nLet it go,[G] let it go[D]\nThe [C]cold never bothered me anyway\n\n{c: Outro}\n[G] [D] [Em] [C]\nLet it go,[G]  [D] go,[Em]   [C] nahnah\n[G]  [D] Here I stand[Em][C]\nLet it go,[G] let it go[D][C[Em]]\nLet it go\n",
+        "sourceFile": "Demi Lovato - Let It Go.cho"
+      }
+    ]
   },
   {
     "artist": "John Prine",
@@ -2705,7 +2788,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "John Denver - Rocky Mountain High",
+        "chordpro": "{title: Rocky Mountain High}\n{artist: John Denver}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/john-denver/rocky-mountain-high-official-2597733}\n\n{c: Intro}\n[D] [Em] [G] [A]\n[D]\n\n{c: Verse 1}\n[Em]   [G]  [A]He was born[D] in the summer of his [Em]twenty seven year[C]  [A] Coming [D]home to a place he'd never\n[Em]been before[G][A]\nHe left [D]yesterday behind him, you might [Em]say he was born again[C][A]\nYou might [D]say he found a key for every door[Em][A][G]\nWhen he [D]first came to the mountains his [Em]life was far away[C]\n[A]On the road[D] and hanging by a [Em]song[G][A]\nBut the [D]string's already broken and he [Em]does not really care[C]  [A] It keeps [D]changing fast and it\ndon't last for long[Em][A][G]\n\n{c: Chorus}\nBut the [G]Colorado [A]rocky mountain high[D]\nI've [G]seen it rainin' fire[A] in the sky[D]\nThe [G]shadow from the star[A]light is sof[D]ter than a [Em]lul[F#m]labye[G]\nRocky mountain high[D]\n[G]  [A] Rocky mountain high[D]\n\n{c: Verse 2}\n[G]  [A] He climbed[D] cathedral mountains, he saw [Em]silver clouds below[C]  [A] He saw [D]everything as far as you\n can [Em]see[G][A]\nAnd they [D]say that he got crazy once and he [Em]tried to touch the sun[C]  [A] And he [D]lost a friend but\nkept his memory[Em][A][G]\nNow he [D]walks in quiet solitude the [Em]forest and the streams[C]\n[A]Seeking [D]grace in every step he takes[Em][A][G]\nHis sight [D]has turned inside himself to [Em]try and understand[C]  [A] The se[D]renity of a clear blue moun\ntain lake[Em][A][G]\n\n{c: Chorus}\n[G]And the Colo[A]rado rocky mountain [D]high\nI've [G]seen it raining fire[A] in the sky[D]\n[G] Talk to God and [A]listen to the ca[D]sual[Em]   [F#m]repl[G]y\nRocky mountain high[D]\n[Em]   [G] Rocky [A]mountain high[D]\n\n{c: Verse 3}\n[Em]   [G]  [A] Now his life[D] is full of wonder but his[Em]  heart still knows some [C]fear[A]\nOf a [D]simple thing he cannot comprehend[Em][A][G]\nWhy they try[D] to tear the mountains down to [Em]bring in a couple more[C][A]\nMore [D]people, more scars upon the land[Em][A][G]\n\n{c: Chorus}\nAnd the [G]Colorado [A]rocky mountain high[D]\nI've [G]seen it rainin' fire[A] in the sky[D]\nI [G]know he'd be a poo[A]rer man if he [D]never saw an [Em]eag[F#m]le  [G]fly\nRocky mountain high[D]\nIt's [G]Colorado [A]rocky mountain high[D]\nI've [G]seen it rainin' fire[A] in the sky[D]\n[G]Friends around the camp[A]fire and eve[D]rybo[Em]dy's[F#m]    [G]high\nRocky mountain high\n\n{c: Outro}\n[D] [Em] [G]\nRocky [A]mountain high[D][G[Em]]\nRocky [A]mountain high[D][G[Em]]\nRocky [A]mountain high[D][G[Em]]\nRocky [A]mountain high[D][G[Em]]\nRocky [A]mountain high\n\n[Fade Out]\n[D] [Em] [G] [A] [D]\n",
+        "sourceFile": "John Denver - Rocky Mountain High.cho"
+      }
+    ]
   },
   {
     "artist": "Jason Mraz",
@@ -2732,7 +2821,13 @@ window.SONG_LIBRARY = [
       "First Versions",
       "Performing"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Lady A (Lady Antebellum) - Need You Now",
+        "chordpro": "{title: Need You Now}\n{artist: Lady A (Lady Antebellum)}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/lady-a-lady-antebellum/need-you-now-official-2422345}\n\n{c: Intro}\n[A] [C#m] [A] [C#m]\n[A] [C#m] [A] [C#m]\n\n{c: Verse 1}\n[A]Picture perfect memories scattered all around the floor[C#m]\n[A]Reaching for the phone 'cause I can't fight it anymore[C#m]\n\n{c: Pre-Chorus}\nAnd I won[A]der if I ever cross your mind?[C#m]\nFor me it hap[Asus2]pens all the time\n\n{c: Chorus}\nIt's a [E]quarter after one, I'm all alone and I need[G#m]   you now\nSaid[E] I wouldn't call but I've lost all control and I need[G#m]   you now\nAnd I don't[Asus2]     know how I can do without\nI just need you now\n\n[Pre-Verse]\n[A]\n\n{c: Verse 2}\n[C#m]   A[A]nother shot of whiskey, can't stop looking at the door[C#m]\nWish[A]ing you'd come sweeping in the way you did before\n\n{c: Pre-Chorus}\n[C#m]   And I won[A]der if I ever cross your mind?[C#m]\nFor me it hap[Asus2]pens all the time\n\n{c: Chorus}\nIt's a [E]quarter after one, I'm a little drunk and I need[G#m]   you now\nSaid[E] I wouldn't call but I've lost all control and I need[G#m]   you now\nAnd I don't[Asus2]     know how I can do without\nI just need you now\n\n{c: Bridge}\n[C#m]    [B]  [E]  [G#m]    [A]  [B] Oh, whoa[C#m]    [B]  [E]  [G#m]    [A]  [B] I guess I'd ra[Asus2]ther hurt than feel nothing at all[C#m][B]\n\n{c: Chorus}\nIt's a [E]quarter after one, I'm all alone and I need[G#m]   you now\nAnd I said[E] I wouldn't call but I'm a little drunk and I need[G#m]   you now\nAnd I don't[Asus2]     know how I can do without\nI just need you now[E]\n[G#m]   I just need you now[E][G#m]\n[E]  [G#m]   Oh, baby, I need you now[E][G#m]\n\n{c: Outro}\n[E] [G#m] [E] [G#m]\n[E] [G#m] [E]\n",
+        "sourceFile": "Lady A (Lady Antebellum) - Need You Now.cho"
+      }
+    ]
   },
   {
     "artist": "Rihanna",
@@ -2743,7 +2838,13 @@ window.SONG_LIBRARY = [
       "First Versions",
       "Performing"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Rihanna - Love On The Brain",
+        "chordpro": "{title: Love On The Brain}\n{artist: Rihanna}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/rihanna/love-on-the-brain-official-2404193}\n\n{c: Intro}\n[G] [Am]\n[Em]   [D] And you got me, let [G]go\n\n{c: Verse 1}\nWhat you [Am]want from me?\nAnd I [Em]tried to buy your pretty heart, but the price too[D] high\nBaby you got me like [G]oh\nYou love when I [Am]fall apart\nSo you can [Em]put me together\nAnd throw me against the [D]wall\nBaby you got me like [G]ah, woo, [Am]ah\nDon't you stop [Em]loving me\nDon't quit loving me\nJust start [D]loving me\n\n{c: Pre-Chorus}\nOh, and [F]baby I'm fist fighting with fire[C]\nJust to get [G]close to you\nCan we burn something, babe?\n[F] And I run for [C]miles just to get a [D]taste\nMust be love on the [G]brain\n\n{c: Chorus}\nThat's got me [Am]feeling this way\nIt beats [Em]me black and blue but it fucks me so good\nAnd I [D]can't get enough\nMust be love on the [G]brain\nAnd it keeps [Am]cursing my name\nNo mat[Em]ter what I do, I'm no good without you\nAnd I [D]can't get enough\nMust be love on the[G] brain\n\n{c: Verse 2}\nBaby, keep[Am]  loving me\nJust love me, yeah\n[Em]  Just love me\nAll you need to do is [D]love me, yeah\nGot me like [G]ah-ah-ah-ow\nI'm tired of being[Am]  played like a violin\nWhat do I [Em]gotta do to get in your motherfuckin' [D]heart?\nBaby like [G]ah, woo, [Am]ah\nDon't you stop [Em]loving me\nDon't quit loving me\nJust start [D]loving me\n\n{c: Pre-Chorus}\nOh, and [F]baby I'm fist fighting with fire[C]\nJust to get [G]close to you\nCan we burn something, babe?\n[F] And I run for [C]miles just to get a [D]taste\nMust be love on the [G]brain\n\n{c: Chorus}\nThat's got me [Am]feeling this way\nIt beats [Em]me black and blue but it fucks me so good\nAnd I [D]can't get enough\nMust be love on the [G]brain\nAnd it keeps [Am]cursing my name\nNo mat[Em]ter what I do, I'm no good without you\nAnd I [D]can't get enough\nMust be love on the brain\n",
+        "sourceFile": "Rihanna - Love On The Brain.cho"
+      }
+    ]
   },
   {
     "artist": "Warren Zevon",
@@ -2769,7 +2870,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Warren Zevon - Lawyers Guns And Money",
+        "chordpro": "{title: Lawyers Guns And Money}\n{artist: Warren Zevon}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/warren-zevon/lawyers-guns-and-money-official-3798140}\n\n[Main Riff]\n[D/A] [A] [D/A] [A] [D/A] [A] [E] [D/A] [A] [D/A] [A] [D/A] [A] [E]\n[D/A] [A] [D/A] [A]\n\n{c: Verse 1}\n[D/A]    [A]  [E] I [D]went home with the wait[A]ress\n[E] The [D]way I always [A]do\n[D]  [A]  [D]How was I to know[A]\n[E] She was [D]with the Russians [A]too?\n\n[Main Riff]\n[D/A] [A] [D/A] [A] [D/A] [A] [E] [D/A] [A] [D/A] [A]\n\n{c: Verse 2}\n[D/A]    [A]  [E] I was [D]gambling in Hava[A]na\n[E] I [D]took a little risk[A]\n[D]  [A] Send [D]lawyers, guns, and [A]money\n[E] Dad, [D]get me out of this[A]\nHa!\n\n[Main Riff]\n[D/A] [A] [D/A] [A] [D/A] [A] [E] [D/A] [A] [D/A] [A] [D/A] [A] [E]\n\n{c: Bridge}\n[D] I'm the [E]innocent by[A]stander[E]\n[D] And [E]somehow I got [A]stuck[E]\n[D] Be[E]tween the rock and the hard[A] place\nAnd I'm [D/A]down on [A]my [D/A]luck[A]\n[D/A]    [A]  [E] Yes, I'm [D/A]down on [A]my [D/A]luck[A]\n[D/A]    [A]  [E] Well, I'm [D/A]down on [A]my [D/A]luck[A]\n\n{c: Verse 3}\n[D/A]    [A]  [E] Now I'm [D]hiding in Hon[A]duras\n[E] I'm a [D]desperate man[A]\n[D]  [A] Send [D]lawyers, guns, and [A]money\n[E] The [D]shit has hit the fan[A]\n\n[Main Riff]\n[D/A] [A] [D/A] [A] [D/A] [A] [E] [D/A] [A] [D/A] [A] [D/A] [A] [E]\n[D/A] [A] [D/A] [A]\n[D/A]    [A]  [E] Alright, send [D]lawyers, guns, and [A]money\n\n{c: Chorus}\n[E]Huh, yeah\n[D/A]    [A]  [D/A]    [A]  [D/A]    [A]  [E] Send [D]lawyers, guns, and [A]money\n[E] Uh\n[D/A]    [A]  [D/A]    [A]  [D/A]    [A]  [E] Send [D]lawyers, guns, and [A]money\n[E] Hey\n[D/A]    [A]  [D/A]    [A]  [D/A]    [A]  [E] Send [D]lawyers, guns, and [A]money\n[E]Ooh, yeah\n[D/A]    [A]  [D/A]    [A]  [D/A]    [A]  [E] Yeah\n\n[Fade Out]\n[D] [A] [E] [D/A] [A] [D/A] [A] [D/A] [A] [E]\n[D] [A] [E] [D/A] [A] [D/A] [A] [D/A] [A] [E]\n[D] [A] [E]\n",
+        "sourceFile": "Warren Zevon - Lawyers Guns And Money (1).cho"
+      }
+    ]
   },
   {
     "artist": "Edward Sharpe and the Magnetic Zeros",
@@ -2779,7 +2886,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Edward Sharpe And The Magnetic Zeros - Home",
+        "chordpro": "{title: Home}\n{artist: Edward Sharpe And The Magnetic Zeros}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/edward-sharpe-and-the-magnetic-zeros/home-official-2461884}\n\n{c: Intro}\n[Bm] [D] [G] [Bm]\n[D]\n[G]\n\n{c: Verse 1}\n[Bm]Alabama, Arkansas, [D]I do love my Ma and Pa\nNot the way that I do lo[G]ve you\n[Bm]Holy moly, me oh my, [D]you're the apple of my eye\nGirl, I never loved one li[G]ke you\n[Bm]Man, oh, man, you're my best friend, I [D]scream it to the nothingness\nThere ain't nothing that I [G]need\n[Bm]Hot and heavy pumpkin pie, [D]chocolate candy, Jesus Christ\nAin't nothing please me more than [G]you\n\n{c: Chorus}\nOh , [Bm]home, let me come [D]home\nHome is whenever I'm with [G]you\nOh , [Bm]home, let me come [D]home\nHome is wherever I'm with [G]you\n\n[Post-Chorus]\n[Em] [D] [A] [Em]\n[D] [A] [Em] [D] [G]\n[Bm]La, la, [A]la, la, [D]take me[G] home\n[A]Mommy, I'm coming home\n\n{c: Interlude}\n[Bm] [D] [G] [Bm]\n[D]\n\n{c: Verse 2}\n[G] I'll [Bm]follow you into the park, [D]through the jungle, through the dark\nGirl, I never loved one li[G]ke you\n[Bm]Moats and boats and waterfalls, [D]alleyways and pay phone calls\nI been everywhere with [G]you\nThat's true\n[Bm]Laugh until we think we'll die, [D]barefoot on a summer night\nNever could be sweeter than with [G]you\nAnd [Bm]in the streets you run afree , [D]like it's only you and me\nGeeze, you're something [G]to see\n\n{c: Chorus}\nOh , [Bm]home, let me come [D]home\nHome is whenever I'm with [G]you\nOh , [Bm]home, let me come [D]home\nHome is wherever I'm with [G]you\n\n[Post-Chorus]\n[Em] [D] [A] [Em]\n[D] [A] [Em] [D] [G]\n[Bm]La, la, [A]la, la [D]take me[G] home\n[A]Daddy, I'm coming home\n\n{c: Bridge}\n[Bm] [D] [G] [Bm]\n[D] [G] [Bm] [D]\n[G] [Bm] [D]\n\n{c: Chorus}\n[G] Oh , [Bm]home, let me come [D]home\nHome is whenever I'm with [G]you\nOh , [Bm]home, let me come [D]home\nHome is where I'm alone with [G]you\n\n[Break]\n[Bm]Home, let me come [D]home\nHome is wherever I'm with [G]you\nOh . [Bm]home, yes I am [D]home\nHome is when I'm alone with [G]you\n\n{c: Outro}\n[Bm]Alabama, Arkansa[D]s\nI do love my Ma and Pa[G]\n[Bm]Moats and boats and waterfa[D]lls\nAlleyways and payphone ca[G]lls\n[Bm]Oh , [D]oh\nHome is wherever I'm with [G]you\n[Bm]Oh , [D]oh\nHome is when I'm alone with [G]you .\n",
+        "sourceFile": "Edward Sharpe And The Magnetic Zeros - Home (1).cho"
+      }
+    ]
   },
   {
     "artist": "America",
@@ -2869,7 +2982,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Ella Langley - You Look Like You Love Me",
+        "chordpro": "{title: You Look Like You Love Me}\n{artist: Ella Langley}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/ella-langley/you-look-like-you-love-me-official-5331165}\n\n{c: Intro}\n[G]\n\n{c: Verse 1}\n[G] I was all but twenty two, I think at the time\n[Am]  I'd been out on the road, lonely at night\n[C] And it'd been a while,[D] so it was on my mind\n[G]  [D] Well,[G] I saw him walk in, with his cowboy hat\n[Am]  And I thought to myself, I could use some of that\n[C] His boots like glass on a sawdust floor, huh\n[D] Had moves like nothing I'd ever seen before\n[G] So I walked right up, and I pulled him to the side\n[Am]  I handed that man a beer and looked him in the eyes\n[C] And I said \"Baby, I think you're gonna wanna [D]hear this\"\nThen I told him\n\n{c: Chorus}\nEx[G]cuse me\nYou look like you [Am]love me\nYou look like you [C]want me to want[D] you to come on home[G]\n[D] And baby I don't [G]blame you\nFor looking me up and down a[Am]cross this room\nI'm drunk and I'm ready to leave[C]\nAnd [D]you look like you [G]love me[D]\n\n{c: Verse 2}\n[G] WÐµll I was down at a local beer joint with a few of the guys\n[Am]  When this cute little country girl caught my eye\n[C] And boy let me tell you, she was the prettiest thing I'd ever seen in a [D]pair of boots\n[G] Well she walked right up to me, handed me a beer\n[Am]  Gave me a look like \"Let's get out of here\"\n[C] And that's when I realized that she was every cowboy's dream come [D]true\nShe told me this right here\nShe said\n\n{c: Chorus}\nEx[G]cuse me\nYou look like you [Am]love me\nYou look like you [C]want me to want[D] you to come on home[G]\n[D] And baby I don't [G]blame you\nFor looking me up and down a[Am]cross this room\nI'm drunk and I'm ready to leave[C]\nAnd [D]you look like you [G]love me[D]\nAlright now\n\n{c: Solo}\n[G] [Am] [C] [D]\n[G]\n\n{c: Bridge}\n[Am]  So if you ever see a man in a cowboy hat\n[C] And you think to yourself, I could use some of that\n[Am]  Don't waste your time\nJust give him this here line\n[D] Goes a little like this\n\n{c: Chorus}\nEx[G]cuse me\nYou look like you [Am]love me\nYou look like you [C]want me to want[D] you to come on home[G]\n[D] And baby I don't [G]blame you\nFor looking me up and down a[Am]cross this room\nI'm drunk and I'm ready to leave[C]\nAnd [D]you look like you [G]love me\nI'm drunk and I'm ready to leave[Am]\nAnd [D]you look like you love [G]me\n",
+        "sourceFile": "Ella Langley - You Look Like You Love Me (1).cho"
+      }
+    ]
   },
   {
     "artist": "Simon & Garfunkel",
@@ -2879,7 +2998,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Simon & Garfunkel - America",
+        "chordpro": "{title: America}\n{artist: Simon & Garfunkel}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/simon-garfunkel/america-official-2983322}\n\n{c: Intro}\n[C]Hmm...[Cadd9/B][F][Am/G[Am]][A[Am/G]m][Ca[F]dd[C]9/B]\n\n{c: Verse 1}\n[C]\"Let us be [Cadd9/B]lovers, we'll [Am]marry our [Am/G]fortunes to[F]gether\"\n[C]\"I've got some [Cadd9/B]real   estate [Am]here in my bag\"\n[Em7]   So we bought a pack of [A7]cigarettes and [Em7]Mrs. Wagner [A7]pies\nAnd [D]walked [C]off to [G]look for A[C]me[Cadd9/B]rica[F][[Am]Am/G]\n\n{c: Verse 2}\n[C]\"Kathy,\" I [Cadd9/B]said   as we boar[Am]ded a Grey[Am/G]hound in [F]Pittsburgh\n[C]\"Michigan [Cadd9/B]seems  like a [Am]dream to me now\"\n\n{c: Chorus}\n[G]It took me four days to hitchhike from Saginaw\n[D]I've [G]gone to [D]look for A[Cmaj7]merica[C]\n\n{c: Interlude}\n[Bbmaj7/F]        Laughing on the bus\nPlaying [Cmaj7]games with the faces\n[Bbmaj7/F]She     said the man in the gabardine suit was a [Cmaj7]spy\n[F]I said \"Be careful his bow[Fmaj7]tie  is really a ca[C]mera\"[Cadd9/B][Am]\n\n{c: Bridge}\n[Am/G] [Am/F#] [Fmaj7]\n\n{c: Verse 3}\n[C]\"Toss me a ci[Cadd9/B]garette, [Am]I think there's [Am/G]one in my [F]raincoat\"\n[C]\"We smoked the last[Cadd9/B]       one an hour[Am]  ago\"\n[Em7]   So I looked at the [A7]scenery,[Em7]   she read her magazine[A7]\nAnd the [D]moon [C]rose [G]over an [C]op[Cadd9/B]en field[Am][F][Am/G]\n\n{c: Verse 4}\n[C]\"Kathy, I'm [Cadd9/B]lost,\" I [Am]said, though I [Am/G]knew she was [F]sleeping\nI'm [C]empty and [Cadd9/B]aching and I[Am]  don't know why\n\n{c: Chorus}\n[G]Counting the cars on the New Jersey Turnpike\nThey've [D]all [G]come to [D]look for A[Cmaj7]merica[C]\n[D]All [G]come to [D]look for A[Cmaj7]merica[C]\n[D]All [G]come to [D]look for A[Cmaj7]merica[C]\n\n{c: Outro}\n[C] [Cadd9/B] [Am] [Am/G]\n[Dm] [Dm/C] [G7/B] [G7]\n[C] [Cadd9/B] [Am] [Am/G]\n[Dm] [Dm/C] [G7/B] [G7]\n[C] [Cadd9/B] [Am] [Am/G]\n[Dm] [Dm/C] [G7/B] [G7]\n[C] [Cadd9/B] [Am] [Am/G]\n[Dm] [Dm/C] [G7/B] [G7]\n[C] [Cadd9/B] [Am] [Am/G]\n[Dm] [Dm/C] [G7/B]\n",
+        "sourceFile": "Simon & Garfunkel - America.cho"
+      }
+    ]
   },
   {
     "artist": "Coldplay",
@@ -2969,7 +3094,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Kacey Musgraves - Follow Your Arrow",
+        "chordpro": "{title: Follow Your Arrow}\n{artist: Kacey Musgraves}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/kacey-musgraves/follow-your-arrow-official-4171309}\n\n{c: Intro}\n[C] [Am]\n[C]\n\n{c: Verse 1}\n[Am]  If you [C]save yourself for marriage, you're a bore\nIf you don't [Am]save yourself for marriage, you're a horrible person\nIf [F]you won't have a drink, then you're a prude\nBut they'll [Dm7]call you a drunk as soon as [G]you down the first one\n\n{c: Verse 2}\nIf [C]you can't lose the weight, then you're just fat\nBut [Am]if you lose too much, then you're on crack\nYou're [F]damned if you do and you're damned if you don't\nSo, you [Dm7]might as well just do what[G]ever you want\n\n{c: Chorus}\nSo, [C]make lots of noise, hey\n[Am]Kiss lots of boys, yeah\nOr [C]kiss lots of girls if that's [Dm7]somethin' you're [G]into\nWhen the[C] straight and narrow gets a [Am]little too straight\nRoll up a joint,[F] or don't\nJust [C]follow your arrow wher[G]ever it [C]points\n[C/B]Yeah, [Am]follow your [C]arrow wher[G]ever it[C] points\n\n{c: Verse 3}\n[Am]   [C]  [Am]  If [C]you don't go to church, you'll go to Hell\nIf you're the first[Am]  one on the front row, you're a selfrighteous son of a...\n[F]Can't win for losin', you'll just disappoint 'em\nJust [Dm7]'cause you can't beat 'em, don't [G]mean you should join 'em\n\n{c: Chorus}\nSo, [C]make lots of noise, hey\n[Am]Kiss lots of boys, yeah\nOr [C]kiss lots of girls if that's [Dm7]somethin' you're [G]into\nWhen the[C] straight and narrow gets a [Am]little too straight\nRoll up a joint,[F] or don't\nJust [C]follow your arrow wher[G]ever it [C]points\n[C/B]Yeah, [Am]follow your [C]arrow wher[G]ever it [C]points\n\n{c: Bridge}\n[C]Say what you think\n[Am]Love who you love\n'Cause [C]you just get so many [Am]trips around the sun\nYeah, you [F]only...\n[Dm7]Only live [C]once\n\n{c: Chorus}\n[Am]   [C]  [Am]  So, [C]make lots of noise, hey\n[Am]Kiss lots of boys, yeah\nOr [C]kiss lots of girls if [Dm7]that's what you're [G]into\nWhen the[C] straight and narrow gets a [Am]little too straight\nRoll up a joint,[F] I would\nAnd [C]follow your arrow wher[G]ever it [C]points\n[C/B]Yeah, [Am]follow your [C]arrow wher[G]ever it [C]points\n\n{c: Outro}\n[Am] [C] [Am] [G] [C]\n",
+        "sourceFile": "Kacey Musgraves - Follow Your Arrow.cho"
+      }
+    ]
   },
   {
     "artist": "The Mountain Goats",
@@ -2995,7 +3126,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Labi Siffre - Bless The Telephone",
+        "chordpro": "{title: Bless The Telephone}\n{artist: Labi Siffre}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/labi-siffre/bless-the-telephone-official-3766772}\n\n{c: Intro}\n[D] [A] [Bm] [Bm7/F#] [E7] [Gadd9]\n[G]\n\n{c: Verse 1}\n[D] It's nice to [A]hear your voice a[Bm]gain[Bm7/F#]\n[E7]  I've waited all day long\n[Gadd9]     Even wrote a song[G] for [D]you\nIt's strange, the [A]way you make me [Bm]feel[Bm7/F#]\n[E7]  With just a word or two\n[Gadd9]     I'd like to do the same[G]  [D]for you[A]\n\n{c: Interlude}\n[Bm] [Bm7/F#] [E7] [Gadd9] [G]\n\n{c: Verse 2}\n[D] It's nice to [A]hear you say \"hel[Bm]lo\"[Bm7/F#]\n[E7]  And \"how are things with you?\n[Gadd9]     I love you\"[G]\n[D] But very [A]soon it's time to [Bm]go[Bm7/F#]\n[E7]  An office job to do\n[Gadd9]     While I'm here writing [G]songs [D]for you[D/A][D/A[D]]\n\n{c: Bridge}\n[F#7#5]Strange\nHow a phone[Gadd9]     call can change your day[G]\nTake you away[D]\nAway[F#7#5]\nFrom the fee[Gadd9]ling of being alone[G]\nBless the telephone\n\n{c: Interlude}\n[D] [A] [Bm] [Bm7/F#] [E7] [Gadd9] [G]\n\n{c: Verse 3}\n[D] It's nice, the [A]way you say my [Bm]name[Bm7/F#]\n[E7]  Not very fast or slow,[Gadd9]     just soft and [G]low\nThe [D]same as when you tell[A] me how you [Bm]feel[Bm7/F#]\n[E7]  I feel the same way, too\n[Gadd9]     I'm very much in [G]love [D]with you[A]\n\n{c: Outro}\n[Bm]   [Bm7/F#]       [E7]   [Gadd9]     I'm very much in [G]love [D]with you[D/A][D]\n",
+        "sourceFile": "Labi Siffre - Bless The Telephone.cho"
+      }
+    ]
   },
   {
     "artist": "Loudon Wainwright III",
@@ -3021,7 +3158,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "The Lumineers - Ho Hey",
+        "chordpro": "{title: Ho Hey}\n{artist: The Lumineers}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/the-lumineers/ho-hey-official-2422311}\n\n{c: Intro}\n[C] [Csus4] [C] [Csus4] [C] [Csus4]\n[C] [Csus4]\n\n{c: Verse 1}\n[C] I've been trying to do it right[Csus4]\n[C] I've been living a lonely life[Csus4]\n[C] I've been sleeping here instead[Csus4]\n[C] I've been sleeping in my bed[Csus4]\n[Am]  Sleeping in[G] my bed\n[C] [Csus4] [C] [Csus4]\n\n{c: Verse 2}\n[C] So show me family[Csus4]\n[C] All the blood that I would bleed[Csus4]\n[C] I don't know where I belong[Csus4]\n[C] I don't know where I went wrong[Csus4]\n[Am]  But I can write[G] a song\n\n{c: Chorus}\n[C] I belong with [Am]you, you belong with [G]me, you're my[C] sweetheart\nI belong with [Am]you, you belong with [G]me, you're my sweet\n\n{c: Bridge}\n[C] [Csus4] [C] [Csus4] [C] [Csus4] [C] [Csus4]\n\n{c: Verse 3}\n[C] I don't think you're right for him[Csus4]\n[C] Look at what it might have been if you[Csus4]\n[C] took a bus to China Town[Csus4]\n[C] I'd be standing on Canal[Csus4]\n[Am]  and Bo[G]wery\n[C]  [Am]  And she'd be standing next[G] to me\n\n{c: Chorus}\n[C] I belong with [Am]you, you belong with [G]me, you're my[C] sweetheart\nI belong with [Am]you, you belong with [G]me, you're my[C] sweetheart\n\n{c: Bridge}\n[F]Love\n[C]We need[G] it now[C]\nLet's [F]hope [C]for some[G]\n'Cause, [F]oh, [C]we're blee[G]ding out[C]\n\n{c: Chorus}\nI belong with [Am]you, you belong with [G]me, you're my[C] sweetheart\nI belong with [Am]you, you belong with [G]me, you're my\n\n{c: Outro}\n[C] [Csus4] [C] [Csus4] [C] [Csus4] [C]\n",
+        "sourceFile": "The Lumineers - Ho Hey.cho"
+      }
+    ]
   },
   {
     "artist": "Jackson Browne",
@@ -3047,7 +3190,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "The Beatles - Octopuss Garden",
+        "chordpro": "{title: Octopuss Garden}\n{artist: The Beatles}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/the-beatles/octopuss-garden-official-1957271}\n\n{c: Intro}\n[B] [E] [C#m]\n[A] [B]\n\n{c: Verse 1}\n[E] I'd like to be[C#m]   under the sea\nIn an [A]octopus's garden in the shade[B]\n[E] He'd let us in,[C#m]   knows where we've been\nIn his [A]octopus's garden in the shade[B]\n\n{c: Pre-Chorus}\n[C#m]   I'd ask my friends to come and see[B]\n[A] An octopus's [B]garden with me\n\n{c: Chorus}\n[E] I'd like to be[C#m]   under the sea\nIn an [A]octopus's garden[B] in the shade[E]\n\n{c: Verse 2}\n[E] We would be warm[C#m]   below the storm\nIn our [A]little hideaway beneath the waves[B]\n[E] Resting our head[C#m]   on the sea bed\nIn an [A]octopus's garden near a [B]cave\n\n{c: Pre-Chorus}\n[C#m]   We would sing and dance around[B]\n[A] Because we know we [B]can't be found\n\n{c: Chorus}\n[E] I'd like to be[C#m]   under the sea\nIn an [A]octopus's gar[B]den in the shade[E][E7]\n\n{c: Solo}\n[A] [F#m] [D] [E]\n[A] [F#m] [D] [E] [A] [B7]\n\n{c: Verse 3}\n[E] We would shout[C#m]   and swim about\nThe [A]coral that lies beneath the waves[B]\n[E] Oh what joy for [C#m]every girl and boy\n[A]Knowing they're happy and they're [B]safe\n\n{c: Pre-Chorus}\n[C#m]   We would be so happy you and me\n[A]No one there to tell us what to do[B]\n\n{c: Chorus}\n[E] I'd like to be[C#m]   under the sea\nIn an [A]octopus's gar[B]den with you[C#m]\nIn an [A]octopus's gar[B]den with you[C#m]\nIn an [A]octopus's garden[B] with you[E][E[D#]]\n",
+        "sourceFile": "The Beatles - Octopuss Garden.cho"
+      }
+    ]
   },
   {
     "artist": "The Beatles",
@@ -3057,7 +3206,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "The Beatles - Hey Jude",
+        "chordpro": "{title: Hey Jude}\n{artist: The Beatles}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/the-beatles/hey-jude-official-1910973}\n\n{c: Verse 1}\nHey [E]Jude don't make it [B7]bad.\nTake a [B7]sad song and make it [E]better.\nRe[A]member to let her into your [E]heart.\nThen you can start[B7]  to make it be[E]tter\n\n{c: Verse 2}\nHey [E]Jude don't be a[B7]fraid.\nYou were [B7]made to go out and [E]get her\nThe [A]minute you let her under your [E]skin,\nThen you begin[B7]  to make it be[E]tter.\n\n{c: Chorus}\n[E7]  And any time you feel the pain,[A] hey Jude,[A/G#]    refrain [F#m].\nDon't [A/E]carry the world[B7]  upon your sho[E]ulders.\n[E7]  For well you know that it's a fool[A] who plays[A/G#]    it cool [F#m],\nBy [A/E]making his world[B7]  a little col[E]der .\nNa, na, na, [E7]na, na, [B7]na, na, na, na\n\n{c: Verse 3}\nHey [E]Jude don't let me down [B7].\nYou have [B7]found her now go and [E]get her .\nRe[A]member to let her into your [E]heart.\nThen you can start[B7]  to make it be[E]tter.\n\n{c: Chorus}\n[E7]  So let it out and let it in,[A] hey Jude[A/G#]    begin.[F#m]\nYou're [A/E]waiting for some[B7]one to perform[E] with.\n[E7]  And don't you know that it's just you?[A] Hey Jude[A/G#]\nyou'll do [F#m].\nThe movement you need[B7]  is on your shou[E]lder.\nNa, na, na, [E7]na, na, [B7]na, na, na, na\n\n{c: Verse 4}\nHey Ju[E]de don't make it [B7]bad.\nTake a [B7]sad song and make it [E]better.\nRe[A]member to let her under your [E]skin,\nThen you begin[B7]  to make it b[E]etter.\nBetter, better, better, better, better. Ah!\n\n{c: Outro}\n[E]Na, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\n[E]Na, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\n\n[Fade Out]\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\nNa, na, na, [D]na, na, na, na. [A]Na, na, na, na. Hey [E]Jude.\n",
+        "sourceFile": "The Beatles - Hey Jude (1).cho"
+      }
+    ]
   },
   {
     "artist": "The Beatles",
@@ -3067,7 +3222,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "The Beatles - Blackbird",
+        "chordpro": "{title: Blackbird}\n{artist: The Beatles}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/the-beatles/blackbird-official-2093927}\n\n{c: Intro}\n[G] [Am7] [G/B]\n[G]\n\n{c: Verse 1}\n[G]Blackbird [Am7]singing in the [G/B]dead of [G]night\n[C]Take these [C#dim]broken wings[Dadd11]      and [D#dim]learn to [Em]fly\n[Dadd11]All    [C#dim]your  [C]life[Cm]\n[G/B]You were only wai[A7]ting for this [C/D]moment\nto arise\n[G] [C] [G/B] [A7] [C/D] [G]\n\n{c: Verse 2}\n[G]Blackbird [Am7]singing in the [G/B]dead of [G]night\n[C]Take these [C#dim]sunken eyes[Dadd11]      and [D#dim]learn to [Em]see\n[Dadd11]All    [C#dim]your  [C]life\n[Cm]   [G/B]You were only wait[A7]ing for this [C/D]moment\nto be [G]free\n\n{c: Chorus}\n[Fadd9]Blackb[Em]ird[Dmadd11]        [C] fly[Bb6]    [C]  [Fadd9]Blackb[Em]ird[Dmadd11]        [C] fly[Bb6]    [A7]  In to the light[C/D]   of a dark black [G]night\n[Am7] [G/B]\n[G] [C] [C#dim] [Dadd11] [D#dim] [Em] [Dadd11] [C#dim] [C]\n[Cm] [G/B] [A7] [C/D] [G]\n[Fadd9]Blackb[Em]ird[Dmadd11]        [C] fly[Bb6]    [C]  [Fadd9]Blackb[Em]ird[Dmadd11]        [C] fly[Bb6]    [A7]  In to the light[C/D]   of a dark black [G]night\n[Am7] [G/B]\n[G] [G] [Am7] [G/B] [C] [G/B] [A7] [C/D]\n\n{c: Verse 3}\n[G]Blackbird [Am7]singing in the [G/B]dead of [G]night\n[C]Take these [C#dim]broken wings[Dadd11]      and [D#dim]learn to [Em]fly\n[Dadd11]All    [C#dim]your  [C]life\n[Cm]   [G/B]You were only wait[A7]ing for this [C/D]moment\nto ar[G]ise\n\n{c: Outro}\n[C]You were [G/B]only wait[A7]ing for this [C/D]moment\nto ar[G]ise\n[C]You were [G/B]only wait[A7]ing for this [C/D]moment\nto ar[G]ise\n",
+        "sourceFile": "The Beatles - Blackbird.cho"
+      }
+    ]
   },
   {
     "artist": "The Verve Pipe",
@@ -3093,7 +3254,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Sixpence None The Richer - Kiss Me",
+        "chordpro": "{title: Kiss Me}\n{artist: Sixpence None The Richer}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/sixpence-none-the-richer/kiss-me-official-1980497}\n\n{c: Intro}\n[D] [Dmaj7] [D7] [Dmaj7]\n[D] [Dmaj7] [D7]\n[Dmaj7]\n\n{c: Verse 1}\n[D] Kiss me[Dmaj7]     out of the bearded barley,\n[D7]  Nightly,[Dmaj7]     beside the green, green grass\n[D] Swing, swing,[Dmaj7]     swing the spinning step\n[D7]  You'll wear those shoes\nAnd I will[G] wear that dress\n\n{c: Chorus}\nOh,[Em]  Kiss me[A]  [D] beneath the [Bm]milky twilight\n[Em]  Lead me[A]  [D] out on the [D7]moonlit floor[Em]\nLift your [A]open hand\n[D] Strike up the [Dsus2/C#]band,\nAnd make the fire[Bm11]flies dance\nSilvermoon's spark[G]ling,\n[Dsus2/A]        [A] So kiss [D]me\n\n{c: Interlude}\n[Dmaj7] [D7] [Dmaj7]\n\n{c: Verse 2}\n[D] Kiss me[Dmaj7]     down by the broken treehouse\n[D7]  Swing me,[Dmaj7]     upon its hanging tire\n[D] Bring, bring,[Dmaj7]     bring your flowered hat\n[D7]  We'll take the trail marked on your[G] father's map\n\n{c: Chorus}\nOh,[Em]  Kiss me[A]  [D] beneath the [Bm]milky twilight\n[Em]  Lead me[A]  [D] out on the [D7]moonlit floor[Em]\nLift your [A]open hand\n[D] Strike up the [Dsus2/C#]band,\nAnd make the fire[Bm11]flies dance[Dsus2/A]\nSilvermoon's spark[G]ling,\n[Dsus2/A]        [A] So kiss [D]me\n\n{c: Interlude}\n[Dmaj7] [D7] [Dmaj7] [D]\n[Dmaj7] [D7] [Dmaj7]\n\n{c: Solo}\n[Em] [A] [D] [Bm] [Em] [A] [D] [D7]\n\n{c: Chorus}\n[Em]  Kiss me[A]  [D] beneath the [Bm]milky twilight\n[Em]  Lead me[A]  [D] out on the [D7]moonlit floor[Em]\nLift your [A]open hand\n[D] Strike up the [Dsus2/C#]band,\nAnd make the fire[Bm11]flies dance[Dsus2/A]\nSilvermoon's spark[G]ling,\n[Dsus2/A]        [A] So kiss [D]me\n\n{c: Interlude}\n[Dmaj7]      [D7]   [Dmaj7]     So kiss [D]me...\n\n{c: Outro}\n[Dmaj7]      [D7]   [Dmaj7]     So kiss [D]me\n[Dmaj7]      [D7]   [Dmaj7]     So kiss [D]me\n[Dmaj7] [D7] [Dmaj7] [D]\n",
+        "sourceFile": "Sixpence None The Richer - Kiss Me.cho"
+      }
+    ]
   },
   {
     "artist": "The Beatles",
@@ -3119,7 +3286,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Simon & Garfunkel - The Boxer",
+        "chordpro": "{title: The Boxer}\n{artist: Simon & Garfunkel}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/simon-garfunkel/the-boxer-official-2466966}\n\n{c: Intro}\n[B]\n\n{c: Verse 1}\n[B]I am just a poor boy\nThough my story's [B/Bb]seldom [G#m]told\nI have [F#]squandered my resistance\nFor a pocketful of mumbles, such are [B]promises\nAll lies and [G#m]jest\nStill a man[F#]  hears what he [E]wants to hear\nAnd disregards the rest[B]\n\n{c: Verse 2}\nWhen I [B]left my home and my family\nI was no more [B/Bb]than a [G#m]boy\nIn the [F#]company of strangers\nIn the quiet of the railway station\n[B]Running scared,\nLaying [G#m]low, seeking out[F#]  the poorer quar[E]ters\nWhere the ragged people go[B]\nLooking for[Gb]  the places\nOn[E]ly they would [B]know\nLie la lie,\n\n{c: Chorus 1}\n[G#m]   lie la lala [D#m]lie lie\nLie la lie, lie[G#m]   la la la[F#]  la lie la la lie la la la [B]la\n\n{c: Verse 3}\nAsking [B]only workman's wages\nI come looking [B/Bb]for a job[G#m]\nBut I get no of[F#]fers\nJust a comeon from the whores\nOn Seventh [B]Avenue\nI do declare[G#m]\nThere were times[F#]  when I was so [E]lonesome\nI took some comfort there, [B]le le le le le le le le\n\n{c: Interlude}\n[B] [G#m] [F#] [B]\n[G#m] [F#] [E] [B]\n[F#]Lie[B] la lie,\n\n{c: Chorus 2}\n[G#m]   lie la lala [D#m]lie lie\nLie la lie, lie la la[G#m]   la la lie[F#]  la la le la la la la la [B]la\n\n{c: Verse 4}\nThen I'm [B]laying out my winter clothes\nAnd wishing I[B/Bb]    was [G#m]gone\nGoing [F#]home\nWhere the New York City winters\nAren't [B]bleeding me\n[D#m]   Leading me[G#m]\nGoing home[F#]\n\n{c: Verse 5}\n[B] In the clearing stands a boxer\nAnd a fighter [B/Bb]by  his [G#m]trade\nAnd he car[F#]ries the reminders\nOf every glove that laid him down\nOr [B]cut him till he cried out\nIn his anger and his [G#m]shame\n\"I am [F#]leaving, I am [E]leaving\"\nBut the fighter still remains,[B] mmm mmm[F#][B][E]\n\n{c: Chorus}\n[G#m]\nLie la lie,[D#m]   lie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [G#m]la la la la [D#m]lie\nlie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [G#m]la la la la [D#m]lie\nlie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [G#m]la la la la [D#m]lie\nlie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [G#m]la la la la [D#m]lie\nlie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [G#m]la la la la [D#m]lie\nlie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [G#m]la la la la [D#m]lie\nlie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [G#m]la la la la [D#m]lie\nlie la la la lie la [G#m]lie\nLie la lie,[F#]  lie la la la lie la lie [B]la\n\n{c: Outro}\n[G#m] [F#] [B] [G#m]\n[F#] [E] [B] [F#]\n[E] [B]\n",
+        "sourceFile": "Simon & Garfunkel - The Boxer.cho"
+      }
+    ]
   },
   {
     "artist": "Zac Brown Band",
@@ -3129,7 +3302,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Zac Brown Band - Chicken Fried",
+        "chordpro": "{title: Chicken Fried}\n{artist: Zac Brown Band}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/zac-brown-band/chicken-fried-official-2150315}\n\n{c: Intro}\n[F#] [C#] [B]\n[F#]  You know I like my [F#]chicken fried\n\n{c: Chorus}\nCold beer on a [C#]Friday night\nA pair of jeans that fit[B] just right\nAnd the radio [F#]up[C#]\n\n[Pre-Verse]\n[F#]\n\n{c: Verse 1}\n[C#]   [B]  [F#]   [C#]  Well I was [F#]raised up be neath the shade[C#]  of a Georgia pine[B]\nAnd that's [C#]home you know\n[F#]sweet tea, pecan pie[C#]  and homemade wine\n[B] Where the [C#]peaches grow\nAnd [F#]my house it's not [C#]much to talk about[B]\n[C#]  But it's [F#]filled with love is grown[C#]  on southern ground[B]\n[C#]  And a little bit of [F#]chicken fried\n\n{c: Chorus}\nCold beer on a [C#]Friday night\nA pair of jeans that fit[B] just right\nAnd the radio [F#]up[C#]\nWell I've seen [F#]sunrise\nSee the love in my [C#]woman's eyes\nFeel the touch of a [B]precious child\nAnd know a mother's [F#]love[C#]\n\n{c: Verse 2}\nIts [F#]funny how it's the [C#]little things in life[B] that [C#]mean the most\nNot [F#]where you live, [C#]what you drive or the [B]price tag on your clothes[C#]\nThere's no [F#]dollar sign on a [C#]piece of mind; [B]this I've come to know\n[C#]  So if [F#]you agree have a [C#]drink with me\nRaise your [B]glasses for a toast[C#]\nTo a little bit of [F#]chicken fried\n\n{c: Chorus}\nCold beer on a [C#]Friday night\nA pair of jeans that fit[B] just right\nAnd the radio [F#]up[C#]\nWell I've seen [F#]sunrise\nSee the love in my [C#]woman's eyes\nFeel the touch of a [B]precious child\nAnd know a mother's [F#]love[C#]\n\n{c: Solo}\n[F#]\n[C#] [B] [F#] [C#]\n[F#] [C#] [B] [F#]\n[C#]\n\n[Break]\n[F#] [B] [F#]\n[C#]  I thank god [F#]for my life\n\n{c: Bridge}\nAnd for the stars[C#]  and stripes\nMay freedom fo[B]rever fly, let it [F#]ring.\n[C#]  Salute the ones[F#]  who died\nthe ones that gave[C#]  their lives so we don't have to [B]sacrifice\nAll the things we [F#]love[C#]\n\n{c: Chorus}\nLike our [F#]chicken fried\nCold beer on a [C#]Friday night\nA pair of jeans that fit[B] just right\nAnd the radio [F#]up[C#]\nWell I've seen [F#]sunrise\nSee the love in [C#]my woman's eyes\nFeel the touch of [B]a precious child\nAnd know a moth[F#]er's love[C#]\nGet ya little [F#]chicken fried\nCold beer on a [C#]Friday night\nA pair of jeans that fit[B] just right\nAnd the radio [F#]up[C#]\nWell I've seen [F#]sunrise\nSee the love in my [C#]woman's eyes\nFeel the touch of a [B]precious child\nAnd know a mother's [F#]love[C#]\n\n{c: Outro}\n[F#]\n",
+        "sourceFile": "Zac Brown Band - Chicken Fried.cho"
+      }
+    ]
   },
   {
     "artist": "Warren Zevon",
@@ -3155,7 +3334,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Gordon Lightfoot - The Wreck Of The Edmund Fitzgerald",
+        "chordpro": "{title: The Wreck Of The Edmund Fitzgerald}\n{artist: Gordon Lightfoot}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/gordon-lightfoot/the-wreck-of-the-edmund-fitzgerald-chords-660411}\n\nGordon Lightfoot - The Wreck Of The Edmund Fitzgerald\nChords By: RT237\n\n{c: Intro}\n\n| [Asus2]   | [G/A]     | [D/A]     | [Asus2]   |\n| [G/A]     | [D/A]     | [Asus2]   | [A]       |\n\n{c: Verse 1}\n\nThe [A]legend lives on from the [Em]Chippewa on down\nOf the [G]big lake they [D]called \"Gitche [Asus2]Gumee\"[A]\nThe lake, it is said, never [Em]gives up her dead\nWhen the [G]skies of No[D]vember turn [Asus2]gloomy[A]\nWith a [A]load of iron ore twenty-six [Em]thousand tons more\nThan the [G]Edmund Fitz[D]gerald weighed [Asus2]empty[A]\nThat good [A]ship and crew was a [Em]bone to be chewed\nWhen the \"[G]Gales of No[D]vember\" came [Asus2]early[A]\n\n{c: Verse 2}\n\nThe [A]ship was the pride of the A[Em]merican side\nComing [G]back from some [D]mill in Wis[Asus2]consin\n       A                         Em\nAs the big freighters go, it was bigger than most\n       G             D            Asus2\nWith a crew and good captain well seasoned\n   A                         Em\nConcluding some terms with a couple of steel firms\n          G          D          Asus2\nWhen they left fully loaded for Cleveland\n    A                         Em\nAnd later that night when the ship's bell rang\n         G            D                Asus2\nCould it be the north wind they'd been feelin'?\n\n| A       | G/A     | D/A     | Asus2   | A       |\n\n{c: Verse 3}\n\n    A                        Em\nThe wind in the wires made a tattle-tale sound\n      G          D        Asus2          A\nAnd a wave broke over the railing\n    A                      Em\nAnd every man knew, as the captain did too\n          G          D           Asus2      A\nT'was the witch of November come stealin'\n    A                      Em\nThe dawn came late and the breakfast had to wait\n         G          D           Asus2\nWhen the Gales of November came slashin'\n     A                     Em\nWhen afternoon came it was freezin' rain\n       G         D         Asus2\nIn the face of a hurricane west wind\n\n| A       | G/A     | D/A     | Asus2   |\n| G/A     | D/A     | Asus2   | A       |\n\n{c: Verse 4}\n\n     A                        Em\nWhen suppertime came, the old cook came on deck\n         G            D            Asus2      A\nSayin’, \"Fellas, it's too rough to feed ya.\"\n   A                 Em\nAt seven P.M. a main hatchway caved in'\n         G            D           Asus2      A\nHe said \"Fellas, it's been good t'know ya\"\n                            Em\nThe captain wired in he had water comin' in\n        G             D           Asus2\nAnd the good ship and crew was in peril\n    A                         Em\nAnd later that night when 'is lights went outta sight\n         G            D          Asus2\nCame the wreck of the Edmund Fitzgerald\n\n| A       | G/A     | D/A     | Asus2   |\n| G/A     | D/A     | Asus2   | A       |\n| A       | A\n\n{c: Verse 5}\n\n                           Em\nDoes anyone know where the love of God goes\n         G              D          Asus2     A\nWhen the waves turn the minutes to hours?\n    A                             Em\nThe searchers all say they'd have made Whitefish Bay\n          G                D       Asus2     A\nIf they'd put fifteen more miles behind her\n     A                           Em\nThey might have split up or they might have capsized;\n     G              D             Asus2\nThey may have broke deep and took water\n    A                       Em\nAnd all that remains is the faces and the names\n       G             D            Asus2\nOf the wives and the sons and the daughters\n\n| A         | G/A     | D/A         | Asus2     |\n| G/A       | D/A     | Asus2       | A         |\n\n{c: Verse 6}\n\n                    Em\nLake Huron rolls, Superior sings\n       G            D         Asus2\nIn the rooms of her ice-water mansion\n    A                      Em\nOld Michigan steams like a young man's dreams;\n    G           D            Asus2      A\nThe islands and bays are for sportsmen\n    A                    Em\nAnd farther below Lake Ontario\n      G            D        Asus2\nTakes in what Lake Erie can send her\n        A                    Em\nAnd the iron boats go as the mariners all know\n         G          D        Asus2\nwith the Gales of November remembered\n\n| A       | G/A     | D/A     | Asus2   |\n| G/A     | D/A     | Asus2   | A       |\n| A       | G/A     | D/A     | Asus2   |\n| G/A     | D/A     | Asus2   | A       |\n| A       | A\n\n{c: Verse 7}\n\n     A                   Em\nIn a musty old hall in Detroit they prayed\n        G        D          Asus2     A\nIn the \"Maritime Sailors' Cathedral.\"\n    A                               Em\nThe church bell chimed till it rang twenty-nine times\n         G          D          Asus2    A\nFor each man on the Edmund Fitzgerald\n    A                        Em\nThe legend lives on from the Chippewa on down\n       G             D            Asus2      A\nOf the big lake they call \"Gitche Gumee\"\n   A                          Em\n\"Superior\", they said, \"never gives up her dead\n          G          D            Asus2\nWhen the 'Gales of November' come early!\"\n\n| A       | G/A     | D/A     | Asus2   |\n| G/A     | D/A     | Asus2   | A       |\n| A       | G/A     | D/A     | Asus2   |\n| G/A     | D/A     | Asus2   | A       |\n\n(fade)\n",
+        "sourceFile": "Gordon Lightfoot - The Wreck Of The Edmund Fitzgerald.cho"
+      }
+    ]
   },
   {
     "artist": "Coldplay",
@@ -3165,7 +3350,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Coldplay - Yellow",
+        "chordpro": "{title: Yellow}\n{artist: Coldplay}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/coldplay/yellow-chords-114080}\n\n{c: Intro}\n[G]    [G]\n[G]    [D]    [C]    [G]\n\n{c: Verse 1}\n[G]  Look at the stars\nLook how they shine for[D] you\nAnd everything you do[Cmaj7]\n\nYeah, they were all yellow\n[G]  I came along\nI wrote a song for[D] you\nAnd all the things you do[Cmaj7]\n\nAnd it was called \"Yellow\"\n[G]  So then I took my[D] turn\nOh, what a thing to have done[Cmaj7]\nAnd it was all yellow[[G]Gsus4]\n\n{c: Chorus 1}\n[Cmaj7]      Your sk[Em7]in, oh yeah, [D]your skin and bones\n[Cmaj7]      Turn i[Em7]nto some[D]thing beautiful\n[Cmaj7]      You kn[Em7]ow, you know [D]I love you so\n[Cmaj7]      You know I love you so\n\n[Instrumental]G    D    C    G  Gsus4\n\n[Verse 2]G\n  I swam across\n                   D\nI jumped across for you\n                      Cmaj7\nOh, what a thing to do\n\n'Cause you were all yellow\nG\n  I drew a line\n                 D\nI drew a line for you\n                      Cmaj7\nOh, what a thing to do\n                      G  Gsus4\nAnd it was all yellow\n\n[Chorus 2]Cmaj7        Em7          D\n      Your skin, oh yeah, your skin and bones\nCmaj7       Em7     D\n      Turn into something beautiful\nCmaj7           Em7         D              Cmaj7\n      And you know, for you I bleed myself dry\n\nFor you I bleed myself dry\n\n[Instrumental]G    D    C    G  Gsus4\n\n[Bridge]     G                             D\nIt's true, look how they shine for you\n                        Cmaj7\nLook how they shine for you\n                        G\nLook how they shine for\n                        D\nLook how they shine for you\n                        Cmaj7\nLook how they shine for you\n\nLook how they shine\n\n[Outro]G\n  Look at the stars\n                       Dm7\nLook how they shine for you\n                          Cmaj7\nAnd all the things that you do\n",
+        "sourceFile": "Coldplay - Yellow.cho"
+      }
+    ]
   },
   {
     "artist": "Radiohead",
@@ -3175,7 +3366,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Radiohead - Creep",
+        "chordpro": "{title: Creep}\n{artist: Radiohead}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/radiohead/creep-chords-4169}\n\n{c: Intro}\n[G] [B] [C] [Cm]\n\n{c: Verse 1}\nWhen you were here be[G]fore, couldn't look you in the [B]eyes\nYou're just like an [C]angel, your skin makes me [Cm]cry\nYou float like a [G]feather in a beautiful [B]world\nI wish I was [C]special, you're so fucking [Cm]special\n\n{c: Chorus(play loud)}\n[Cm](x3, very short)\nBut I'm a [G]creep, I'm a [B]weirdo\nWhat the hell am I doing [C]here? I don't be[Cm]long here\n\n{c: Verse 2}\nI don't care if it [G]hurts, I wanna have con[B]trol\nI want a perfect [C]body, I want a perfect [Cm]soul\nI want you to [G]notice when I'm not a[B]round\nYou're so fucking [C]special, I wish I was [Cm]special\n\n{c: Chorus(play loud)}\nCm\n(x3, very short)\n          G            B\nBut I'm a creep, I'm a weirdo\n                         C               Cm\nWhat the hell am I doing here? I don't belong here\n\n{c: Bridge(play loud)}\n            G                     B\nOooh, oooh, she's running out the door...\nC                      Cm\nShe's running out, she run, run, run...\nG     B\nRuuuuuuuun...\nC     Cm\nRuuuuuuuuuuun...\n\n{c: Verse 3(play soft until the end)}\n                   G                   B\nWhatever makes you happy, whatever you want\n                  C                     Cm\nYou're so fucking special, I wish I was special\n\n[Chorus]          G            B\nBut I'm a creep, I'm a weirdo\n                         C               Cm\nWhat the hell am I doing here? I don't belong here\n          G\nI don't belong here\n",
+        "sourceFile": "Radiohead - Creep.cho"
+      }
+    ]
   },
   {
     "artist": "Shaboozey",
@@ -3185,7 +3382,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Shaboozey - A Bar Song Tipsy",
+        "chordpro": "{title: A Bar Song Tipsy}\n{artist: Shaboozey}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/shaboozey/a-bar-song-tipsy-chords-5223882}\n\nA BAR SONG (TIPSY)\nAs recorded by Shaboozey\n(2024 release)\n\nCapo 2nd fret\n\n{c: Intro}\n[Em]  [G]  [C/G]  [G] [D/F#]\n[Em]  [G]  [C/G]  [G] [D/F#]\n\n{c: Verse 1}\nMy [Em]baby want a [G]Birkin, she's been [C/G]tellin' me all night [G]long[D/F#]\n[Em]Gasoline and [G]groceries,  [C/G]list goes on and [G]on[D/F#]\nThis [Em]9 to 5 ain't [G]workin', why the [C/G]hell do I work so [G]hard?[D/F#]\nI can't [Em]worry 'bout my [G]problems, I can't [C/G]take 'em when I'm [G]gone[D/F#]\n\n{c: Pre-Chorus}\n[Em]One, here comes the [G]two, to the three, to the [C/G]four\nTell 'em \"Bring a[G]nother round\", [D/F#]we need plenty [Em]more\nTwo steppin' on the [G]table, she don't need a dance [C/G]floor\nOh my,[G] good Lord\n\n{c: Chorus}\n\nEm                   G\nSomeone pour me up a double shot of whiskey\nC/G                   G             D/F#\nThey know me and Jack Daniels got a history\nEm                  G\nTherе's a party downtown, near 5th Street\nC/G              G           D/F#  Em  G\nEverybody at the bar gеttin' tipsy\nC/G              G           D/F#  Em  G\nEverybody at the bar gettin' tipsy\nC/G              G           D/F#\nEverybody at the bar gettin' tipsy\n\n[Verse 2]Em                    G                            C/G\nI been Boozey since I left, I ain't changin' for a check\n                       G\nTell my ma, I ain't forget (Oh, Lord, uh)\nEm                    G                         C/G\nWoke up drunk at 10 a.m., we gon' do this shit again\n                          G       D/F#\nTell your girl to bring a friend (Oh, Lord)\n\n[Pre-Chorus]Em                  G                         C/G\nOne, here comes the two, to the three, to the four\n                 G              D/F#           Em\nTell 'em \"Bring another round\", we need plenty more\n                    G                             C/G\nTwo steppin' on the table, she don't need a dance floor\n      G\nOh my, good Lord\n\n[Chorus]Em                   G\nSomeone pour me up a double shot of whiskey (A double shot of whiskey)\nC/G                   G             D/F#\nThey know me and Jack Daniels got a history (We go way back)\nEm                  G\nTherе's a party downtown, near 5th Street\nC/G              G           D/F#  Em  G\nEverybody at the bar gеttin' tipsy (Woo)\nC/G              G           D/F#  Em  G\nEverybody at the bar gettin' tipsy (At the bar gettin' tipsy)\nC/G              G           D/F#\nEverybody at the bar gettin' tipsy\n\n[Bridge]Em                  G                         C/G\nOne, here comes the two, to the three, to the four\n               G             D/F#            Em\nWhen it's last call and they kick us out the door\n                     G                             C/G\nIt's gettin' kind of late but the ladies want some more\nN.C.\nOh my, good Lord (Tell 'em drink some more)\n\n[Chorus]N.C.\nSomeone pour me up a double shot of whiskey (A double shot of whiskey)\nN.C.\nThey know me and Jack Daniels got a history (Way back)\nN.C.\nThere's a party downtown, near 5th Street (Come on)\nN.C.\nEverybody at the bar gettin' tipsy (Woo)\nEm                   G\nSomeone pour me up a double shot of whiskey (A double shot of whiskey)\nC/G                   G             D/F#\nThey know me and Jack Daniels got a history (History)\nEm                 G\nAt the bottom of a bottle gon' miss me (Bet you gon' miss me)\nC/G              G           D/F#                            Em G\nEverybody at the bar gettin' tipsy (At the bar gettin' tipsy)\nC/G              G           D/F#  Em  G\nEverybody at the bar gettin' tipsy\nC/G              G           N.C.\nEverybody at the bar gettin' tipsy\n\n[Outro]N.C.\nThat's fuckin' messed up, bro, they kicked me out the bar\n",
+        "sourceFile": "Shaboozey - A Bar Song Tipsy.cho"
+      }
+    ]
   },
   {
     "artist": "Harry Styles",
@@ -3205,7 +3408,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "John Denver - Take Me Home Country Roads",
+        "chordpro": "{title: Take Me Home Country Roads}\n{artist: John Denver}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/john-denver/take-me-home-country-roads-chords-57606}\n\nTake Me Home, Country Roads\nby John Denver\n\nCapo 2\n\n{c: Intro}\n[G]  [G/D]  x4\n\n{c: Verse 1}\n[G]  Almost Heaven[Em], West Virginia[D], Blue Ridge Mountains, [C]Shenandoah [G]River.\n[G]  Life is old there, [Em]older than the trees, [D]younger than the mountains, [C]growin'\nlike a br[G]eeze.\n\n{c: Chorus}\nCountry [G]Roads, take me [D]home, to the [Em]place I be[C]long\nWest Vir[G]ginia, mountain [D]mama, take me [C]home, country [G]roads.\n\n{c: Verse 2}\n[G] All my memories[Em]  gather 'round her[D], miner's lady, [C]stranger to blue [G]water.\n[G]  Dark and dusty, [Em]painted on the sky, [D]misty taste of moonshine, [C]teardrop in my [G]eye.\n\n{c: Chorus}\nCountry [G]Roads, take me [D]home, to the [Em]place I be[C]long\nWest Vir[G]ginia, mountain [D]mama, take me [C]home, country [G]roads.\n\n[Bridge]Em          D/F#          G\n I hear her voice, in the mornin' hour she calls me.\n    C       G              D\nThe radio reminds me of my home far away.\n    Em               F            C              G\nAnd drivin' down the road I get a feelin' that I should have been home\nD                D7\nyesterday, yesterday.\n\n[Chorus]        G              D            Em        C\nCountry Roads, take me home, to the place I belong\n        G               D             C             G\nWest Virginia, mountain mama, take me home, country roads.\n\n        G              D            Em        C\nCountry Roads, take me home, to the place I belong\n        G               D             C             G\nWest Virginia, mountain mama, take me home, country roads.\n\n[Outro]        D                    G\nTake me home, (down) country roads.\n        D                    G\nTake me home, (down) country roads.\n",
+        "sourceFile": "John Denver - Take Me Home Country Roads.cho"
+      }
+    ]
   },
   {
     "artist": "Stevie Nicks",
@@ -3215,6 +3424,12 @@ window.SONG_LIBRARY = [
     "playlists": [
       "Performing"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Stevie Nicks - Edge Of Seventeen",
+        "chordpro": "{title: Edge Of Seventeen}\n{artist: Stevie Nicks}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/stevie-nicks/edge-of-seventeen-official-2548215}\n\n{c: Intro}\n[Em]\nJust like the whi[C]te winged dove\n\n{c: Chorus}\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoowhoowhoo\nJust like the whi[C]te winged dove\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoo, baby, whoo, said, whoo\n\n{c: Verse 1}\nAnd the [C]days go by\nLike a stra[D]nd in the wind\nIn the we[Em]b that is my own\nI begin again\n[C]Said to my friend, baby\n[D] Nothin' else mat[Em]tered\n[C]He was no mo[D]re\nThan a ba[Em]by then\nWell, he[C] seemed broken hearted\n[D] Somethin' withi[Em]n him\nBut the mo[C]ment\nThat I fi[D]rst laid\n[Em]Eyes on him\nAll alone on [C]the edge of[D] seventee[Em]n\nJust like the whi[C]te winged dove\n\n{c: Chorus}\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoo, baby, whoo, whoo\nJust like the whi[C]te winged dove\nSings a so[D]ng\nSounds like she's singin'\nSaid, [Em]whoo, baby, whoo, said, whoo\n\n{c: Verse 2}\nWell, I [C]went today\nMaybe [D]I will go again\nTomo[Em]rrow, yeah, yeah\nWell, the mu[C]sic there\nWell it was[D] hauntingly fami[Em]liar\nWhen I [C]see you doin'\nWhat I try[D] to do for me\nWith their[Em]  words of a poet\nAnd a voice from a choir\nAnd a [C]melody\n[D] And nothin' else mat[Em]tered\nJust like the whi[C]te winged dove\n\n{c: Chorus}\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoo, baby, whoo, said, whoo\nJust like the whi[C]te winged dove\nSings a so[D]ng\nSounds like she's singin'\nSaid, [Em]whoo, baby, whoo, said, whoo\n\n{c: Verse 3}\nThe clou[Em]ds never expect it\nWhen it rains\nBut the sea changes [C]colours\nBut the sea\nDoes not change\nSo[Em]  with the slow graceful flow\nOf age I went fo[C]rth with an age old\nDesire to please\nOn the edge of seventeen\n\n[Break]\n[Em]   [C]  [D]  [Em]  Just like the whi[C]te winged dove\n\n{c: Chorus}\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoo, baby, whoo, said, whoo\nJust like the whi[C]te winged dove\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoo, baby, whoo, said, whoo\nWell then [C]suddenly\n\n{c: Verse 4}\nThere was [D]no one left standing in the ha[Em]ll\nYeah, yeah\nIn a floo[C]d of tears\nThat [D]no one really ever heard fa[Em]ll at all\nWhen I went sea[C]rchin' for an answer\nUp the stai[D]rs and down the hall\n[Em]Not to find an answer\nJust to hear the call\nOf a nigh[C]tbird[D] singin' co[Em]me away\nJust like the whi[C]te winged dove\n\n{c: Chorus}\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoo, baby, whoo, whoo\nJust like the whi[C]te winged dove\nSings a so[D]ng\nSounds like she's singin'\n[Em]Whoo, baby, whoo, said, whoo\nWell, I [Em]hear you\n\n[Bridge]In the morning\nAnd I hear you\nAt nightfall\nSometimes to be near you\nIs to be unable to hea[C]r you\n[D] My lo[Em]ve\nI'm a few years o[C]lder than you,[D] my love\n[Em]  Just like the whi[C]te winged dove\n\n{c: Chorus}\nSings a so[D]ng\nSounds like she's singin'\n\n[(Fade out)]\n[Em]Whoo, baby, whoo, said, whoo\nJust like the white...\n",
+        "sourceFile": "Stevie Nicks - Edge Of Seventeen.cho"
+      }
+    ]
   }
 ];
