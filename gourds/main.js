@@ -171,7 +171,7 @@
     var x = Math.abs(2 * Math.min(1, Math.max(0, t)) - 1);
     r *= Math.pow(Math.max(0, 1 - Math.pow(x, g.n)), 1 / g.n);
     if (g.point && t < .2) r *= .55 + .45 * Math.pow(t / .2, .55);
-    return Math.max(r, .012);
+    return Math.max(r, 0);
   }
 
   function ribbing(g, th, t) {
@@ -198,7 +198,7 @@
   function spine(g, t) {
     var H = g.aspect, cx = g.lean * H;
     var c = g.crook;
-    var p0 = [0, 0], p1 = [cx * .2, H * .38], p2 = [cx * .7 + c * H * .55, H * 1.0 - c * H * .02], p3 = [cx + c * H * .78, H - c * H * .42];
+    var p0 = [0, 0], p1 = [cx * .2, H * .38], p2 = [cx * .7 + c * H * .55, H * .86 - c * H * .02], p3 = [cx + c * H * .78, H - c * H * .42];
     var u = 1 - t;
     var x = u*u*u*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t*t*t*p3[0];
     var y = u*u*u*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t*t*t*p3[1];
@@ -208,13 +208,14 @@
     return { p: [x, y, 0], T: [dx / L, dy / L, 0] };
   }
 
-  var U = 60, V = 44;    // segments along and around
+  var U = 80, V = 96;    // segments along and around
 
   function buildMesh(g) {
     var verts = new Float32Array(U * V * 3);
     var cols = new Uint8Array(U * V);        // stripe band index per column
     for (var i = 0; i < U; i++) {
-      var t = i / (U - 1);
+      // Cluster rings near the poles to keep shoulders and dimples smooth.
+      var t = (1 - Math.cos(Math.PI * i / (U - 1))) / 2;
       var s = spine(g, t);
       // Frame: N lies in the bend plane, B is the fixed z axis. No twist.
       var N = [s.T[1], -s.T[0], 0], B = [0, 0, 1];
@@ -240,24 +241,26 @@
 
     // Stem: a tapered tube continuing the spine's tangent, then bending
     // a little, with a slightly flared base.
-    var SU = 14, SV = 10, top = spine(g, 1), sv = new Float32Array(SU * SV * 3);
+    var SU = 15, SV = 20, top = spine(g, 1), sv = new Float32Array(SU * SV * 3);
     var bend = [R(-.6, .6), R(.2, .9)];
-    var sink = g.flat * .6 * .85;                       // start inside the stem well
+    var sink = g.flat * .6;
+    var rootDepth = .14; // bury the flared root inside the shoulder                       // start inside the stem well
     var L = g.stemLen;
     for (var a = 0; a < SU; a++) {
-      var q = a / (SU - 1);
-      var px = top.p[0] + top.T[0] * (L * q - sink) + bend[0] * L * q * q;
-      var py = top.p[1] + top.T[1] * (L * q - sink) + bend[1] * L * q * q * .4;
+      var q = Math.min(1, a / (SU - 2));
+      var px = top.p[0] + top.T[0] * (L * q - sink - rootDepth * (1 - q)) + bend[0] * L * q * q;
+      var py = top.p[1] + top.T[1] * (L * q - sink - rootDepth * (1 - q)) + bend[1] * L * q * q * .4;
       // Direction of the stem here, so each ring sits square to it. With
       // horizontal rings a sideways stem collapses to a flat paddle.
-      var dx = top.T[0] * L + 2 * bend[0] * L * q, dy = top.T[1] * L + 2 * bend[1] * L * q * .4;
+      var dx = top.T[0] * (L + rootDepth) + 2 * bend[0] * L * q, dy = top.T[1] * (L + rootDepth) + 2 * bend[1] * L * q * .4;
       var dl = Math.hypot(dx, dy) || 1; dx /= dl; dy /= dl;
       var Nx = dy, Ny = -dx;                              // in the bend plane; B is z
       var rad = .11 * (1 - q * .45) + .08 * Math.exp(-q * q / .03) * (1 - g.crook * .5);
       for (var b = 0; b < SV; b++) {
         var ph = b / SV * Math.PI * 2;
         var kk = (a * SV + b) * 3;
-        var ridged = rad * (1 + .12 * Math.cos(ph * 5));
+        // The final ring collapses to the cut-end centre, closing the tip.
+        var ridged = a === SU - 1 ? 0 : rad * (1 + .12 * Math.cos(ph * 5));
         sv[kk]     = px + ridged * Math.cos(ph) * Nx;
         sv[kk + 1] = py + ridged * Math.cos(ph) * Ny;
         sv[kk + 2] = ridged * Math.sin(ph);
@@ -310,11 +313,7 @@
     out[o + 2] = z2;
   }
 
-  // Deterministic hand wobble per projected point, so it is stable while
-  // the gourd turns rather than vibrating.
-  function wob(i, j, k) { return (Math.sin(i * 12.9898 + j * 78.233 + k) * 43758.5453) % 1 * 1.1; }
-
-  var light = [-.55, .7, .55];
+  var light = [-.55, .7, -.55];
   (function () { var L = Math.hypot(light[0], light[1], light[2]); light = light.map(function (v) { return v / L; }); })();
 
   function renderMesh(g, mesh, quads, isStem) {
@@ -323,9 +322,9 @@
     for (var i = 0; i < U; i++) for (var j = 0; j < V; j++) {
       var k = (i * V + j) * 3;
       project(vs[k], vs[k + 1], vs[k + 2], g, P, k);
-      P[k] += wob(i, j, 1); P[k + 1] += wob(i, j, 2);
+
     }
-    // Facing, from the projected winding (cheap, and it is what matters).
+    // Facing follows the perspective camera; normals also drive lighting.
     var facing = new Float32Array((U - 1) * V);
     var cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
     for (var a = 0; a < U - 1; a++) for (var b = 0; b < V; b++) {
@@ -340,7 +339,14 @@
       var rx = nx * cy + nz * sy, rz = -nx * sy + nz * cy;
       var ry = ny * cp - rz * sp, rz2 = ny * sp + rz * cp;
       var lam = Math.max(0, rx * light[0] + ry * light[1] + rz2 * light[2]);
-      var face = rz2;                                     // toward the viewer is +z after rotation
+      // The perspective camera is on negative z. Include its position
+      // when culling so silhouettes agree with the actual projection.
+      var mx = (vs[i0] + vs[i1] + vs[i2] + vs[i3]) / 4 - g.centerX;
+      var my = (vs[i0 + 1] + vs[i1 + 1] + vs[i2 + 1] + vs[i3 + 1]) / 4 - g.centerY;
+      var mz = (vs[i0 + 2] + vs[i1 + 2] + vs[i2 + 2] + vs[i3 + 2]) / 4;
+      var vx = mx * cy + mz * sy, vz = -mx * sy + mz * cy;
+      var vy = my * cp - vz * sp, depth = my * sp + vz * cp;
+      var face = -rx * vx - ry * vy - rz2 * (depth + 1 / (g.scale * .12));
       facing[a * V + b] = face;
       if (face <= 0) continue;
       quads.push({
@@ -368,8 +374,8 @@
     renderMesh(g, g.body, body, false);
     renderMesh(g, g.stem, stem, true);
     var byDepth = function (p, q) { return q.z - p.z; };
-    body.sort(byDepth); stem.sort(byDepth);
-    var quads = pitch >= 0 ? body.concat(stem) : stem.concat(body);
+    // Interleave both surfaces, including the stem inside the top well.
+    var quads = body.concat(stem).sort(byDepth);
 
     var pal = PALETTE[g.color] || PALETTE.orange;
     var ink = "#2a1d12";
@@ -383,7 +389,7 @@
       var fill;
       if (inkOnly) fill = "#f3ead6";
       else if (q.stem) fill = dark > .5 ? "#6e7a3e" : "#8b9a4f";
-      else if (g.cap && q.a / (q.mesh.U - 1) > .72) fill = shade(PALETTE[g.capColor][0], dark * .22);
+      else if (g.cap && (1 - Math.cos(Math.PI * (q.a + .5) / (q.mesh.U - 1))) / 2 > .72) fill = shade(PALETTE[g.capColor][0], dark * .22);
       else fill = shade(q.stripe ? (STRIPE[g.color] || pal[1]) : pal[0], dark * .22);
       ctx.fillStyle = fill;
       ctx.beginPath();
@@ -400,7 +406,8 @@
       // Near the poles the quads shrink to slivers and every column's
       // hatch lands on the same pixels, which reads as a black knot. Thin
       // the hatching out as a quad narrows, and drop it entirely below 2px.
-      var wq = Math.hypot(p[2] - p[0], p[3] - p[1]);
+      var wq = Math.min(Math.hypot(p[2] - p[0], p[3] - p[1]),
+        Math.hypot(p[4] - p[6], p[5] - p[7]));
       var thin = Math.min(1, Math.max(0, (wq - 2) / 5));
       ctx.strokeStyle = ink; ctx.lineCap = "round";
       for (var s = 0; s < slots.length; s++) {
@@ -425,13 +432,14 @@
       // Contour: any edge whose neighbour faces away gets an ink line.
       var fa = q.facing, Vm = q.mesh.V, Um = q.mesh.U, a = q.a, b = q.b;
       var left = fa[a * Vm + (b + Vm - 1) % Vm] <= 0, right = fa[a * Vm + (b + 1) % Vm] <= 0;
-      var below = a > 0 && fa[(a - 1) * Vm + b] <= 0, above = a === Um - 2 || fa[(a + 1) * Vm + b] <= 0;
+      var below = a > 0 && fa[(a - 1) * Vm + b] <= 0;
+      var above = a < Um - 2 && fa[(a + 1) * Vm + b] <= 0;
       if (left || right || below || above) {
         ctx.lineWidth = q.stem ? 1.2 : 1.6; ctx.globalAlpha = .9;
         ctx.beginPath();
         if (left)  { ctx.moveTo(p[0], p[1]); ctx.lineTo(p[6], p[7]); }
         if (right) { ctx.moveTo(p[2], p[3]); ctx.lineTo(p[4], p[5]); }
-        if (below && !q.stem) { ctx.moveTo(p[0], p[1]); ctx.lineTo(p[2], p[3]); }
+        if (below) { ctx.moveTo(p[0], p[1]); ctx.lineTo(p[2], p[3]); }
         if (above) { ctx.moveTo(p[6], p[7]); ctx.lineTo(p[4], p[5]); }
         ctx.stroke(); ctx.globalAlpha = 1;
       }
