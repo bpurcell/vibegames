@@ -9,7 +9,7 @@ Static page served at `/songs/` by the existing repository hosting. Deliberately
 - Level 2: 8
 - Performing: 6
 
-Duplicates are merged by exact URL, preserving distinct versions and every playlist membership. One First Versions entry uses a personal Ultimate Guitar tab URL and may require signing in. 166 user-supplied ChordPro files are included as arrangements across 165 tab records; 46 records currently link to Ultimate Guitar without inline text. The supplied First Versions PDF is included in full. No lyric or tab text was retrieved from Ultimate Guitar.
+Duplicates are merged by exact URL, preserving distinct versions and every playlist membership. One First Versions entry uses a personal Ultimate Guitar tab URL and may require signing in. 173 user-supplied ChordPro files are included as arrangements across 172 tab records; 39 records currently link to Ultimate Guitar without inline text. The supplied First Versions PDF is included in full. No lyric or tab text was retrieved from Ultimate Guitar.
 
 The supplied Unknown Legend chords are attached to its tab record; Blackbird (ver 2) is attached to its non-official tab record, with the supplied version label preserved. Drunken Angel has two supplied arrangements selectable in the reader.
 

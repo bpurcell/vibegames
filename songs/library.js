@@ -59,7 +59,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Bee Gees - I Started A Joke",
+        "chordpro": "{title: I Started A Joke}\n{artist: Bee Gees}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/bee-gees/i-started-a-joke-official-3578582}\n\n{c: Intro}\n[G] [Bm] [C] [D] [G] [Bm]\n[C] [D]\n\n{c: Verse 1}\n[G]I started a [Bm]joke,[C] which started the [D]whole world[G] crying[Bm]\n[C] But I[D] didn't [G]see[Bm]   [C] that the [D]joke was on [G]me,[Bm]  oh [C]no[D7]\n\n{c: Verse 2}\n[G]I started to [Bm]cry,[C] which started the [D]whole world[G] laughing[Bm]\n[C] Oh, if [D]I'd only [G]seen[Bm]   [C] that the [D]joke was on [G]me\n\n{c: Chorus}\n[Em]I looked at the [Bm]skies, running my[C] hands over my[G] eyes\nAnd [Bm]I fell out of [Em]bed, hurting my [Am]head from things that I'd [D]said\n\n{c: Verse 3}\n'Til [G]I finally [Bm]died,[C] which started the [D]whole world[G] living[Bm]\n[C] Oh, if [D]I'd only [G]seen[Bm]   [C] that the [D]joke was on[G] me\n\n{c: Chorus}\n[Em]I looked at the [Bm]skies, running my[C] hands over my[G] eyes\nAnd [Bm]I fell out of [Em]bed, hurting my [Am]head from things that I'd [D]said\n\n{c: Verse 4}\n'Til [G]I finally [Bm]died,[C] which started the [D]whole world[G] living[Bm]\n[C] Oh, if [D]I'd only [G]seen,[Bm]  oh yeah,[C] that the [D]joke was on[G] me\n[Bm]Oh no, that the joke was on [C]me,[D]  [G]  [Bm]   [C]oh[D]\n\n{c: Outro}\n[G] [Bm] [C] [D] [G]\n",
+        "sourceFile": "Bee Gees - I Started A Joke.cho"
+      }
+    ]
   },
   {
     "artist": "Billy Bragg",
@@ -432,7 +438,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Gillian Welch - Look At Miss Ohio",
+        "chordpro": "{title: Look At Miss Ohio}\n{artist: Gillian Welch}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/gillian-welch/look-at-miss-ohio-official-4164598}\n\n{c: Intro}\n[F] [C] [G] [Am] [C/G] [F] [C]\n[G]\n\n{c: Chorus}\n[F]Oh me oh my[C] oh [G]look at Miss Ohi[Am]o[C/G]\nShe's a[F]running around with her rag[C]top down[G]\nShe says \"I [F]wanna do right, but not[C] right now\"[G]\n\n{c: Verse 1}\nGon-na drive[F] to Atlan[C]ta[G] and live out this fan[Am]tas[C/G]y\n[F]Running around with the rag[C]top down[G]\nYeah, I [F]wanna do right, but not[C] right now[G]\n\n[Break]\n[Am] [Am6] [Am]\n\n{c: Verse 2}\n[D7sus2]      Had your arm[F] around her shoul[C]der of a [G]regimental sol[Am]dier[C/G]\nAnd [F]mamma starts pushing that [C]wedding gown[G]\nYeah, you [F]wanna do right, but not[C] right now[G]\n\n{c: Chorus}\nOh[F] me oh my[C] oh, would you [G]look at Miss Ohi[Am]o?[C/G]\nShe's a[F]running around with the rag[C]top down[G]\nShe says \"I [F]wanna do right, but not[C] right now\"[G]\n\n[Break]\n[Am] [Am6] [Am] [D7sus2]\n[F] [C] [G] [Am] [C/G] [F] [C]\n\n{c: Verse 3}\n[G]\nI know[F] all about[C] it, so [G]you don't have to shout[Am]  it[C/G]\n[F]I'm gonna straighten it out[C] somehow[G]\nYeah, I [F]wanna do right, but not[C] right now[G]\n\n{c: Chorus}\nOh[F] me oh my[C] oh, [G]look at Miss Ohi[Am]o[C/G]\nShe a[F]running around with her rag[C]top down[G]\nShe says \"I [F]wanna do right, but not[C] right now\"[G]\nOh, I [F]want to do right, but not[C] right now[G]\n\n{c: Outro}\n[F] [C] [G] [F] [C] [G]\n[F] [C] [G] [F] [C] [G]\n[F] [C] [G]\n",
+        "sourceFile": "Gillian Welch - Look At Miss Ohio.cho"
+      }
+    ]
   },
   {
     "artist": "Greg Brown",
@@ -477,7 +489,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Jackson Browne - These Days",
+        "chordpro": "{title: These Days}\n{artist: Jackson Browne}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/jackson-browne/these-days-official-3347273}\n\n{c: Intro}\n[C] [G/B] [Am7] [G] [F]\n[C] [G/B] [Am7] [G]\n\n{c: Verse 1}\n[F] I've [C]been [G/B]out [Am7]walking[G]\n[F] I don't [C]do [G/B]too much [Am7]talking[G]\nThese[F] days, these [C]days[G]\nThese [F]days I seem to think a lot\nAbout the things that I forgot to [C]do[G][E/G#]\nAnd [Am7]all the times I had the [F]chance to\n\n{c: Bridge}\n[C]  [G/B]    [Am7]    [G]  [F] And [C]I [G/B]had a [Am7]lover[G]\n\n{c: Verse 2}\n[F] But it's so [C]hard to [G/B]risk a[Am7]nother[G] these[F] days\nThese [C]days[G]\nNow [F]if I seem to be afraid\nTo live the life that I have made in [C]song[G][E/G#]\nWell, it's [Am7]just that I've been losin' for [F]so long\n\n[Guitar Solo 1]\n[C] [G/B] [Am7] [G] [F] [C] [G/B] [Am7] [G] [F]\n[C] [G] [F] [C]\n[G] [E/G#] [Am7]\n\n{c: Verse 3}\n[F] Well, [C]I'll [G/B]keep on [Am7]movin',[G]  [F] movin' on\nThings are [C]bound to [G/B]be im[Am7]provin'[G] these[F] days\nOne of these [C]days[G]\nThese [F]days I'll sit on corner stones\nAnd count the time in quarter tones to [C]ten, my [G]friend[E/G#]\nDon't con[Am7]front me with my failures\n[F]I had not forgotten them\n\n{c: Bridge}\n[C] [G/B] [Am7] [G] [F] [C] [G/B] [Am7] [G] [F]\n\n[Guitar Solo 2]\n[C] [G/B] [Am7] [G] [F] [C] [G/B] [Am7] [G] [F]\n[C] [G/B] [Am7] [G] [F] [C] [G/B] [Am7] [G] [F]\n[C] [G/B] [Am7] [G] [F] [C] [G/B] [Am7] [G] [F]\n[C] [G/B] [Am7] [G] [F] [C] [G/B] [Am7] [G] [F]\n[C] [G/B] [Am7] [G] [F] [C] [G/B] [Am7] [G] [F]\n[C]\n",
+        "sourceFile": "Jackson Browne - These Days.cho"
+      }
+    ]
   },
   {
     "artist": "Jeff Buckley",
@@ -654,7 +672,13 @@ window.SONG_LIBRARY = [
       "Level 1",
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Neil Young - Old Man",
+        "chordpro": "{title: Old Man}\n{artist: Neil Young}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/neil-young/old-man-official-2420911}\n\n{c: Intro}\n[Fmaj7] [D] [Fmaj7]\n[D]\n\n{c: Verse 1}\n[Fmaj7]     Old man look at my life\nI'm a lot like [D]you were.\n[Fmaj7]     Old man look at my life,\nI'm a lot like [D]you were[Fmaj7]\n\n{c: Interlude}\n[C] [G] [D] [Fmaj7] [C] [F]\n\n{c: Verse 2}\n[D] Old man [Fmaj7]look at my life,\n[C] Twenty four and there's [G]so much more\n[D] Live alone in a [Fmaj7]pa   ra dise\nThat [C]makes me think of [F]two\n[D] Love lost, [Fmaj7]such a cost.\n[C] Give me things that [G]don't get lost\n[D] Like a coin that [C]won't get tossed\n[F]Rol ling home to you[G]\n\n[Pre chorus]\n[D] [Am7] [Em7] [G]\n\n{c: Chorus}\n[D] Old man take a look at my life\nI'm a lot[Am7]   like [Em7]you[G]\n[D] I need some one to love me\nThe whole[Am7]   day [Em7]through[G]\n[D] Ah, one look in my eyes\nAnd you can [Am7]tell that's [Em7]true[G]\n\n[Post Chorus]\n[D] [Fmaj7] [C] [G] [D] [Fmaj7] [C] [F]\n\n{c: Verse 3}\n[D] Lull abi es [Fmaj7]look in your eyes,\n[C] Run around the same [G]old town.\n[D] Doesn't mean that[Fmaj7]     much to me\n[C]To mean that much to you[F]\n[D] I've been [Fmaj7]first and last\n[C] Look at how the [G]time goes past\n[D] But I'm all alo [C]ne at last.\n[F]Rol ling home to you[G]\n\n[Pre Chorus]\n[D] [Am7] [Em7] [G]\n\n{c: Chorus}\n[D] Old man take a look at my life\nI'm a lot[Am7]   like [Em7]you[G]\n[D] I need some one to love me\nThe whole[Am7]   day [Em7]through[G]\n[D] Ah, one look in my eyes\nAnd you can [Am7]tell that's [Em7]true[G][D[Fmaj7]]\n\n{c: Verse 4}\n[Fmaj7]     Old man look at my life\nI'm a lot like [D]you were.\n[Fmaj7]     Old man look at my life,\nI'm a lot like [D]you were[Fmaj7][D][G][C]\n",
+        "sourceFile": "Neil Young - Old Man.cho"
+      }
+    ]
   },
   {
     "artist": "Oasis",
@@ -2207,7 +2231,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "The Flaming Lips - Do You Realize",
+        "chordpro": "{title: Do You Realize}\n{artist: The Flaming Lips}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/the-flaming-lips/do-you-realize-official-3637667}\n\nOne, two, three, four\n\n{c: Intro}\n[C]  [Em]   [Am]   [D7]   [D7sus4]Do     [D7]you re[C]alize\n\n{c: Chorus}\n[Em]  That you [Am]have the most [G]beautiful [F]face?\nDo you re[C]alize\n[Em]   [Am]  We're floating in [D7]space?\n[D7sus4]Do    you[D7]  re[F]alize\n[Em]  That hap[Am]piness makes you cry?[G]\n[F]Do [G]you re[C]alize\n[Em]  That eve[Am]ryone you know[F] someday[Fm]  will die?[C]\n\n{c: Verse 1}\nAnd in[F]stead of saying [Am]all of your goodbyes,[G] let them know\nYou [C]realize that life[F] goes fast\nIt's [C]hard to make the good[G] things last\nYou [C]realize the sun [Em]doesn't go down\nIt's [G]just an illusion [F]caused by the world[G] spinning [C]'round\n[Fm]   [Bb]Do you re[Eb]alize?\n\n{c: Chorus}\n[Gm]   [Cm]   [Ab]   [G]Do you re[C]alize\n[Em]  That eve[Am]ryone you know[F] someday[Fm]  will die?[C]\n\n{c: Verse 2}\nAnd in[F]stead of saying [Am]all of your goodbyes,[G] let them know\nYou [Am]realize that life goes fast\nIt's [Dm]hard to make the good things last\nYou [F]realize the sun doesn't go down\nIt's [Dm]just an illusion [Fm]caused by the world[C] spinning [Am]'round\n[G]  [F]Do [G]you re[C]alize\n\n{c: Chorus}\n[Em]  That you [Am]have the most [G]beautiful [F]face?\n[Fm]Do you [C]realize\n",
+        "sourceFile": "The Flaming Lips - Do You Realize.cho"
+      }
+    ]
   },
   {
     "artist": "Marty Robbins",
@@ -2775,7 +2805,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "Billy Currington - Good Directions",
+        "chordpro": "{title: Good Directions}\n{artist: Billy Currington}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/billy-currington/good-directions-official-4144438}\n\n{c: Intro}\n[D] [F#m] [G] [A]\n[D] [F#m] [G]\n\n{c: Verse 1}\n[A] I was sitting there,[D] selling turnips on a flatbed truck\nCrun[F#m]ching on a pork rind when she pulled up\n[A]She had[G] to be thinking, \"This is [A]where rednecks come from\"[Bm]\n[G] She [A]had Hol[D]lywood written on her license plate\nShe was lost[F#m]   and looking for the Interstate[A]\n[G]Needing directions,[A] and I was the man for the [D]job\n\n{c: Chorus}\nI [Em]told her;[F#m]   \"Way[G] up yonder past the [A]caution light\nThere's a lit[G]tle country store with an old[A] Coke sign\nYou got to [G]stop in and ask Miss Bell[A] for some of her sweet tea[Bm]\nThen a left[G] will take you to the [Em]Interstate\nBut a right[G] will bring you [A]right back here to me\"\n\n{c: Verse 2}\n[D] I was sitting there,[D] thinking about her pretty face\nKick[F#m]ing myself for not catching her name[A]\nI [G]threw my hat, and thought, you [A]fool, it could have been love[Bm]\n[G]  [A]I knew[D] my old Ford couldn't run her down\n[F#m]   She probably didn't like me anyhow\nSo [A]I watched[G] her disappear[A] into a cloud of[D] dust\n\n{c: Chorus}\nI [Em]told her;[F#m]   \"Way[G] up yonder past the [A]caution light\nThere's a lit[G]tle country store with an old[A] Coke sign\nYou got to [G]stop in and ask Miss Bell[A] for some of her sweet tea[Bm]\nThen a left[G] will take you to the [Em]Interstate\nBut a right[G] will bring you [A]right back here to me\"\n\n{c: Bridge}\n[D]  [Em]Is this[F#m]   Geor[G]gia heat playing [A]tricks on me?\nOr am I[D] really see[A/C#]ing what I [Bm]think I see?\nThe [G]woman of my dreams[A] coming back to [D]me\n\n{c: Solo}\n[D] [F#m] [G] [A]\n[D]\n\n{c: Chorus}\nShe went way[G] up yonder past the [A]caution light\n[G] Don't know why, but [A]something felt right\nWhen she [G]stopped in and asked Miss Bell\n[A] For some of her sweet tea[Bm]\nMama gave her a big[G] old glass\nAnd sent her [A]right back here to me\n[D] Thank God[G] for good direc[A]tions,[A] and turnip greens[D]\n",
+        "sourceFile": "Billy Currington - Good Directions.cho"
+      }
+    ]
   },
   {
     "artist": "CAKE",
@@ -3041,7 +3077,13 @@ window.SONG_LIBRARY = [
     "playlists": [
       "First Versions"
     ],
-    "arrangements": []
+    "arrangements": [
+      {
+        "label": "The Verve Pipe - The Freshmen",
+        "chordpro": "{title: The Freshmen}\n{artist: The Verve Pipe}\n{comment: Source: https://tabs.ultimate-guitar.com/tab/the-verve-pipe/the-freshmen-official-3323231}\n\n{c: Intro}\n[D] [G] [Bm] [A] [G]\n[D] [G] [Bm] [A]\n[G]\n\n{c: Verse 1}\n[D] When I was young, I knew eve[G]rything\nAnd [Bm]she, a punk who rarely [A]ever [G]took advice\nNow I'm [D]guiltstricken, sobbin' with my [G]head on the floor\n[Bm]Stopped a baby's breath [A]and a [G]shoe full of rice, no\n\n{c: Pre-Chorus}\n[Bm]   [A]  [G]Can't be held responsible\n[Bm]   [A]  [G]She was touching her face\n[Bm]   [A] I [G]won't be held responsible\n[Bm]   [A] She fell in [G]love in the first place\n\n{c: Chorus}\n[D] For the life of me,[G] I cannot remember\n[Bm]  What made us think that [A]we were [G]wise\nAnd we'd never compro[D]mise?\nFor the life of me,[G] I cannot believe\nWe'd [Bm]ever die for these [A]sins, [G]we were merely freshmen\n\n{c: Verse 2}\n[D]  [G]  [Bm]   [A]  [G] My best [D]friend took a week's va[G]cation to forget her\nHis [Bm]girl took a week's [A]worth of [G]valium and slept\nAnd now he's [D]guiltstricken, sobbin' with his [G]head on the floor\nThinks[Bm]  about her now and [A]how he [G]never really wept, he said\n\n{c: Pre-Chorus}\n[Bm]   [A]  [G]Can't be held responsible\n[Bm]   [A]  [G]She was touching her face\n[Bm]   [A] I [G]won't be held responsible\n[Bm]   [A] She fell in [G]love in the first place\n\n{c: Chorus}\n[D] For the life of me,[G] I cannot remember\n[Bm]  What made us think that [A]we were [G]wise\nAnd we'd never compro[D]mise?\nFor the life of me,[G] I cannot believe\nWe'd [Bm]ever die for these [A]sins, [G]we were merely freshmen\n\n{c: Bridge}\n[D/F#] [G] [D] [A] [D/F#] [G] [D] [A]\n[D/F#] [G] [D] [A]\n[D/F#] [G] [D] [A]\n\n{c: Verse 3}\n[D] We tried to wash our hands of all[G] of this\nWe'd never [Bm]talk of our la[A]cking re[G]lationships\nAnd how we're [D]guiltstricken sobbin' with our [G]heads on the floor\nWe [Bm]fell through the ice [A]when we [G]tried not to slip, we'd say\n\n{c: Pre-Chorus}\n[Bm]   [A]  [G]Can't be held responsible\n[Bm]   [A] Cause [G]she was touching her face\n[Bm]   [A] And I won't[G] be held responsible\n[Bm]   [A] She fell in [G]love in the first place\n\n{c: Chorus}\n[D] For the life of me,[G] I cannot remember\n[Bm]  What made us think that [A]we were [G]wise\nAnd we'd never compro[D]mise?\nFor the life of me,[G] I cannot believe\nWe'd [Bm]ever die for these [A]sins, [G]we were merely freshmen\n[D] For the life of me,[G] I cannot remember\n[Bm]  What made us think that [A]we were [G]wise\nAnd we'd never compro[D]mise?\nFor the life of me,[G] I cannot believe\nWe'd [Bm]ever die [A]for these sins, [G]we were merely freshmen\n\n{c: Outro}\n[D] We[G] were merely freshmen\n[Bm]   [A] We[G] were only freshmen\n[D] [G] [Bm] [A] [G]\n",
+        "sourceFile": "The Verve Pipe - The Freshmen.cho"
+      }
+    ]
   },
   {
     "artist": "Sixpence None The Richer",
