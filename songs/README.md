@@ -33,3 +33,7 @@ Visitors can import a JSON array of records or attach a `.txt` file to a selecte
 No dependencies or build step. Serve the repository root with any static web server and visit `/songs/`.
 
 The latest supplied batch added 36 arrangements across 35 previously link-only tabs. Twelve repeated files were skipped. Both distinct Wayside – Back In Time exports are retained and labeled in the reader.
+
+## Reading layout
+
+The reader fills the viewport below a compact song header. The collapsible sidebar holds an independently scrolling song list, search, playlist and sort controls, reading settings, imports, and the printbook link. On phones the sidebar starts closed and closes after choosing a song. Escape closes it; the header toggle reopens it.

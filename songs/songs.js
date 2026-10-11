@@ -38,23 +38,24 @@
     filtered.sort((a,b) => direction * String(a[sort]).localeCompare(String(b[sort]), undefined, {numeric:true, sensitivity:'base'}) || a.title.localeCompare(b.title));
     $('rows').replaceChildren();
     for (const s of filtered) {
-      const row = document.createElement('tr');
+      const row = document.createElement('div'); row.className = 'song-row';
       row.classList.toggle('selected', s.url === selected?.url);
-      const title = document.createElement('td'), button = text('button',s.title);
+      const button = document.createElement('button'); button.className = 'song-choice';
+      button.append(text('span',s.title,'song-title'),text('span',s.artist,'song-artist'));
+      const meta = s.playlists.join(' · ') + ' · ' + s.type + (!s.content && !s.arrangements.length ? ' · Link only' : '');
+      button.append(text('span',meta,'song-detail'));
       button.setAttribute('aria-pressed', String(s.url === selected?.url));
-      button.addEventListener('click', () => choose(s, true)); title.append(button); title.append(text('span', s.content || s.arrangements.length ? 'Reader ready' : 'Link only', 'availability')); row.append(title, text('td',s.artist));
-      const groups = document.createElement('td'); s.playlists.forEach(p => groups.append(text('span',p,'badge'))); row.append(groups,text('td',s.type));
-      const linkCell = document.createElement('td'), link = text('a','View tab ↗');
-      link.href = s.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.setAttribute('aria-label',`${s.title} on Ultimate Guitar`); linkCell.append(link); row.append(linkCell); $('rows').append(row);
+      button.addEventListener('click', () => choose(s, true));
+      const link = text('a','↗'); link.className = 'song-link';
+      link.href = s.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.setAttribute('aria-label',`${s.title} on Ultimate Guitar`);
+      row.append(button,link); $('rows').append(row);
     }
     $('count').textContent = `${filtered.length} of ${songs.length} tabs`;
     $('empty').hidden = filtered.length > 0;
     $('empty').textContent = songs.length ? 'No songs match. Try another search or playlist.' : 'Your song library is waiting for its first songs.';
-    document.querySelectorAll('[data-sort]').forEach(button => {
-      button.parentElement.setAttribute('aria-sort', button.dataset.sort === sort ? (direction === 1 ? 'ascending' : 'descending') : 'none');
-      button.querySelector('span').textContent = button.dataset.sort === sort ? (direction === 1 ? '↑' : '↓') : '';
-    });
+    $('sort-direction').textContent = direction === 1 ? '↑' : '↓';
   }
+
   function stop() { cancelAnimationFrame(frame); frame = 0; $('play').textContent = 'Start auto-scroll'; }
   function choose(song, focus = false) {
     stop(); selected = song;
@@ -70,12 +71,12 @@
     $('sheet').scrollTop = 0; $('sheet').scrollLeft = 0;
     $('play').disabled = !song || (!song.content && !song.arrangements.length); $('top').disabled = !song; $('import-text').disabled = !song;
     render();
-    if (focus) $('sheet').focus({preventScroll:false});
+    if (focus) { if (window.matchMedia('(max-width: 760px)').matches) setSidebar(false); $('sheet').focus({preventScroll:true}); }
   }
   function updateReader() {
     stop();
     const choice = $('arrangement').value;
-    $('content').textContent = selected ? choice === 'text' ? selected.content : selected.arrangements[Number(choice)] ? chordProToText(selected.arrangements[Number(choice)].chordpro) : 'No supplied text for this version yet.\nOpen the original tab on Ultimate Guitar.' : 'Choose a song from the table above.';
+    $('content').textContent = selected ? choice === 'text' ? selected.content : selected.arrangements[Number(choice)] ? chordProToText(selected.arrangements[Number(choice)].chordpro) : 'No supplied text for this version yet.\nOpen the original tab on Ultimate Guitar.' : 'Choose a song from the sidebar.';
     $('sheet').scrollTop = 0;
   }
   $('arrangement').addEventListener('change', updateReader);
@@ -98,7 +99,17 @@
   $('speed').addEventListener('input', () => { $('speed-value').textContent = `${$('speed').value} px/s`; });
   $('font-size').addEventListener('change', () => { $('content').style.fontSize = `${$('font-size').value}px`; });
   $('search').addEventListener('input',render); $('playlist').addEventListener('change',render);
-  document.querySelectorAll('[data-sort]').forEach(button => button.addEventListener('click',() => { direction = sort === button.dataset.sort ? -direction : 1; sort = button.dataset.sort; render(); }));
+  $('sort').addEventListener('change', () => { sort = $('sort').value; render(); });
+  $('sort-direction').addEventListener('click', () => { direction *= -1; render(); });
+  function setSidebar(open) {
+    document.body.classList.toggle('sidebar-closed', !open);
+    $('sidebar').inert = !open;
+    $('toggle-sidebar').setAttribute('aria-expanded', String(open));
+  }
+  $('toggle-sidebar').addEventListener('click', () => setSidebar(document.body.classList.contains('sidebar-closed')));
+  $('close-sidebar').addEventListener('click', () => { setSidebar(false); $('toggle-sidebar').focus(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') { setSidebar(false); $('toggle-sidebar').focus(); } });
+  setSidebar(!window.matchMedia('(max-width: 760px)').matches);
   $('import-library').addEventListener('change',async event => {
     const file = event.target.files[0]; if (!file) return;
     try {
@@ -125,5 +136,5 @@
     imported = []; const persisted = save(); rebuild(); choose(null);
     if (persisted) $('import-status').textContent = 'Browser imports cleared.';
   });
-  rebuild(); render();
+  rebuild(); choose(songs.find(s => s.content || s.arrangements.length) || null);
 })();

@@ -12,20 +12,19 @@
 <script src="songs.js" defer></script>
 </head>
 <body>
-<main>
-<header><p class="eyebrow">BEN'S SONGBOOK</p><h1>A little less searching.<br>A little more playing.</h1><p class="intro">Four playlists. One place to practice.</p><a href="first-versions-printbook.pdf" target="_blank" rel="noopener">Open First Versions printbook ↗</a></header>
+<main class="songbook">
+<aside id="sidebar" aria-label="Song library and settings">
+<header class="sidebar-heading"><div><p class="eyebrow">BEN'S</p><h1>Songbook<span> ♪</span></h1></div><button id="close-sidebar" aria-label="Close sidebar">✕</button></header>
 <section aria-label="Song library" class="library">
-<div class="toolbar"><label class="search">Find a song<input id="search" type="search" placeholder="Song or artist…"></label><label>Playlist<select id="playlist"><option value="">All playlists</option><option>Level 1</option><option>First Versions</option><option>Level 2</option><option>Performing</option></select></label><span id="count" role="status"></span></div>
-<div class="table-wrap"><table><caption class="sr-only">Songs. Select a column heading to sort, or a song to read.</caption><thead><tr><th aria-sort="ascending"><button data-sort="title">Song <span>↑</span></button></th><th><button data-sort="artist">Artist <span></span></button></th><th><button data-sort="playlists">Playlist <span></span></button></th><th><button data-sort="type">Type <span></span></button></th><th>Original</th></tr></thead><tbody id="rows"></tbody></table></div>
-<p id="empty" class="empty" hidden></p>
+<div class="toolbar"><label class="search"><span class="sr-only">Find a song</span><input id="search" type="search" placeholder="Find a song or artist…"></label><div class="filter-row"><label><span class="sr-only">Playlist</span><select id="playlist"><option value="">All playlists</option><option>Level 1</option><option>First Versions</option><option>Level 2</option><option>Performing</option></select></label><label><span class="sr-only">Sort songs</span><select id="sort"><option value="title">Song A–Z</option><option value="artist">Artist A–Z</option><option value="playlists">Playlist</option><option value="type">Tab type</option></select></label><button id="sort-direction" aria-label="Reverse sort order" title="Reverse sort order">↑</button></div><span id="count" role="status"></span></div>
+<div class="song-list" id="rows" aria-label="Songs"></div><p id="empty" class="empty" hidden></p>
 </section>
-<section class="reader" aria-labelledby="reader-title">
-<div class="reader-heading"><div><p class="eyebrow">ON THE MUSIC STAND</p><h2 id="reader-title">Pick a song to start</h2><p id="reader-meta">Your tabs and lyrics will appear here.</p></div><a id="original" target="_blank" rel="noopener noreferrer" hidden>Open on Ultimate Guitar ↗</a></div>
-<div class="reader-tools"><label id="arrangement-label" hidden>Supplied arrangement <select id="arrangement"></select></label><button id="play" disabled>Start auto-scroll</button><label>Speed <input id="speed" type="range" min="5" max="80" value="25"><output id="speed-value">25 px/s</output></label><label>Text size <select id="font-size"><option value="14">Small</option><option value="17" selected>Medium</option><option value="21">Large</option><option value="26">Extra large</option></select></label><button id="top" disabled>Back to top</button></div>
-<div id="sheet" tabindex="0" role="region" aria-label="Scrollable song content"><pre id="content">Choose a song from the table above.</pre></div>
-</section>
-<details class="import"><summary>Add your own tabs or lyrics</summary><p>Import a song library as JSON, or attach a plain-text tab to the selected song. Imported files stay in this browser; they are not uploaded to the website.</p><div class="imports"><label>Song library (.json)<input id="import-library" type="file" accept=".json,application/json"></label><label>Text for selected song (.txt)<input id="import-text" type="file" accept=".txt,text/plain" disabled></label><button id="reset">Clear browser imports</button></div><p id="import-status" role="status"></p></details>
-<footer>Made for practice. Keep the rhythm.</footer>
+<div class="sidebar-bottom"><details class="settings" open><summary>Reading settings</summary><div class="reader-tools"><label id="arrangement-label" hidden>Supplied arrangement <select id="arrangement"></select></label><button id="play" disabled>Start auto-scroll</button><label>Speed <input id="speed" type="range" min="5" max="80" value="25"><output id="speed-value">25 px/s</output></label><label>Text size <select id="font-size"><option value="14">Small</option><option value="17" selected>Medium</option><option value="21">Large</option><option value="26">Extra large</option></select></label><button id="top" disabled>Back to top</button></div>
+</details><details class="import"><summary>Add your own tabs or lyrics</summary><p>Import a song library as JSON, or attach a plain-text tab to the selected song. Imported files stay in this browser; they are not uploaded to the website.</p><div class="imports"><label>Song library (.json)<input id="import-library" type="file" accept=".json,application/json"></label><label>Text for selected song (.txt)<input id="import-text" type="file" accept=".txt,text/plain" disabled></label><button id="reset">Clear browser imports</button></div><p id="import-status" role="status"></p></details>
+<a class="printbook" href="first-versions-printbook.pdf" target="_blank" rel="noopener">Open printbook ↗</a></div>
+</aside>
+<section class="reader" aria-labelledby="reader-title"><div class="reader-heading"><button id="toggle-sidebar" aria-controls="sidebar" aria-expanded="true" aria-label="Toggle songs and settings">☰ <span>Songs &amp; settings</span></button><div class="song-heading"><h2 id="reader-title">Pick a song to start</h2><p id="reader-meta">Your tabs and lyrics will appear here.</p></div><a id="original" target="_blank" rel="noopener noreferrer" hidden>Original tab ↗</a></div>
+<div id="sheet" tabindex="0" role="region" aria-label="Scrollable song content"><pre id="content">Choose a song from the sidebar.</pre></div></section>
 </main>
 </body>
 </html>
