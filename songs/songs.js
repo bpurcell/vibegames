@@ -83,17 +83,19 @@
   $('play').addEventListener('click', () => {
     if (frame) { stop(); return; }
     if ($('sheet').scrollTop + $('sheet').clientHeight >= $('sheet').scrollHeight - 1) $('sheet').scrollTop = 0;
-    let previous = 0, position = $('sheet').scrollTop;
+    let previous = 0, position = $('sheet').scrollTop, lastApplied = position;
     $('play').textContent = 'Pause auto-scroll';
     function tick(time) {
+      // Adopt manual scrolling without losing fractional auto-scroll progress.
+      if ($('sheet').scrollTop !== lastApplied) position = $('sheet').scrollTop;
       if (previous) position += Math.min(time - previous, 100) / 1000 * Number($('speed').value);
       previous = time; $('sheet').scrollTop = position;
+      lastApplied = $('sheet').scrollTop;
       if ($('sheet').scrollTop + $('sheet').clientHeight >= $('sheet').scrollHeight - 1) { stop(); return; }
       frame = requestAnimationFrame(tick);
     }
     frame = requestAnimationFrame(tick);
   });
-  ['wheel','touchstart','keydown'].forEach(event => $('sheet').addEventListener(event,stop,{passive:true}));
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
   $('top').addEventListener('click', () => { stop(); $('sheet').scrollTop = 0; });
   $('speed').addEventListener('input', () => { $('speed-value').textContent = `${$('speed').value} px/s`; });
