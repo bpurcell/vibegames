@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Songbook · Ben Purcell</title>
+<link rel="stylesheet" href="../shared/site.css">
+<link rel="stylesheet" href="songs.css">
+<script src="library.js" defer></script>
+<script src="chordpro.js" defer></script>
+<script src="songs.js" defer></script>
+</head>
+<body>
+<main>
+<header><p class="eyebrow">BEN'S SONGBOOK</p><h1>A little less searching.<br>A little more playing.</h1><p class="intro">Four playlists. One place to practice.</p><a href="first-versions-printbook.pdf" target="_blank" rel="noopener">Open First Versions printbook ↗</a></header>
+<section aria-label="Song library" class="library">
+<div class="toolbar"><label class="search">Find a song<input id="search" type="search" placeholder="Song or artist…"></label><label>Playlist<select id="playlist"><option value="">All playlists</option><option>Level 1</option><option>First Versions</option><option>Level 2</option><option>Performing</option></select></label><span id="count" role="status"></span></div>
+<div class="table-wrap"><table><caption class="sr-only">Songs. Select a column heading to sort, or a song to read.</caption><thead><tr><th aria-sort="ascending"><button data-sort="title">Song <span>↑</span></button></th><th><button data-sort="artist">Artist <span></span></button></th><th><button data-sort="playlists">Playlist <span></span></button></th><th><button data-sort="type">Type <span></span></button></th><th>Original</th></tr></thead><tbody id="rows"></tbody></table></div>
+<p id="empty" class="empty" hidden></p>
+</section>
+<section class="reader" aria-labelledby="reader-title">
+<div class="reader-heading"><div><p class="eyebrow">ON THE MUSIC STAND</p><h2 id="reader-title">Pick a song to start</h2><p id="reader-meta">Your tabs and lyrics will appear here.</p></div><a id="original" target="_blank" rel="noopener noreferrer" hidden>Open on Ultimate Guitar ↗</a></div>
+<div class="reader-tools"><label id="arrangement-label" hidden>Supplied arrangement <select id="arrangement"></select></label><button id="play" disabled>Start auto-scroll</button><label>Speed <input id="speed" type="range" min="5" max="80" value="25"><output id="speed-value">25 px/s</output></label><label>Text size <select id="font-size"><option value="14">Small</option><option value="17" selected>Medium</option><option value="21">Large</option><option value="26">Extra large</option></select></label><button id="top" disabled>Back to top</button></div>
+<div id="sheet" tabindex="0" role="region" aria-label="Scrollable song content"><pre id="content">Choose a song from the table above.</pre></div>
+</section>
+<details class="import"><summary>Add your own tabs or lyrics</summary><p>Import a song library as JSON, or attach a plain-text tab to the selected song. Imported files stay in this browser; they are not uploaded to the website.</p><div class="imports"><label>Song library (.json)<input id="import-library" type="file" accept=".json,application/json"></label><label>Text for selected song (.txt)<input id="import-text" type="file" accept=".txt,text/plain" disabled></label><button id="reset">Clear browser imports</button></div><p id="import-status" role="status"></p></details>
+<footer>Made for practice. Keep the rhythm.</footer>
+</main>
+</body>
+</html>
