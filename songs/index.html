@@ -4,17 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Songbook · Ben Purcell</title>
+<title>Songbook · Bennington Purcell</title>
 <link rel="stylesheet" href="../shared/site.css">
 <link rel="stylesheet" href="songs.css">
 <script src="library.js" defer></script>
 <script src="chordpro.js" defer></script>
-<script src="songs.js?v=20261011-scroll2" defer></script>
+<script src="chords.js" defer></script>
+<script src="songs.js?v=20261012-chords" defer></script>
 </head>
 <body>
 <main class="songbook">
 <aside id="sidebar" aria-label="Song library and settings">
-<header class="sidebar-heading"><div><p class="eyebrow">BEN'S</p><h1>Songbook<span> ♪</span></h1></div><button id="close-sidebar" aria-label="Close sidebar">✕</button></header>
+<header class="sidebar-heading"><div><p class="eyebrow">BENNINGTON’S</p><h1>Songbook<span> ♪</span></h1></div><button id="close-sidebar" aria-label="Close sidebar">✕</button></header>
 <section aria-label="Song library" class="library">
 <div class="toolbar"><label class="search"><span class="sr-only">Find a song</span><input id="search" type="search" placeholder="Find a song or artist…"></label><div class="filter-row"><label><span class="sr-only">Playlist</span><select id="playlist"><option value="">All playlists</option><option>Level 1</option><option>First Versions</option><option>Level 2</option><option>Performing</option></select></label><label><span class="sr-only">Sort songs</span><select id="sort"><option value="title">Song A–Z</option><option value="artist">Artist A–Z</option><option value="playlists">Playlist</option><option value="type">Tab type</option></select></label><button id="sort-direction" aria-label="Reverse sort order" title="Reverse sort order">↑</button></div><span id="count" role="status"></span></div>
 <div class="song-list" id="rows" aria-label="Songs"></div><p id="empty" class="empty" hidden></p>
@@ -24,6 +25,8 @@
 <a class="printbook" href="first-versions-printbook.pdf" target="_blank" rel="noopener">Open printbook ↗</a></div>
 </aside>
 <section class="reader" aria-labelledby="reader-title"><div class="reader-heading"><button id="toggle-sidebar" aria-controls="sidebar" aria-expanded="true" aria-label="Toggle songs and settings">☰ <span>Songs &amp; settings</span></button><div class="song-heading"><h2 id="reader-title">Pick a song to start</h2><p id="reader-meta">Your tabs and lyrics will appear here.</p></div><a id="original" target="_blank" rel="noopener noreferrer" hidden>Original tab ↗</a></div>
+<div id="chord-list" aria-label="Chords in this arrangement" hidden></div>
+<aside id="chord-viewer" aria-label="Guitar chord viewer" hidden><button id="close-chord" aria-label="Close chord viewer">✕</button><h3 id="chord-name"></h3><div id="chord-diagram"></div><p id="chord-help"></p></aside>
 <div id="sheet" tabindex="0" role="region" aria-label="Scrollable song content"><pre id="content">Choose a song from the sidebar.</pre></div></section>
 </main>
 </body>

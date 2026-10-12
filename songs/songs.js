@@ -77,8 +77,27 @@
     stop();
     const choice = $('arrangement').value;
     $('content').textContent = selected ? choice === 'text' ? selected.content : selected.arrangements[Number(choice)] ? chordProToText(selected.arrangements[Number(choice)].chordpro) : 'No supplied text for this version yet.\nOpen the original tab on Ultimate Guitar.' : 'Choose a song from the sidebar.';
+    $('chord-viewer').hidden = true;
+    const source = choice === 'text' ? selected?.content || '' : selected?.arrangements[Number(choice)]?.chordpro || '';
+    const chords = SongChords.names(source, choice !== 'text');
+    $('chord-list').replaceChildren();
+    $('chord-list').hidden = !chords.length;
+    for (const name of chords) {
+      const button = text('button', name);
+      button.setAttribute('aria-label', `Show ${name} guitar chord`);
+      button.addEventListener('click', () => {
+        $('chord-name').textContent = name;
+        const diagram = SongChords.diagram(name);
+        $('chord-diagram').replaceChildren(...(diagram ? [diagram] : []));
+        $('chord-help').textContent = diagram ? 'Standard tuning · Frets relative to capo, if used. ○ open · × muted. One suggested voicing.' : 'No diagram for this chord yet. Check the original tab for its voicing.';
+        $('chord-viewer').hidden = false;
+      });
+      $('chord-list').append(button);
+    }
     $('sheet').scrollTop = 0;
   }
+  $('close-chord').addEventListener('click', () => { $('chord-viewer').hidden = true; });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') $('chord-viewer').hidden = true; });
   $('arrangement').addEventListener('change', updateReader);
   $('play').addEventListener('click', () => {
     if (frame) { stop(); return; }
