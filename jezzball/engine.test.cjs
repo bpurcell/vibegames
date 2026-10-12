@@ -24,3 +24,15 @@ const split=fresh();split.balls[0].y=80;split.balls[1].y=480;for(const ball of s
 // Three failed attempts end the round, and a new game resets all progress.
 for(let i=0;i<2;i++){collision.build(400,280,'h');collision.update(.02);}assert.equal(collision.state,'lost');assert.equal(collision.lives,0);collision.start();assert.equal(collision.state,'playing');assert.equal(collision.score,0);assert.equal(collision.lives,3);
 console.log('Passed refresh independence, partitioning, hit handling, final-step collision, pause, edge guards, progression, containment, and timeout.');
+// Slow pulse affects ball motion, but not wall construction or the round clock.
+const slow=fresh(),normal=fresh();for(const test of [slow,normal]){for(const ball of test.balls){ball.x=300;ball.y=400;ball.vx=100;ball.vy=0;}test.build(400,100,'h');}
+assert(slow.pulse());assert(!slow.pulse());run(slow,.25);run(normal,.25);
+assert(Math.abs((slow.balls[0].x-300)/(normal.balls[0].x-300)-.28)<1e-6);
+assert.equal(slow.wall.neg,normal.wall.neg);assert.equal(slow.time,normal.time);
+slow.pause();const remaining=slow.slow;run(slow,2);assert.equal(slow.slow,remaining);slow.pause();
+// Captures chain score multipliers, restore time, and recharge the pulse.
+const chain=fresh();chain.pulse();for(const ball of chain.balls){ball.x=700;ball.y=500;ball.vx=0;ball.vy=0;}
+chain.build(400,200,'h');run(chain,1);assert.equal(chain.combo,1);assert(chain.time>90);assert(chain.charge>25);
+const firstScore=chain.score;chain.build(400,300,'h');run(chain,1);assert.equal(chain.combo,2);assert(chain.score-firstScore>3000);assert.equal(chain.charge,100);
+chain.build(700,500,'h');chain.update(.02);assert.equal(chain.combo,0);
+console.log('New mechanics passed: slow pulse timing, pause, capture streaks, earned time, recharge, and streak reset.');

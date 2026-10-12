@@ -99,7 +99,7 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
             gap: 1.25rem;
         }
 
@@ -113,6 +113,29 @@
             flex-direction: column;
             transition: transform 0.18s ease, border-color 0.18s ease,
                         background 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .card-preview {
+            display: block;
+            margin: -1.4rem -1.5rem 1.25rem;
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+            overflow: hidden;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-preview img {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        .card-preview:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 3px;
         }
 
         .card:hover {
@@ -173,6 +196,15 @@
             background: var(--accent-dim);
         }
 
+        .card .history-link {
+            margin-top: 12px;
+            align-self: flex-start;
+            color: var(--text-faint);
+            font-size: 11px;
+            text-underline-offset: 3px;
+        }
+        .card .history-link:hover { color: var(--accent); }
+
         footer {
             margin-top: 4rem;
             padding-top: 2rem;
@@ -208,26 +240,40 @@
 
         <div class="grid">
             <div class="card">
+                <a class="card-preview" href="little-leaps/" aria-label="Open Little Leaps">
+                    <img src="shared/previews/little-leaps.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <h3>Little Leaps</h3>
                 <div class="meta">Platformer · All ages</div>
                 <p>A little hop goes a long way. Ride moving platforms, gather stars, and find your way home through endless, freshly generated sky adventures. No timer, no lost lives.</p>
                 <a class="play" href="little-leaps/">Play <span class="arrow">→</span></a>
             </div>
             <div class="card">
+                <a class="card-preview" href="jezzball.html" aria-label="Open JezzBall">
+                    <img src="shared/previews/jezzball.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Puzzle · Reflex</div>
                 <h3>JezzBall</h3>
-                <p>Build walls to trap bouncing balls. Strategy, reflexes, and a little luck — clear the area without getting hit.</p>
+                <p>Cut the field, box in the balls, and capture 75%. Chain captures for bonus points, earn back time, and fire a slow-motion pulse when things get crowded.</p>
                 <a href="jezzball.html" class="play">Play <span class="arrow">→</span></a>
+                <a class="history-link" href="archive/2026-10-11/jezzball.html">what old ai could do</a>
             </div>
 
             <div class="card">
-                <div class="meta">Endless Runner</div>
+                <a class="card-preview" href="flappybirds.html" aria-label="Open Flappy Birds">
+                    <img src="shared/previews/flappybirds.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
+                <div class="meta">Arcade · Flight</div>
                 <h3>Flappy Birds</h3>
-                <p>The classic side-scroller. Tap to flap, dodge pipes, chase a high score.</p>
+                <p>A little bird, a wide-open sky. Tap to flap, hold to glide, and thread the treetops. Collect stars to recharge a shield and keep your flight alive.</p>
                 <a href="flappybirds.html" class="play">Play <span class="arrow">→</span></a>
+                <a class="history-link" href="archive/2026-10-11/flappybirds.html">what old ai could do</a>
             </div>
 
             <div class="card">
+                <a class="card-preview" href="minesweeper.html" aria-label="Open ASCII Minesweeper">
+                    <img src="shared/previews/minesweeper.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Puzzle · ASCII</div>
                 <h3>ASCII Minesweeper</h3>
                 <p>Classic Minesweeper with a terminal-art aesthetic. Click to reveal, right-click to flag, don't die.</p>
@@ -235,6 +281,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="vibooding.html" aria-label="Open Vibooding">
+                    <img src="shared/previews/vibooding.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Experiment</div>
                 <h3>Vibooding</h3>
                 <p>A late-night vibe-coded experiment. Open it and see — the docs are sparse on purpose.</p>
@@ -242,6 +291,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="theremin/" aria-label="Open Theremin">
+                    <img src="shared/previews/theremin.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Instrument · Camera</div>
                 <h3>Theremin</h3>
                 <p>The no-touch instrument, reborn through your webcam. Raise your right hand to climb a three-octave on-screen keyboard — always in tune — while your left hand's fingers turn each note into a major, minor, or 7th chord. Metronome included.</p>
@@ -249,6 +301,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="headbop/" aria-label="Open Head Bop">
+                    <img src="shared/previews/headbop.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Kids · Camera</div>
                 <h3>Head Bop</h3>
                 <p>A whole band in your body. Bounce your head and every bob goes BOOM on the bass drum; raise your hands and they sing rainbow notes that always sound good. Two hands, two notes — dance the song together.</p>
@@ -256,6 +311,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="mazecar/" aria-label="Open Maze Car">
+                    <img src="shared/previews/mazecar.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Kids · Maze</div>
                 <h3>Maze Car</h3>
                 <p>A little car, a maze, and three stars to collect before you park in the golden garage. Big thumb-sized arrows, no timer, nothing to lose — built for a small passenger. Pick a small maze or a big one; each maze you finish is a square bigger than the last.</p>
@@ -263,6 +321,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="spookyforest/" aria-label="Open Spooky Forest">
+                    <img src="shared/previews/spookyforest.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Kids · Halloween</div>
                 <h3>Spooky Forest</h3>
                 <p>Ghosts, goblins, zombies and bats pop out of the trees — tap one and the little witch lobs a pumpkin at it. Forty-five seconds, nothing that can hurt you, and a very generous idea of what counts as a hit.</p>
@@ -270,6 +331,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="gourds/" aria-label="Open Gourd Garden">
+                    <img src="shared/previews/gourds.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Halloween · Generator</div>
                 <h3>Gourd Garden</h3>
                 <p>A procedural 3D gourd, grown from a seed and drawn in pen and ink. Pumpkins, crooknecks, bottle gourds, turbans, a knucklehead or two — ribs, warts, a crooked neck and a stem, all computed, then hatched as you turn it over. Every seed is a gourd; every link is a seed. After Lingdong Huang's <em>fishdraw</em>.</p>
@@ -277,6 +341,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="spookyforest2/" aria-label="Open Spooky Forest 2">
+                    <img src="shared/previews/spookyforest2.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Halloween · Black &amp; White</div>
                 <h3>Spooky Forest 2</h3>
                 <p>The sequel walks. You're moving through a dead winter forest in greyscale, bare trees sweeping past on both sides, and things step out of the dark into your path — a reaper, a scarecrow, something far too tall. Peg them with a pumpkin before you walk by.</p>
@@ -284,6 +351,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="https://spelling.bennpurcell.com" aria-label="Open Collab NYT Spelling" target="_blank" rel="noopener">
+                    <img src="shared/previews/spelling.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Word Game · Collab</div>
                 <h3>Collab NYT Spelling</h3>
                 <p>A collaborative spin on the NYT Spelling Bee. Pool brains, find more words, chase the pangram.</p>
@@ -293,11 +363,14 @@
 
         <div class="section-label">
             <h2>Tools &amp; Webapps</h2>
-            <span class="count">17 entries</span>
+            <span class="count">18 entries</span>
         </div>
 
         <div class="grid">
             <div class="card">
+                <a class="card-preview" href="komorebi-formula/" aria-label="Open Komorebi: Equations">
+                    <img src="shared/previews/komorebi-formula.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Art · Editable Mathematics</div>
                 <h3>Komorebi: Equations</h3>
                 <p>A forest written in math. Select any tree and rewrite its branching formulas, change its seed, or reshape its canopy. Save the editable grove or export an ink illustration.</p>
@@ -305,6 +378,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="komorebi/" aria-label="Open Komorebi">
+                    <img src="shared/previews/komorebi.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Art · Generative Landscape</div>
                 <h3>Komorebi</h3>
                 <p>Grow pines, cherry blossoms, and bamboo in an endless ink landscape. Shape each tree from a seed, draw freely, wander through the mountains, and export your own quiet corner of the world.</p>
@@ -312,6 +388,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="chatgourdspt/" aria-label="Open chatgourdspt">
+                    <img src="shared/previews/chatgourdspt.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Halloween · Procedural 3D</div>
                 <h3>chatgourdspt</h3>
                 <p>Grow a peculiar pumpkin, crooked-neck squash, or other one-of-a-kind gourd. Shape the ridges, sprinkle on warts, give it a glowing grin, and save a portrait of your harvest.</p>
@@ -319,6 +398,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="https://dinder.bennpurcell.com" aria-label="Open Dinder" target="_blank" rel="noopener">
+                    <img src="shared/previews/dinder.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Food · Its own domain</div>
                 <h3>Dinder</h3>
                 <p>The newest one, and the first that lives on its own domain instead of in this repo. Go and have a look.</p>
@@ -326,6 +408,9 @@
             </div>
 
             <div class="card tool">
+                <a class="card-preview" href="half-staff/" aria-label="Open For Every Life">
+                    <img src="shared/previews/half-staff.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Remembrance · US incident tracker</div>
                 <h3>For Every Life</h3>
                 <p>A digital flag remembering people killed in US mass shootings. Read the incident record and choose how long the flag stays lowered for each life lost.</p>
@@ -333,6 +418,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="solar-system/" aria-label="Open Solar System">
+                    <img src="shared/previews/solar-system.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Space · Interactive 3D</div>
                 <h3>Solar System</h3>
                 <p>Eight worlds, one star, always in motion. Fly around a 3D solar system, follow a planet, and speed up time. Drag to rotate, pinch to zoom — from your phone or your desktop.</p>
@@ -340,6 +428,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="cousins-machine.html" aria-label="Open The Cousins Machine">
+                    <img src="shared/previews/cousins-machine.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Education · Science</div>
                 <h3>The Cousins Machine</h3>
                 <p>A kid-friendly tree-of-life explorer. Pick two animals and discover their common ancestor, when their lineages split, and a rough shared-DNA guess.</p>
@@ -347,6 +438,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="gardenplanner/" aria-label="Open Summer Garden Planner">
+                    <img src="shared/previews/gardenplanner.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Garden · Planner</div>
                 <h3>Summer Garden Planner</h3>
                 <p>Five questions — food or flowers, your zone, what you actually eat, how big the bed is — and out comes a plan: what to buy, when to sow it, and a scale drawing of where each thing goes. Tallest along the north edge, which is the bit most plans get wrong.</p>
@@ -354,6 +448,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="instruments/" aria-label="Open The Instrument Cabinet">
+                    <img src="shared/previews/instruments.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Music · Synthesis</div>
                 <h3>The Instrument Cabinet</h3>
                 <p>An homage to the 1990s multimedia CD-ROM encyclopedias: browse 23 instruments by family, by region or A–Z, and hear each one play. Except nothing here is sampled — every note is computed from the instrument's physics. A clarinet's even harmonics really are missing, and you can see it on the scope.</p>
@@ -361,6 +458,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="firescale/" aria-label="Open Wildfire Scale">
+                    <img src="shared/previews/firescale.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Wildfire · Map</div>
                 <h3>Wildfire Scale</h3>
                 <p>The animal-territory trick, pointed at fire. Drop the Camp Fire, the Palisades Fire, or Canada's entire 2023 season on top of your own street, drawn to true scale. Twenty-three fires from 2,170 acres to 59 million — and the smallest one on the list killed the most people.</p>
@@ -368,6 +468,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="animalterritory/" aria-label="Open Local Animal Territory">
+                    <img src="shared/previews/animalterritory.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Nature · Map</div>
                 <h3>Local Animal Territory</h3>
                 <p>Pick an animal and see how much ground one of them actually needs, drawn to scale on the map around your own spot. A chipmunk's whole world is a quarter of an acre; a coyote's is twelve square kilometres. Twenty North American species, chipmunk to black bear.</p>
@@ -375,6 +478,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="churchcousins/" aria-label="Open Church Cousins">
+                    <img src="shared/previews/churchcousins.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">History · Religion</div>
                 <h3>Church Cousins</h3>
                 <p>The Cousins Machine, pointed at Christianity. Pick two denominations and see where their lines last ran together, what the argument was, and how close a relation that makes them. Methodists and the Amish turn out to be first cousins once removed; the Amish and Baptists are second cousins.</p>
@@ -382,6 +488,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="tree-of-life.html" aria-label="Open Tree of Life Explorer">
+                    <img src="shared/previews/tree-of-life.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Visualization · Science</div>
                 <h3>Tree of Life Explorer</h3>
                 <p>An interactive phylogenetic tree of 60+ animals. Zoom, pan, collapse branches, and search — see how all life is connected.</p>
@@ -389,6 +498,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="earth-speed.html" aria-label="Open Earth Speed">
+                    <img src="shared/previews/earth-speed.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Physics · Interactive</div>
                 <h3>Earth Speed</h3>
                 <p>You feel still, but you're moving fast in two directions at once. See your spot sweeping around Earth's axis, and the whole planet racing around the Sun — with real numbers for your latitude and today's date.</p>
@@ -396,6 +508,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="wind-terrain/" aria-label="Open Earth / Relief">
+                    <img src="shared/previews/wind-terrain.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Geography · Wind · 3D</div>
                 <h3>Earth / Relief</h3>
                 <p>Pick a region on a wind globe and lift it into a three-dimensional landscape. Explore real elevation, follow historical wind vectors across the terrain, and exaggerate the mountains to see their shape.</p>
@@ -403,6 +518,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="worldsignpost.html" aria-label="Open World Signpost">
+                    <img src="shared/previews/worldsignpost.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Geography · Printable</div>
                 <h3>World Signpost</h3>
                 <p>Pick any spot on Earth and get the great-circle distance and true bearing to famous landmarks, stacked up as signpost planks. Print it as a ground compass and lay it out facing north.</p>
@@ -410,6 +528,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="timeline.html" aria-label="Open Deep Time">
+                    <img src="shared/previews/timeline.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Visualization · Deep Time</div>
                 <h3>Deep Time</h3>
                 <p>A zoomable timeline of Earth's history — 4.5 billion years, 229 events, and the full geological time scale. Read it as a horizontal chart or flip to a vertical scroll that works properly on a phone.</p>
@@ -417,6 +538,9 @@
             </div>
 
             <div class="card">
+                <a class="card-preview" href="weather-records.html" aria-label="Open US Weather Records Digest">
+                    <img src="shared/previews/weather-records.webp" alt="" width="960" height="540" loading="lazy" decoding="async">
+                </a>
                 <div class="meta">Live Report · Weekly</div>
                 <h3>US Weather Records Digest</h3>
                 <p>Regional weather records broken and near-broken, refreshed weekly from NOAA, USDA, SPC, and Drought Monitor sources.</p>
