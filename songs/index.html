@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="songs.css">
 <script src="library.js" defer></script>
 <script src="chordpro.js" defer></script>
-<script src="chords.js" defer></script>
-<script src="songs.js?v=20261012-chords" defer></script>
+<script src="chords.js?v=2" defer></script>
+<script src="songs.js?v=20261012-voicings" defer></script>
 </head>
 <body>
 <main class="songbook">
@@ -26,7 +26,7 @@
 </aside>
 <section class="reader" aria-labelledby="reader-title"><div class="reader-heading"><button id="toggle-sidebar" aria-controls="sidebar" aria-expanded="true" aria-label="Toggle songs and settings">☰ <span>Songs &amp; settings</span></button><div class="song-heading"><h2 id="reader-title">Pick a song to start</h2><p id="reader-meta">Your tabs and lyrics will appear here.</p></div><a id="original" target="_blank" rel="noopener noreferrer" hidden>Original tab ↗</a></div>
 <div id="chord-list" aria-label="Chords in this arrangement" hidden></div>
-<aside id="chord-viewer" aria-label="Guitar chord viewer" hidden><button id="close-chord" aria-label="Close chord viewer">✕</button><h3 id="chord-name"></h3><div id="chord-diagram"></div><p id="chord-help"></p></aside>
+<aside id="chord-viewer" aria-label="Guitar chord viewer" hidden><button id="close-chord" aria-label="Close chord viewer">✕</button><h3 id="chord-name"></h3><div id="chord-diagram"></div><div class="chord-navigation"><button id="chord-up" aria-label="Previous chord voicing">↑</button><output id="chord-version" aria-live="polite"></output><button id="chord-down" aria-label="Next chord voicing">↓</button></div><p id="chord-help"></p></aside>
 <div id="sheet" tabindex="0" role="region" aria-label="Scrollable song content"><pre id="content">Choose a song from the sidebar.</pre></div></section>
 </main>
 </body>

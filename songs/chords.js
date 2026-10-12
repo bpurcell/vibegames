@@ -19,13 +19,35 @@
     const offsets = {'':[0,2,2,1,0,0],m:[0,2,2,0,0,0],'7':[0,2,0,1,0,0],m7:[0,2,0,0,0,0],maj7:[0,2,1,1,0,0],sus4:[0,2,2,2,0,0],'5':[0,2,2,-1,-1,-1]};
     return offsets[match[2] || ''].map(n => n < 0 ? -1 : n + fret);
   }
+  function versions(name) {
+    const first = shape(name);
+    if (!first) return [];
+    const result = [first];
+    const match = name.replace(/♯/g, '#').replace(/♭/g, 'b').match(/^([A-G][#b]?)(m|7|m7|maj7|sus4|5)?$/);
+    if (match) {
+      const suffix = match[2] || '';
+      const families = [
+        {root:4, shapes:{'':[0,2,2,1,0,0],m:[0,2,2,0,0,0],'7':[0,2,0,1,0,0],m7:[0,2,0,0,0,0],maj7:[0,2,1,1,0,0],sus4:[0,2,2,2,0,0],'5':[0,2,2,-1,-1,-1]}},
+        {root:9, shapes:{'':[-1,0,2,2,2,0],m:[-1,0,2,2,1,0],'7':[-1,0,2,0,2,0],m7:[-1,0,2,0,1,0],maj7:[-1,0,2,1,2,0],sus4:[-1,0,2,2,3,0],'5':[-1,0,2,2,-1,-1]}},
+        {root:2, shapes:{'':[-1,-1,0,2,3,2],m:[-1,-1,0,2,3,1],'7':[-1,-1,0,2,1,2],m7:[-1,-1,0,2,1,1],maj7:[-1,-1,0,2,2,2],sus4:[-1,-1,0,2,3,3],'5':[-1,-1,0,2,3,-1]}}
+      ];
+      for (const family of families) {
+        const fret = (pitches[match[1]] - family.root + 12) % 12;
+        result.push(family.shapes[suffix].map(n => n < 0 ? -1 : n + fret));
+      }
+    }
+    // The same fingering one octave higher preserves slash-chord bass notes too.
+    const octave = first.map(n => n < 0 ? -1 : n + 12);
+    if (Math.max(...octave) <= 17) result.push(octave);
+    return result.filter((frets, i) => result.findIndex(other => other.join(',') === frets.join(',')) === i);
+  }
   function names(source, isChordPro) {
     const valid = /^[A-G][#b♯♭]?(?:(?:maj|min|m|dim|aug|sus|add)?\d*)?(?:\/[A-G][#b♯♭]?)?$/;
     const candidates = isChordPro ? [...source.matchAll(/\[([^\]]+)\]/g)].map(m=>m[1]) : source.split('\n').filter(line => {const tokens=line.trim().split(/\s+/);return tokens.some(t=>valid.test(t)) && tokens.every(t=>valid.test(t)||/^[|:()\-\d]+$/.test(t));}).flatMap(line=>line.trim().split(/\s+/));
     return [...new Set(candidates.filter(n=>valid.test(n)))];
   }
-  function diagram(name) {
-    const frets = shape(name);
+  function diagram(name, version = 0) {
+    const frets = versions(name)[version];
     if (!frets) return null;
     const positive = frets.filter(n=>n>0), start = Math.max(...positive)>5 ? Math.min(...positive) : 1;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -38,5 +60,5 @@
     frets.forEach((n,i)=>{const x=35+i*23;if(n<=0)add('text',{x,y:23,fill:'currentColor','text-anchor':'middle','font-size':16},n<0?'×':'○');else add('circle',{cx:x,cy:47.5+(n-start)*25,r:8,fill:'currentColor'});add('text',{x,y:184,fill:'currentColor','text-anchor':'middle','font-size':11},['E','A','D','G','B','e'][i]);});
     return svg;
   }
-  window.SongChords = {names, shape, diagram};
+  window.SongChords = {names, shape, versions, diagram};
 })();

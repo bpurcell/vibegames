@@ -86,16 +86,32 @@
       const button = text('button', name);
       button.setAttribute('aria-label', `Show ${name} guitar chord`);
       button.addEventListener('click', () => {
-        $('chord-name').textContent = name;
-        const diagram = SongChords.diagram(name);
-        $('chord-diagram').replaceChildren(...(diagram ? [diagram] : []));
-        $('chord-help').textContent = diagram ? 'Standard tuning · Frets relative to capo, if used. ○ open · × muted. One suggested voicing.' : 'No diagram for this chord yet. Check the original tab for its voicing.';
+        activeChord = name; chordVersion = 0;
+        renderChord();
         $('chord-viewer').hidden = false;
       });
       $('chord-list').append(button);
     }
     $('sheet').scrollTop = 0;
   }
+  let activeChord = '', chordVersion = 0;
+  function renderChord() {
+    const versions = SongChords.versions(activeChord);
+    $('chord-name').textContent = activeChord;
+    const diagram = SongChords.diagram(activeChord, chordVersion);
+    $('chord-diagram').replaceChildren(...(diagram ? [diagram] : []));
+    $('chord-help').textContent = diagram ? 'Standard tuning · Frets relative to capo, if used. ○ open · × muted.' : 'No diagram for this chord yet. Check the original tab for its voicing.';
+    $('chord-version').textContent = versions.length ? `Voicing ${chordVersion + 1} of ${versions.length}` : 'No voicings';
+    $('chord-up').disabled = $('chord-down').disabled = versions.length < 2;
+  }
+  function cycleChord(step) {
+    const count = SongChords.versions(activeChord).length;
+    if (!count) return;
+    chordVersion = (chordVersion + step + count) % count;
+    renderChord();
+  }
+  $('chord-up').addEventListener('click', () => cycleChord(-1));
+  $('chord-down').addEventListener('click', () => cycleChord(1));
   $('close-chord').addEventListener('click', () => { $('chord-viewer').hidden = true; });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') $('chord-viewer').hidden = true; });
   $('arrangement').addEventListener('change', updateReader);
