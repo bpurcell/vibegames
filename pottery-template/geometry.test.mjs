@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {design,tiles} from './geometry.mjs';
+const base={height:95,top:85,bottom:85,thickness:5,shrink:12};
+test('cylinder neutral circumference and floor compensation',()=>{const g=design(base);assert.ok(Math.abs(g.w-Math.PI*(85/.88-5))<1e-8);assert.ok(Math.abs((g.h+5)*.88-95)<1e-8);assert.equal(g.bh,g.h);assert.ok(g.volume>350&&g.volume<450)});
+test('tapered sector has exact neutral-surface rim and base arcs',()=>{const g=design({...base,top:95,bottom:70});const delta=g.r1-g.r0,angle=2*Math.PI*delta/g.slant;assert.ok(Math.abs((g.slant*g.r1/delta)*angle-2*Math.PI*g.r1)<1e-8);assert.ok(g.path.includes(' A '));assert.ok(g.w>0&&g.bh>0)});
+test('zero shrink and invalid dimensions',()=>{assert.equal(design({...base,shrink:0}).scale,1);for(const v of [{shrink:100},{top:30},{height:NaN},{bottom:100},{thickness:0}])assert.throws(()=>design({...base,...v}))});
+test('tiling covers whole pattern for both paper sizes',()=>{for(const p of ['a4','letter'])for(const w of [50,250,600])for(const h of [40,300,500]){const t=tiles(w,h,p);assert.ok((t.cols-1)*t.stepX+t.cw>=w);assert.ok((t.rows-1)*t.stepY+t.ch>=h);assert.equal(t.cw-t.stepX,10)}});

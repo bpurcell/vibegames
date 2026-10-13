@@ -55,6 +55,7 @@
       { href: "index.html", name: "All projects" },
     ]},
     { group: "Tools & webapps", items: [
+      { href: "pottery-template/", name: "Slab: Pottery Templates" },
       { href: "komorebi-formula/", name: "Komorebi: Equations" },
       { href: "komorebi/", name: "Komorebi" },
       { href: "chatgourdspt/", name: "chatgourdspt" },
