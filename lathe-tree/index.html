@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f5f3ed"><meta name="description" content="Design little wooden pine trees for your lathe. Preview the turned shape, size your cut stations, and print full-size US Letter templates."><title>Little Pine — Lathe Tree Studio</title><link rel="stylesheet" href="style.css"><script type="module" src="app.mjs"></script></head>
+<body>
+<main id="studio">
+<header><a class="brand" href="../index.html"><span aria-hidden="true">♧</span> little pine <small>LATHE TREE STUDIO</small></a><a class="home" href="../index.html">← All projects</a></header>
+<section class="intro"><div><p class="eyebrow">A LITTLE WOOD. A SMALL FOREST.</p><h1>Turn a little<br>evergreen.</h1></div><p>Find the shape. Mark your cuts.<br>Bring a small tree to life on the lathe.</p></section>
+<div class="workspace">
+<aside class="controls"><div class="section-title"><span>01</span><h2>Shape your tree</h2><span class="unit-badge">INCHES</span></div>
+<div class="presets" role="group" aria-label="Tree size presets"><button data-preset="small">Small</button><button data-preset="classic" class="active" aria-pressed="true">Classic</button><button data-preset="tall">Tall</button></div>
+<div class="field"><label for="height">Finished height</label><div><input id="height" type="number" min="3" max="8" step="any" value="6" inputmode="decimal"><span>in</span></div></div><input id="heightRange" aria-label="Adjust finished height" type="range" min="3" max="8" step="0.125" value="6">
+<div class="field"><label for="diameter">Widest diameter</label><div><input id="diameter" type="number" min="1" max="4.5" step="any" value="3" inputmode="decimal"><span>in</span></div></div><input id="diameterRange" aria-label="Adjust widest diameter" type="range" min="1" max="4.5" step="0.125" value="3">
+<div class="field"><label for="tiers">Branch tiers</label><select id="tiers"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+<div class="field"><label for="trunk">Trunk height</label><div><input id="trunk" type="number" min="0.25" max="1.5" step="any" value="0.75" inputmode="decimal"><span>in</span></div></div>
+<div class="field"><label for="curve">Side curvature</label><output id="curveValue" for="curve">55%</output></div><input id="curve" type="range" min="0" max="100" step="1" value="55"><div class="range-labels"><span>Straight</span><span>Deep sweep</span></div>
+<p class="hint">Height includes the trunk. Trunk diameter is 30% of the widest tier.</p><p id="error" role="alert"></p>
+<div class="bench-note"><span aria-hidden="true">↗</span><p>Start every measurement at the <strong>finished bottom</strong>. Leave mounting waste beyond both ends.</p></div>
+<div class="section-title divided"><span>02</span><h2>Mark your stations</h2></div><p class="hint">Rims and valleys share a height. Diameters are full widths, not cutting depths.</p>
+<table><thead><tr><th>Station</th><th>Height ↑</th><th>Ø</th></tr></thead><tbody id="stations"></tbody></table><p class="table-note">All measurements in inches, from bottom.</p>
+</aside>
+<section class="visual" aria-label="Tree and template previews"><div class="view-bar"><div class="tabs" role="group" aria-label="Preview mode"><button id="treeTab" class="active" aria-pressed="true">Turned tree</button><button id="profileTab" aria-pressed="false">Cut profile</button><button id="paperTab" aria-pressed="false">Print preview</button></div><span class="live"><i></i> LIVE</span></div>
+<div id="treeView" class="preview"><canvas id="tree" tabindex="0" aria-label="Turned wooden pine tree preview. Drag or use arrow keys to adjust the viewing angle."></canvas><p class="preview-caption"><span class="wood-dot"></span> NATURAL WOOD <small>Drag to tilt · arrow keys to adjust the view</small></p></div>
+<div id="profileView" class="preview" hidden><div id="profile"></div><p class="preview-caption">FINISHED PROFILE <small>Cut locations measured from the bottom · preview not to scale</small></p></div>
+<div id="paperView" class="preview" hidden><div class="paper-controls"><button id="previous" aria-label="Previous printable page">←</button><span id="pageLabel">Profile · page 1 of 2</span><button id="next" aria-label="Next printable page">→</button></div><div id="paperSheet"></div><p class="preview-caption">US LETTER · 8½ × 11 IN <small>Scaled screen preview · PDF prints at actual size</small></p></div>
+<div class="stats" aria-live="polite"><div><span>FINISHED HEIGHT</span><strong id="statHeight">6″</strong></div><div><span>MAX DIAMETER</span><strong id="statDiameter">3″</strong></div><div><span>BRANCH TIERS</span><strong id="statTiers">3</strong></div></div>
+</section>
+<aside class="output"><div class="section-title"><span>03</span><h2>Take it to the lathe</h2></div>
+<div class="paper-art" aria-hidden="true"><svg viewBox="0 0 200 158"><path d="M40 10H147L165 28V145H40Z" fill="#fffdf7" stroke="#bbbdb0"/><path d="M147 10V28H165" fill="none" stroke="#bbbdb0"/><path d="M100 28L116 64H107L130 98H108V121H92V98H70L93 64H84Z" fill="#e7d3ad" stroke="#8e7652"/><path d="M100 20V129M53 64H150M53 98H150" stroke="#9da98e" stroke-dasharray="3 3"/><path d="M49 127h13v13H49Z" fill="none" stroke="#8e7652"/></svg></div>
+<h3>From paper<br>to pine.</h3><p class="hint">Two pages: a full-size outline with a marking strip, plus target diameters and a turning plan.</p>
+<div class="paper-spec"><span>US LETTER</span><strong>8½ × 11 inches</strong><small>Single-sheet profile · up to 8″ tall</small></div>
+<button id="previewPrint" class="secondary">Preview the pages <span>↗</span></button><button id="download" class="primary">Download PDF <span>↓</span></button><button id="print" class="secondary">Print template <span>↗</span></button>
+<p id="status" role="status"></p><p class="print-help">Print at <b>100% / Actual Size</b>, with headers and footers off. Measure both sides of the <b>1-inch square</b> before marking your blank.</p>
+<details><summary>At the workbench</summary><ol><li>Rough a sound, securely mounted blank to a cylinder slightly wider than the tree.</li><li>With the lathe stopped, transfer the station marks from the finished bottom datum.</li><li>Shape the slopes and shoulders gradually. Stop to check the target diameters.</li><li>Keep support at the tip and base until shaping is complete. Soften the rims and finish the ends using your chosen mounting method.</li></ol><p>Use a face shield and follow your lathe manual. <a href="https://www.woodturner.org/lathe-safety-basics" target="_blank" rel="noopener">AAW lathe safety</a></p></details>
+</aside></div>
+<footer><span>MADE FOR SLOW HANDS & SMALL FORESTS.</span><span>A shape guide, not a tool-cut sequence.</span></footer>
+</main><div id="printPages" aria-hidden="true"></div>
+</body></html>
