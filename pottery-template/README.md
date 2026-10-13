@@ -32,3 +32,7 @@ The source is also hosted through Sites as project `appgprj_6acd85a5ef308191a394
 - **Lidded box:** the same corner construction, a flat lid, and two underside locator strips. Body height excludes the lid. Fired clearance applies on each side; wet strip placement is printed on its pattern.
 
 Each unique template prints once, with CUT quantities for repeated pieces. The preview offers a lifted/closed cover switch. Dimensions are retained while switching forms within the current page session. The SVG includes every unique part at actual millimeter size; follow the web assembly notes for joining and lid placement. Clay behavior and firing can change the fit.
+
+## Live controls
+
+Every dimension, wet slab thickness, and shrinkage has a draggable, keyboard-accessible slider alongside its exact numeric field. Changes redraw the model and cutting templates on each input event. Slider values remain millimeters internally when displaying inches. Rim/base sliders keep cups and bowls outward-tapered by moving the paired diameter if necessary. The preview stays visible while scrolling the controls; drag the model to rotate it.
