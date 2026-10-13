@@ -55,6 +55,7 @@
       { href: "index.html", name: "All projects" },
     ]},
     { group: "Tools & webapps", items: [
+      { href: "clock-workshop/", name: "The Clockmaker’s Bench" },
       { href: "easy-therapist/", name: "The Easy Therapist" },
       { href: "lathe-tree/", name: "Little Pine: Lathe Trees" },
       { href: "pottery-template/", name: "Slab: Pottery Templates" },
