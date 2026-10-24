@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.cert/
+test-results/
+playwright-report/
+public/models/
+public/wasm/
+.DS_Store
+*.tsbuildinfo
